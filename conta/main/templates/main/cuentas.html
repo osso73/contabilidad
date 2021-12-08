@@ -1,0 +1,67 @@
+{% extends "base_generic.html" %}
+
+{% block header %}
+<p class="subtitle has-text-centered">Cuentas</p>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="section opr-sticky m-0 p-0">
+  <form action="{% url 'main:cuentas' %}" method="post">
+    {% csrf_token %}
+
+    <table class="table has-background-success-light" >
+
+      <thead>
+        <tr>
+          <th> <label for="num" class="label"> Número </label></th>
+          <th> <label for="nombre" class="label"> Nombre </label></th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
+          <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
+          <td> <button type="submit" class="button is-small is-success">
+                 <span class="icon iconify" data-icon="mdi-check"></span>
+                 <span>Añadir</span>
+               </button></td>
+        </tr>
+      </tbody>
+
+    </table>
+
+  </form>
+</div>
+
+{% if lista_cuentas %}
+    <table class="table is-striped is-narrow is-hoverable">
+
+      <thead>
+        <tr>
+          <th> Núm </th>
+          <th> Cuenta </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for cuenta in lista_cuentas %}
+          <tr>
+            <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
+            <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
+            <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+
+    </table>
+
+{% else %}
+    <p>No hay ninguna cuenta todavía.</p>
+{% endif %}
+
+
+{% endblock %}

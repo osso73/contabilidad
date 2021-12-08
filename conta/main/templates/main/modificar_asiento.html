@@ -1,0 +1,69 @@
+{% extends "base_generic.html" %}
+
+{% block header %}
+  <p class="subtitle has-text-centered">Modificación de asiento</p>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="is-flex is-justify-content-space-between m-4">
+  <p class="title">Asiento núm: {{ num_asiento }}</p>
+  <p class="opr-center">
+    <button class="button is-small is-success has-text-white m-1">
+      <a class="has-text-white" href="{% url 'main:anadir_movimiento' num_asiento lista_movimientos.0.fecha %}">
+        <span class="icon iconify" data-icon="mdi-plus-thick"></span>
+      </a>
+    </button>
+
+    <button type="submit" class="button is-small is-success" form="formulario">
+      <span class="icon iconify" data-icon="mdi-content-save-edit"></span>
+    </button>
+  </p>
+</div>
+
+<form id="formulario" action="{% url 'main:modificar_asiento' num_asiento %}" method="post">
+{% csrf_token %}
+
+<div class="table-container">
+  <table class="table is-striped is-narrow is-hoverable is-small">
+    <thead>
+      <tr>
+        <th> Núm
+        <th> Fecha
+        <th> Descripción
+        <th> Debe
+        <th> Haber
+        <th> Cuenta
+      </tr>
+    </thead>
+  <tbody>
+  {% for movimiento in lista_movimientos %}
+      <tr>
+        <td> <input hidden type="number" id="id{{forloop.counter0}}" name="id{{forloop.counter0}}" value="{{ movimiento.id }}">
+          <input class="input is-small" type="number" id="num{{forloop.counter0}}" name="num{{forloop.counter0}}" size=5 value={{ movimiento.num }}>
+        <td> <input class="input is-small" type="date" id="fecha{{forloop.counter0}}" name="fecha{{forloop.counter0}}" required value={{ movimiento.fecha }}>
+        <td> <input class="input is-small" type="text" id="descripcion{{forloop.counter0}}" name="descripcion{{forloop.counter0}}" size=60 required maxlength="200" value="{{ movimiento.descripcion }}">
+        <td> <input class="input is-small" type="number" id="debe{{forloop.counter0}}" name="debe{{forloop.counter0}}" size=8 step="0.01" value={{ movimiento.debe }}>
+        <td> <input class="input is-small" type="number" id="haber{{forloop.counter0}}" name="haber{{forloop.counter0}}" size=8 step="0.01" value={{ movimiento.haber }}>
+        <td> <input class="input is-small" type="text" id="cuenta{{forloop.counter0}}" name="cuenta{{forloop.counter0}}" size=15 list="cuentas" required value="{{ movimiento.cuenta }}">
+        <td><a href="{% url 'main:borrar_movimiento_complejo' movimiento.id 'modificar_asiento' movimiento.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
+
+      </tr>
+
+  {% endfor %}
+  </tbody>
+  </table>
+</div>
+</form>
+
+<datalist id="cuentas">
+  {% for cuenta in lista_cuentas %}
+    <option value="{{ cuenta }}">
+  {% endfor %}
+</datalist>
+
+
+
+
+{% endblock %}

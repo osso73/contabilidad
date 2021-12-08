@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang=es>
+<head>
+
+  {% block title %}
+    <title>Contabilidad Susana y Oriol</title>
+  {% endblock %}
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'main/css/bulma.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main/css/oriol.css' %}">
+  <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
+  {% block head %}{% endblock %}
+
+</head>
+
+<body>
+	<div class="container">
+
+		<!-- hero: https://bulma.io/documentation/layout/hero/ -->
+		<section class="hero is-success is-small">
+			<div class="hero-body">
+        <div class="columns">
+          <div class="column is-narrow is-primary">
+            <figure class="image is-64x64">
+              <a href="{% url 'main:index' %}">
+                <img alt="Logo" src="{% static 'main/img/logo.svg' %}">
+              </a>
+            </figure>
+          </div>
+          <div class="column">
+            <p class="title has-text-centered">Contabilidad Oriol y Susana</p>
+            {% block header %}
+    				<p class="subtitle has-text-centered">Aplicación web hecha en django y bulma</p>
+            {% endblock %}
+          </div>
+        </div>
+			</div>
+		</section>
+
+
+
+		<div class="columns">
+			<div class="column is-narrow">
+				<aside class="menu pt-4 opr-sticky">
+          {% block menu %}
+            <p class="menu-label">
+              Aplicación
+            </p>
+  					<ul class="menu-list">
+              <li><a href="{% url 'main:index' %}">Página principal</a></li>
+  						<li><a href="{% url 'main:cuentas' %}">Modificar cuentas</a></li>
+              <li><a href="{% url 'main:asientos' %}">Modificar asientos</a></li>
+  					</ul>
+            <p class="menu-label">
+              Cuenta
+            </p>
+            <ul class="menu-list">
+              <li><a href=#>Desconectar</a></li>
+            </ul>
+          {% endblock %}
+				</aside>
+			</div>
+
+			<div class="column">
+				<main class="content">
+          {% block content %}{% endblock %}
+        </main>
+
+				<footer class="footer">
+          {% block footer %}
+  				  <div class="content has-text-centered">
+  				    <p>&copy; 2021. Oriol Pujol Romanyà</p>
+  				  </div>
+          {% endblock %}
+				</footer>
+
+			</div>
+
+		</div>
+	</div>
+</body>
+
+</html>
