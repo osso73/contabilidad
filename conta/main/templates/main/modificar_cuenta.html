@@ -1,7 +1,13 @@
 {% extends "base_generic.html" %}
 
-{% block header %}
-  <p class="subtitle has-text-centered">Modificación de cuenta</p>
+{% block tabs %}
+<div class="tabs is-centered is-boxed">
+  <ul>
+    <li><a href="{% url 'main:index' %}">Página principal</a></li>
+    <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+    <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
+  </ul>
+</div>
 {% endblock %}
 
 
@@ -9,11 +15,16 @@
 
 <div class="is-flex is-justify-content-space-between m-4">
   <p class="title">Cuenta núm: {{ cuenta.num }}</p>
-  <p class="opr-center">
-    <button type="submit" class="button is-small is-success" form="formulario">
+  <p class="buttons">
+    <button type="submit" class="button is-small is-success" form="formulario" title="Guarda cambios">
       <span class="icon iconify" data-icon="mdi-content-save-edit"></span>
     </button>
+
+    <a href="javascript:history.back()" class="button is-small is-danger" title="Cancela cambios">
+      <span class="icon iconify" data-icon="mdi-close"></span>
+    </a>
   </p>
+
 </div>
 
 <form id="formulario" action="{% url 'main:modificar_cuenta' cuenta.num %}" method="post">

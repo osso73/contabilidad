@@ -1,14 +1,14 @@
 {% extends "base_generic.html" %}
-{% load static %}
 
-{% block head %}
-  <link rel="stylesheet" href="{% static 'main/css/oriol.css' %}">
+{% block tabs %}
+<div class="tabs is-centered is-boxed">
+  <ul>
+    <li><a href="{% url 'main:index' %}">Página principal</a></li>
+    <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+    <li class="is-active"><a href="{% url 'main:asientos' %}">Asientos</a></li>
+  </ul>
+</div>
 {% endblock %}
-
-{% block header %}
-  <p class="subtitle has-text-centered">Asientos</p>
-{% endblock %}
-
 
 {% block content %}
 
@@ -29,10 +29,10 @@
       <tbody>
         <tr>
           <td> <input class="input is-small is-rounded" type="date" id="fecha" name="fecha" required>
-          <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=80>
+          <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=60>
           <td> <input class="input is-small is-rounded" type="number" id="valor" name="valor" step="0.01" required min=0.01>
-          <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required>
-          <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required>
+          <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
+          <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
           <td> <button type="submit" class="button is-small is-success">
                  <span class="icon iconify" data-icon="mdi-check"></span>
                  <span>Añadir</span>

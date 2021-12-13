@@ -22,46 +22,31 @@
 		<!-- hero: https://bulma.io/documentation/layout/hero/ -->
 		<section class="hero is-success is-small">
 			<div class="hero-body">
-        <div class="columns">
-          <div class="column is-narrow is-primary">
-            <figure class="image is-64x64">
-              <a href="{% url 'main:index' %}">
-                <img alt="Logo" src="{% static 'main/img/logo.svg' %}">
-              </a>
-            </figure>
-          </div>
-          <div class="column">
-            <p class="title has-text-centered">Contabilidad Oriol y Susana</p>
-            {% block header %}
-    				<p class="subtitle has-text-centered">Aplicación web hecha en django y bulma</p>
-            {% endblock %}
-          </div>
-        </div>
+        <p class="title has-text-centered">Contabilidad Oriol y Susana</p>
 			</div>
+      {% block tabs %}
+      <div class="tabs is-centered  is-boxed">
+        <ul>
+          <li class="is-active"><a href="{% url 'main:index' %}">Página principal</a></li>
+          <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+          <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
+        </ul>
+      </div>
+      {% endblock %}
 		</section>
-
 
 
 		<div class="columns">
 			<div class="column is-narrow">
-				<aside class="menu pt-4 opr-sticky">
+				<aside class="menu pt-4">
           {% block menu %}
             <p class="menu-label">
-              Aplicación
+              Menú lateral
             </p>
-  					<ul class="menu-list">
-              <li><a href="{% url 'main:index' %}">Página principal</a></li>
-  						<li><a href="{% url 'main:cuentas' %}">Modificar cuentas</a></li>
-              <li><a href="{% url 'main:asientos' %}">Modificar asientos</a></li>
-  					</ul>
-            <p class="menu-label">
-              Cuenta
-            </p>
-            <ul class="menu-list">
-              <li><a href=#>Desconectar</a></li>
-            </ul>
           {% endblock %}
+          {% block menu_local %}{% endblock menu_local %}
 				</aside>
+        {% block aside %}{% endblock aside %}
 			</div>
 
 			<div class="column">

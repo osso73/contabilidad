@@ -1,9 +1,55 @@
 {% extends "base_generic.html" %}
 
-{% block header %}
-<p class="subtitle has-text-centered">Cuentas</p>
+{% block tabs %}
+<div class="tabs is-centered is-boxed">
+  <ul>
+    <li><a href="{% url 'main:index' %}">Página principal</a></li>
+    <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+    <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
+  </ul>
+</div>
 {% endblock %}
 
+
+{% block aside %}
+<div class="panel mt-4">
+  <p class="panel-heading">
+    Cargar cuentas
+  </p>
+
+  <div class="panel-block">
+    <form action="{% url 'main:cargar_cuentas' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <label class="checkbox">
+        <input type="checkbox" name="sobreescribir" class="mr-2">
+        Sobreescribir cuentas
+      </label>
+      <div class="file mt-2 is-small is-centered">
+        <label class="file-label">
+          <input class="file-input" type="file" name="file" required>
+          <span class="file-cta">
+            <span class="file-icon">
+              <span class="icon iconify" data-icon="mdi-upload"></span>
+            </span>
+            <span class="file-label">
+              Abre fichero…
+            </span>
+          </span>
+        </label>
+          <button type="submit" class="button is-primary is-outlined is-small ml-2">
+            <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+
+
+{% endblock aside %}
 
 {% block content %}
 

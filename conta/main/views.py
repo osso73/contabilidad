@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from django.views import View
-from main.models import Cuenta, Movimiento
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+
+from main.models import Cuenta, Movimiento
+from main.functions import extraer_cuentas, crear_cuentas
 
 # Create your views here.
 
@@ -10,6 +12,7 @@ class IndexView(View):
     def get(self, request, *args, **kwargs):
         context = dict()
         return render(request, 'main/index.html', context)
+
 
 class CuentasView(View):
     def get(self, request, *args, **kwargs):
@@ -146,3 +149,18 @@ def borrar_cuenta(request, pk):
     cuenta.delete()
 
     return HttpResponseRedirect(reverse('main:cuentas'))
+
+
+class CargarCuentas(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse('main:cuentas'))
+
+    def post(self, request, *args, **kwargs):
+        excel_data = extraer_cuentas(request.FILES['file'])
+        sobreescribir = request.POST.get('sobreescribir', False)
+
+        cuentas_anadidas = crear_cuentas(excel_data, sobreescribir)
+
+        context = { 'cuentas_anadidas': cuentas_anadidas }
+
+        return render(request, 'main/cargar_cuentas.html', context)
