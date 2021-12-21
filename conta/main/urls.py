@@ -15,6 +15,7 @@ urlpatterns = [
     path('anadir/movimiento/<int:num>/<slug:fecha>/', views.anadir_movimiento, name='anadir_movimiento'),
     path('borrar/movimiento/<int:pk>/<slug:pagina>/', views.borrar_movimiento, name='borrar_movimiento'),
     path('borrar/movimiento/<int:pk>/<slug:pagina>/<int:num_asiento>/', views.borrar_movimiento, name='borrar_movimiento_complejo'),
-    path('borrar/cuenta/<int:pk>/', views.borrar_cuenta, name='borrar_cuenta'),
+    path('borrar/cuenta/<slug:pk>/', views.borrar_cuenta, name='borrar_cuenta'),
     path('cargar/cuentas/', views.CargarCuentas.as_view(), name='cargar_cuentas'),
+    path('cargar/asientos/', views.CargarAsientos.as_view(), name='cargar_asientos'),
 ]

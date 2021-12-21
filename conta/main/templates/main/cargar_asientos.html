@@ -1,0 +1,145 @@
+{% extends "base_generic.html" %}
+
+{% block tabs %}
+    <li><a href="{% url 'main:index' %}">Página principal</a></li>
+    <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+    <li class="is-active"><a href="{% url 'main:asientos' %}">Asientos</a></li>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="is-flex is-justify-content-center">
+  <div class="message mt-5 {% if num_errores %} is-danger {% else %} is-success {% endif %}">
+    <div class="message-header has-text-centered">
+      Carga completada
+      <a href="{% url 'main:asientos' %}">
+        <button class="delete" aria-label="delete"></button>
+      </a>
+    </div>
+    <div class="message-body">
+      <div class="mt-3">Se han cargado {{ movimientos_anadidos|length }} movimientos.</div>
+      <div>Ha habido {{ num_errores }} errores.</div>
+    </div>
+  </div>
+
+</section>
+
+
+{% if movimientos_anadidos %}
+<h2>Movimientos cargados</h2>
+<div class="section">
+  <table>
+    <thead>
+      <tr>
+        <th> Núm </th>
+        <th> Fecha </th>
+        <th> Descripción </th>
+        <th> Debe </th>
+        <th> Haber </th>
+        <th> Cuenta </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for movimiento in movimientos_anadidos %}
+        <tr>
+          <td class="has-text-right"> {{ movimiento.num }} </td>
+          <td> {{ movimiento.fecha }} </td>
+          <td class="has-text-left"> {{ movimiento.descripcion }} </td>
+          <td class="has-text-right">
+            {% if movimiento.debe == 0 %} -
+            {% else %} {{ movimiento.debe }}
+            {% endif %}
+          </td>
+          <td class="has-text-right">
+            {% if movimiento.haber == 0 %} -
+            {% else %} {{ movimiento.haber }}
+            {% endif %}
+          </td>
+          <td class="has-text-left"> {{ movimiento.cuenta }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if errores_simple %}
+<h2>Errores en plantilla simple</h2>
+<div class="section">
+  <table>
+    <thead>
+      <tr>
+        <th> Fecha </th>
+        <th> Descripción </th>
+        <th> Valor </th>
+        <th> C. Debe </th>
+        <th> C. Haber </th>
+        <th> Error </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for movimiento in errores_simple %}
+        <tr>
+          <td> {{ movimiento.fecha }} </td>
+          <td class="has-text-left"> {{ movimiento.descripcion }} </td>
+          <td class="has-text-right">
+            {% if movimiento.valor == 0 %} -
+            {% else %} {{ movimiento.valor }}
+            {% endif %}
+          </td>
+          <td class="has-text-left"> {{ movimiento.debe }} </td>
+          <td class="has-text-left"> {{ movimiento.haber }} </td>
+          <td class="has-text-left"> {{ movimiento.error }} </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+{% if errores_compleja %}
+<h2>Errores en plantilla compleja</h2>
+<div class="section">
+  <table>
+    <thead>
+      <tr>
+        <th> Núm </th>
+        <th> Fecha </th>
+        <th> Descripción </th>
+        <th> Debe </th>
+        <th> Haber </th>
+        <th> Cuenta </th>
+        <th> Error </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for movimiento in errores_compleja %}
+        <tr>
+          <td class="has-text-right"> {{ movimiento.num }} </td>
+          <td> {{ movimiento.fecha }} </td>
+          <td class="has-text-left"> {{ movimiento.descripcion }} </td>
+          <td class="has-text-right">
+            {% if movimiento.debe == 0 %} -
+            {% else %} {{ movimiento.debe }}
+            {% endif %}
+          </td>
+          <td class="has-text-right">
+            {% if movimiento.haber == 0 %} -
+            {% else %} {{ movimiento.haber }}
+            {% endif %}
+          </td>
+          <td class="has-text-left"> {{ movimiento.cuenta }}</td>
+          <td class="has-text-left"> {{ movimiento.error }} </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+
+{% endblock %}

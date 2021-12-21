@@ -1,53 +1,90 @@
 {% extends "base_generic.html" %}
 
 {% block tabs %}
-<div class="tabs is-centered is-boxed">
-  <ul>
     <li><a href="{% url 'main:index' %}">Página principal</a></li>
     <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
     <li class="is-active"><a href="{% url 'main:asientos' %}">Asientos</a></li>
-  </ul>
-</div>
 {% endblock %}
+
+{% block aside %}
+<div class="panel opr-sticky mt-4">
+  <p class="panel-heading">
+    Cargar asientos
+  </p>
+
+  <div class="panel-block">
+    <form action="{% url 'main:cargar_asientos' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class="file mt-2 is-small is-centered">
+        <label class="file-label">
+          <input class="file-input" type="file" name="file" required>
+          <span class="file-cta">
+            <span class="file-icon">
+              <span class="icon iconify" data-icon="mdi-upload"></span>
+            </span>
+            <span class="file-label">
+              Abre plantilla…
+            </span>
+          </span>
+        </label>
+          <button type="submit" class="button is-primary is-outlined is-small ml-2">
+            <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock aside %}
 
 {% block content %}
 
-<div class="section opr-sticky m-0 p-0">
-  <form action="{% url 'main:asientos' %}" method="post">
-    {% csrf_token %}
-      <table class="table has-background-success-light" >
-      <thead>
-        <tr>
-          <td> <label for="fecha" class="label"> Fecha </label>
-          <td> <label for="descripcion" class="label"> Descripción </label>
-          <td> <label for="valor" class="label"> Valor </label>
-          <td> <label for="debe" class="label"> Cuenta debe </label>
-          <td> <label for="haber" class="label"> Cuenta haber </label>
-          <td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td> <input class="input is-small is-rounded" type="date" id="fecha" name="fecha" required>
-          <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=60>
-          <td> <input class="input is-small is-rounded" type="number" id="valor" name="valor" step="0.01" required min=0.01>
-          <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
-          <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
-          <td> <button type="submit" class="button is-small is-success">
-                 <span class="icon iconify" data-icon="mdi-check"></span>
-                 <span>Añadir</span>
-               </button>
-        </tr>
-      </tbody>
+<div class="panel m-3 opr-sticky is-warning has-background-warning-light">
+  <p class="panel-heading">
+    Crea asiento simple
+  </p>
+
+  <div class="panel-block">
+    <form action="{% url 'main:asientos' %}" method="post">
+      {% csrf_token %}
+        <table class="table has-background-warning-light" >
+        <thead>
+          <tr>
+            <th> <label for="fecha" class="label"> Fecha </label> </th>
+            <th> <label for="descripcion" class="label"> Descripción </label> </th>
+            <th> <label for="valor" class="label"> Valor </label> </th>
+            <th> <label for="debe" class="label"> Cuenta debe </label> </th>
+            <th> <label for="haber" class="label"> Cuenta haber </label> </th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> <input class="input is-small is-rounded" type="date" id="fecha" name="fecha" required>
+            <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=60>
+            <td> <input class="input is-small is-rounded" type="number" id="valor" name="valor" step="0.01" required min=0.01>
+            <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
+            <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
+            <td>
+              <button type="submit" class="button is-small is-success">
+                <span class="icon iconify" data-icon="mdi-check"></span>
+                <span>Añadir</span>
+              </button>
+          </tr>
+        </tbody>
 
 
-      </table>
-      <datalist id="cuentas">
-        {% for cuenta in lista_cuentas %}
-          <option value="{{ cuenta }}">
-        {% endfor %}
-      </datalist>
-  </form>
+        </table>
+        <datalist id="cuentas">
+          {% for cuenta in lista_cuentas %}
+            <option value="{{ cuenta }}">
+          {% endfor %}
+        </datalist>
+    </form>
+  </div>
 </div>
 
 
@@ -75,17 +112,24 @@
             {% if movimiento.debe == 0 %}
               <a href="{% url 'main:modificar_asiento' movimiento.num %}">-</a>
             {% else %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.debe }}</a>
+              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.debe|floatformat:"2g" }}</a>
             {% endif %}
           </td>
           <td class="has-text-right">
             {% if movimiento.haber == 0 %}
               <a href="{% url 'main:modificar_asiento' movimiento.num %}">-</a>
             {% else %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.haber }}</a>
+              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.haber|floatformat:"2g" }}</a>
             {% endif %}
           <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.cuenta }}</a></td>
-          <td><a href="{% url 'main:borrar_movimiento' movimiento.id 'asientos' %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
+          <td>
+            <a href="{% url 'main:modificar_asiento' movimiento.num %}">
+              <span class="icon iconify has-text-link is-small" data-icon="mdi-edit"></span>
+            </a>
+            <a href="{% url 'main:borrar_movimiento' movimiento.id 'asientos' %}">
+              <span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span>
+            </a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>

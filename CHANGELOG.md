@@ -9,11 +9,13 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 
 
 ### Añadido
-- Posibilidad de cargar las cuentas a partir de un fichero (#iss. #2).
-
+- Posibilidad de cargar las cuentas a partir de un fichero excel (iss. #2).
+- Posibilidad de cargar movimientos simples y complejos a partir de una plantilla excel (iss. #3)
 
 ### Cambiado
 - Menú lateral reemplazado por tabuladores. Varios cambios en el diseño (colores, tamaños, etc.)
+
+----
 
 ## v0.1 -  2021-12-08
 

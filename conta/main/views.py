@@ -4,17 +4,20 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from main.models import Cuenta, Movimiento
-from main.functions import extraer_cuentas, crear_cuentas
+import main.functions as functions
 
 # Create your views here.
 
 class IndexView(View):
+    """Página principal"""
     def get(self, request, *args, **kwargs):
         context = dict()
         return render(request, 'main/index.html', context)
 
 
 class CuentasView(View):
+    """Listado de cuentas. Permite añadir una cuenta nueva."""
+
     def get(self, request, *args, **kwargs):
         lista_cuentas = Cuenta.objects.all().order_by('num')
         context = {'lista_cuentas': lista_cuentas}
@@ -31,6 +34,10 @@ class CuentasView(View):
 
 
 class AsientosView(View):
+    """Listado de asientos (o movimientos). Permite añadir un asiento
+    simple nuevo.
+    """
+
     def get(self, request, *args, **kwargs):
         lista_movimientos = Movimiento.objects.all().order_by('num')
         lista_cuentas = Cuenta.objects.all().order_by('num')
@@ -41,33 +48,18 @@ class AsientosView(View):
         return render(request, 'main/asientos.html', context)
 
     def post(self, request, *args, **kwargs):
-        asientos_nums = [ movimiento.num for movimiento in Movimiento.objects.all() ]
-        num = 0 if len(asientos_nums) == 0 else max(asientos_nums)
-
+        num = functions.max_num_asiento()
         pk_debe = request.POST['debe'].split(':')[0]
         pk_haber = request.POST['haber'].split(':')[0]
-        cuenta_debe = Cuenta.objects.get(pk=pk_debe)
-        cuenta_haber = Cuenta.objects.get(pk=pk_haber)
 
-        nuevo_debe = Movimiento(
-            num = num+1,
-            fecha = request.POST['fecha'],
-            descripcion = request.POST['descripcion'],
-            debe = request.POST['valor'],
-            haber = 0,
-            cuenta = cuenta_debe,
+        functions.crea_asiento_simple(
+            num+1,
+            request.POST['fecha'],
+            request.POST['descripcion'],
+            request.POST['valor'],
+            Cuenta.objects.get(pk=pk_debe),
+            Cuenta.objects.get(pk=pk_haber)
             )
-        nuevo_haber = Movimiento(
-            num = num+1,
-            fecha = request.POST['fecha'],
-            descripcion = request.POST['descripcion'],
-            debe = 0, haber = request.POST['valor'],
-            cuenta = cuenta_haber,
-            )
-        nuevo_debe.save()
-        nuevo_haber.save()
-
-        print('type cuenta_debe:', type(cuenta_debe))
 
         return HttpResponseRedirect(reverse('main:asientos'))
 
@@ -156,11 +148,30 @@ class CargarCuentas(View):
         return HttpResponseRedirect(reverse('main:cuentas'))
 
     def post(self, request, *args, **kwargs):
-        excel_data = extraer_cuentas(request.FILES['file'])
+        datos_excel = functions.extraer_cuentas(request.FILES['file'])
         sobreescribir = request.POST.get('sobreescribir', False)
 
-        cuentas_anadidas = crear_cuentas(excel_data, sobreescribir)
+        cuentas_anadidas = functions.crear_cuentas(datos_excel, sobreescribir)
 
         context = { 'cuentas_anadidas': cuentas_anadidas }
 
         return render(request, 'main/cargar_cuentas.html', context)
+
+
+class CargarAsientos(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse('main:asientos'))
+
+    def post(self, request, *args, **kwargs):
+        simple, compleja = functions.extraer_asientos(request.FILES['file'])
+
+        movimientos_anadidos, errores_simple, errores_compleja = functions.crear_asientos(simple, compleja)
+
+        context = {
+            'movimientos_anadidos': movimientos_anadidos,
+            'errores_simple': errores_simple,
+            'errores_compleja': errores_compleja,
+            'num_errores': len(errores_simple) + len(errores_compleja)
+            }
+
+        return render(request, 'main/cargar_asientos.html', context)

@@ -24,21 +24,21 @@
 			<div class="hero-body">
         <p class="title has-text-centered">Contabilidad Oriol y Susana</p>
 			</div>
-      {% block tabs %}
-      <div class="tabs is-centered  is-boxed">
+      <div class="tabs is-centered is-fullwidth is-boxed">
         <ul>
+          {% block tabs %}
           <li class="is-active"><a href="{% url 'main:index' %}">Página principal</a></li>
           <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
           <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
+          {% endblock %}
         </ul>
       </div>
-      {% endblock %}
 		</section>
 
 
 		<div class="columns">
-			<div class="column is-narrow">
-				<aside class="menu pt-4">
+			<div class="column is-narrow m-3">
+				<aside class="menu">
           {% block menu %}
             <p class="menu-label">
               Menú lateral

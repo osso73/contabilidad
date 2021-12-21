@@ -1,18 +1,14 @@
 {% extends "base_generic.html" %}
 
 {% block tabs %}
-<div class="tabs is-centered is-boxed">
-  <ul>
     <li><a href="{% url 'main:index' %}">Página principal</a></li>
     <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
     <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
-  </ul>
-</div>
 {% endblock %}
 
 
 {% block aside %}
-<div class="panel mt-4">
+<div class="panel opr-sticky mt-4">
   <p class="panel-heading">
     Cargar cuentas
   </p>
@@ -47,40 +43,44 @@
   </div>
 </div>
 
-
-
 {% endblock aside %}
 
 {% block content %}
 
-<div class="section opr-sticky m-0 p-0">
-  <form action="{% url 'main:cuentas' %}" method="post">
-    {% csrf_token %}
+<div class="panel m-3 opr-sticky is-warning has-background-warning-light">
+  <p class="panel-heading">
+    Crea asiento simple
+  </p>
 
-    <table class="table has-background-success-light" >
+  <div class="panel-block">
+    <form action="{% url 'main:cuentas' %}" method="post">
+      {% csrf_token %}
 
-      <thead>
-        <tr>
-          <th> <label for="num" class="label"> Número </label></th>
-          <th> <label for="nombre" class="label"> Nombre </label></th>
-          <th></th>
-        </tr>
-      </thead>
+      <table class="table has-background-warning-light" >
 
-      <tbody>
-        <tr>
-          <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
-          <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
-          <td> <button type="submit" class="button is-small is-success">
-                 <span class="icon iconify" data-icon="mdi-check"></span>
-                 <span>Añadir</span>
-               </button></td>
-        </tr>
-      </tbody>
+        <thead>
+          <tr>
+            <th> <label for="num" class="label"> Número </label></th>
+            <th> <label for="nombre" class="label"> Nombre </label></th>
+            <th></th>
+          </tr>
+        </thead>
 
-    </table>
+        <tbody>
+          <tr>
+            <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
+            <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
+            <td> <button type="submit" class="button is-small is-success">
+                   <span class="icon iconify" data-icon="mdi-check"></span>
+                   <span>Añadir</span>
+                 </button></td>
+          </tr>
+        </tbody>
 
-  </form>
+      </table>
+
+    </form>
+  </div>
 </div>
 
 {% if lista_cuentas %}

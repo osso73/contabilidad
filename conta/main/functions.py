@@ -1,6 +1,11 @@
+import datetime
 import openpyxl
+import pandas as pd
+import numpy as np
 
-from main.models import Cuenta
+from django.core.exceptions import ObjectDoesNotExist
+
+from main.models import Cuenta, Movimiento
 
 
 def extraer_cuentas(file):
@@ -52,3 +57,194 @@ def crear_cuentas(excel_data, sobreescribir):
             cuentas_anadidas.append(nueva_cuenta)
 
     return cuentas_anadidas
+
+def max_num_asiento():
+    """Devuelve el número de asiento más alto"""
+
+    asientos_nums = [ movimiento.num for movimiento in Movimiento.objects.all() ]
+    num = 0 if len(asientos_nums) == 0 else max(asientos_nums)
+
+    return num
+
+
+def crea_asiento_simple(num, fecha, descripcion, valor, cuenta_debe, cuenta_haber):
+    """Crea un asiento simple de dos movimientos, a partir de los
+    datos proporcionados, y los añade a la base de datos. Calcula el
+    número de asiento automáticamente.
+    """
+
+    nuevo_debe = Movimiento(
+        num = num,
+        fecha = fecha,
+        descripcion = descripcion,
+        debe = valor,
+        haber = 0,
+        cuenta = cuenta_debe,
+        )
+    nuevo_haber = Movimiento(
+        num = num,
+        fecha = fecha,
+        descripcion = descripcion,
+        debe = 0,
+        haber = valor,
+        cuenta = cuenta_haber,
+        )
+    nuevo_debe.save()
+    nuevo_haber.save()
+
+    return nuevo_debe, nuevo_haber
+
+
+def extraer_asientos(file):
+    """Extrae los datos de la plantilla. Existen dos pestañas: simple, para
+    los asientos simples, y compleja para los asientos de 3 o más movimientos.
+    La extracción se hace con un dataframe de pandas para cada pestaña, y
+    los datos son devueltos como una tupla de dataframes, después de hacer
+    comporbaciones y limpieza por si hay errores.
+
+    Retorna dos dataframes de pandas, uno para la plantilla simple y otro
+    para la compleja.
+    """
+    # carga la información del excel. Si la hoja no existe, crea dt en blanco
+    fichero = pd.ExcelFile(file)
+
+    if 'simple' in fichero.sheet_names:
+        simple = fichero.parse(sheet_name='simple', usecols='b:f',
+            parse_dates=[1], header=2, dtype={'Debe': str, 'Haber': str})
+    else:
+        simple = pd.DataFrame(columns=['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber'])
+
+    if 'compleja' in fichero.sheet_names:
+        compleja = fichero.parse(sheet_name='compleja', usecols='b:g',
+            parse_dates=[2], header=2, dtype={'Cuenta': str})
+    else:
+        compleja = pd.DataFrame(columns=['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta'])
+
+
+    # elimina los datos incorrectos / incompletos
+    for n in simple.index:
+        if simple.loc[n].isnull().all():
+            simple.drop(labels=n, axis=0, inplace=True)
+
+    for n in compleja.index:
+        if compleja.loc[n].isnull().all():
+            compleja.drop(labels=n, axis=0, inplace=True)
+
+    return simple, compleja
+
+
+def crear_asientos(simple, compleja):
+    """Crea los asientos en la base de datos, a partir de los dataframes
+    recibidos. El simple contiene asientos simples, y el compleja contiene
+    asientos de 3 o más movimientos. Calcula el número de asiento correcto
+    en función de los asientos existentes
+
+    Devuelve una lista de asientos correctos cargados, y dos listas de
+    errores, una para cada plantilla.
+    """
+
+    max_asiento = max_num_asiento()
+    cuentas = Cuenta.objects.all()
+    movimientos_anadidos = []
+    errores_simple = []
+    errores_compleja = []
+
+    for n in simple.index:
+        movimiento_simple = {
+            'fecha': simple.loc[n]['Fecha'],
+            'descripcion': simple.loc[n]['Descripción'],
+            'valor': simple.loc[n]['Valor'],
+            'debe': simple.loc[n]['Debe'],
+            'haber': simple.loc[n]['Haber'],
+        }
+        check = valida_simple(movimiento_simple, cuentas)
+        if check == 'ok':
+            max_asiento += 1
+            mov_debe, mov_haber = crea_asiento_simple(
+                num = max_asiento,
+                fecha = movimiento_simple['fecha'],
+                descripcion = movimiento_simple['descripcion'],
+                valor = movimiento_simple['valor'],
+                cuenta_debe = movimiento_simple['debe'],
+                cuenta_haber = movimiento_simple['haber'],
+                )
+            movimientos_anadidos.append(mov_debe)
+            movimientos_anadidos.append(mov_haber)
+
+        else:
+            movimiento_simple['error'] = check
+            errores_simple.append(movimiento_simple)
+
+
+    for n in compleja.index:
+        movimiento_complejo = {
+            'num': compleja.loc[n]['id'],
+            'fecha': compleja.loc[n]['Fecha'],
+            'descripcion': compleja.loc[n]['Descripción'],
+            'debe': compleja.loc[n]['Debe'],
+            'haber': compleja.loc[n]['Haber'],
+            'cuenta': compleja.loc[n]['Cuenta'],
+        }
+        result_compleja = valida_compleja(movimiento_complejo, cuentas)
+        if result_compleja == 'ok':
+            movimiento = Movimiento(
+                num = max_asiento + movimiento_complejo['num'],
+                fecha = movimiento_complejo['fecha'],
+                descripcion = movimiento_complejo['descripcion'],
+                debe = movimiento_complejo['debe'],
+                haber = movimiento_complejo['haber'],
+                cuenta = movimiento_complejo['cuenta'],
+                )
+            movimiento.save()
+            movimientos_anadidos.append(movimiento)
+
+        else:
+            movimiento_complejo['error'] = result_compleja
+            errores_compleja.append(movimiento_complejo)
+
+
+    return movimientos_anadidos, errores_simple, errores_compleja
+
+
+def valida_simple(movimiento_simple, cuentas):
+    try:
+        movimiento_simple['debe'] = cuentas.get(pk=movimiento_simple['debe'])
+        movimiento_simple['haber'] = cuentas.get(pk=movimiento_simple['haber'])
+    except ObjectDoesNotExist:
+        return 'Cuenta no existe'
+
+    if pd.isnull(movimiento_simple['fecha']) or not isinstance(movimiento_simple['fecha'], (pd.Timestamp, datetime.datetime, datetime.date)):
+        return 'Fecha incorrecta'
+
+    if pd.isnull(movimiento_simple['valor']) or not isinstance(movimiento_simple['valor'], (int, float, np.float64, np.int64)):
+        return 'Valor es incorrecto'
+
+    movimiento_simple['descripcion'] = str(movimiento_simple['descripcion'])
+    movimiento_simple['valor'] = float(movimiento_simple['valor'])
+
+    return 'ok'
+
+
+def valida_compleja(movimiento_complejo, cuentas):
+    try:
+        movimiento_complejo['cuenta'] = cuentas.get(pk=movimiento_complejo['cuenta'])
+    except ObjectDoesNotExist:
+        return 'Cuenta no existe'
+
+    if pd.isnull(movimiento_complejo['num']) or not isinstance(movimiento_complejo['num'], (int, np.int64)):
+        return f'El número de asiento es incorrecto ({type(movimiento_complejo["num"])})'
+
+    if pd.isnull(movimiento_complejo['fecha']) or not isinstance(movimiento_complejo['fecha'], (pd.Timestamp, datetime.datetime, datetime.date)):
+        return 'Fecha incorrecta'
+
+    if pd.isnull(movimiento_complejo['debe']) or not isinstance(movimiento_complejo['debe'], (int, float, np.float64, np.int64)):
+        return 'Debe es incorrecto'
+
+    if pd.isnull(movimiento_complejo['haber']) or not isinstance(movimiento_complejo['haber'], (int, float, np.float64, np.int64)):
+        return 'Haber es incorrecto'
+
+    movimiento_complejo['descripcion'] = str(movimiento_complejo['descripcion'])
+    movimiento_complejo['debe'] = float(movimiento_complejo['debe'])
+    movimiento_complejo['haber'] = float(movimiento_complejo['haber'])
+
+    return 'ok'

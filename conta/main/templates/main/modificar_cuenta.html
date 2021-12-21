@@ -1,13 +1,9 @@
 {% extends "base_generic.html" %}
 
 {% block tabs %}
-<div class="tabs is-centered is-boxed">
-  <ul>
     <li><a href="{% url 'main:index' %}">Página principal</a></li>
     <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
     <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
-  </ul>
-</div>
 {% endblock %}
 
 
