@@ -11,9 +11,11 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 ### Añadido
 - Posibilidad de cargar las cuentas a partir de un fichero excel (iss. #2).
 - Posibilidad de cargar movimientos simples y complejos a partir de una plantilla excel (iss. #3)
+- Formularios para filtrar cuentas y asientos (iss. #6)
 
 ### Cambiado
 - Menú lateral reemplazado por tabuladores. Varios cambios en el diseño (colores, tamaños, etc.)
+- Impide borrar una cuenta con movimientos asociados
 
 ----
 

@@ -174,9 +174,9 @@
       <th>Balance</th>
     </thead>
     <tbody>
-      <td>{{ total_debe }}</td>
-      <td>{{ total_haber }}</td>
-      <td>{{ total }}</td>
+      <td>{{ total_debe|floatformat:"2g" }}</td>
+      <td>{{ total_haber|floatformat:"2g" }}</td>
+      <td>{{ total|floatformat:"2g" }}</td>
     </tbody>
   </table>
 

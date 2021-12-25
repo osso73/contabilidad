@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db.models.deletion import ProtectedError
 
 from main.models import Cuenta, Movimiento
 import main.functions as functions
@@ -205,7 +206,10 @@ def anadir_movimiento(request, num, fecha):
 
 def borrar_cuenta(request, pk):
     cuenta = Cuenta.objects.get(pk=pk)
-    cuenta.delete()
+    try:
+        cuenta.delete()
+    except ProtectedError as e:
+        pass    # implementar alguna función para mostrar errores
 
     return HttpResponseRedirect(reverse('main:cuentas'))
 

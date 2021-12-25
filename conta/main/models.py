@@ -16,7 +16,7 @@ class Movimiento(models.Model):
     descripcion = models.CharField(max_length=200)
     debe = models.DecimalField(max_digits=8, decimal_places=2)
     haber = models.DecimalField(max_digits=8, decimal_places=2)
-    cuenta = models.ForeignKey(Cuenta, on_delete=models.CASCADE)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.PROTECT)
 
     def __str__(self):
         return str(self.num)
