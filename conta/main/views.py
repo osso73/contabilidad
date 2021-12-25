@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.views import View
 from django.http import HttpResponseRedirect
@@ -18,10 +20,28 @@ class IndexView(View):
 class CuentasView(View):
     """Listado de cuentas. Permite añadir una cuenta nueva."""
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, fnum='', fnombre='', *args, **kwargs):
         lista_cuentas = Cuenta.objects.all().order_by('num')
-        context = {'lista_cuentas': lista_cuentas}
+
+        # los valores NULL son convertidos a cadenas vacías
+        if fnum == 'NULL':
+            fnum = ''
+        if fnombre == 'NULL':
+            fnombre = ''
+
+        # aplica el filtro
+        if fnum:
+            lista_cuentas = lista_cuentas.filter(pk=fnum)
+        if fnombre:
+            lista_cuentas = lista_cuentas.filter(nombre__contains=fnombre)
+
+        context = {
+            'lista_cuentas': lista_cuentas,
+            'fnum': fnum,
+            'fnombre': fnombre,
+            }
         return render(request, 'main/cuentas.html', context)
+
 
     def post(self, request, *args, **kwargs):
         nueva_cuenta = Cuenta(
@@ -38,14 +58,61 @@ class AsientosView(View):
     simple nuevo.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, ffecha_ini='', ffecha_fin='', fcuenta='', fdescripcion='', fasiento='', *args, **kwargs):
         lista_movimientos = Movimiento.objects.all().order_by('num')
         lista_cuentas = Cuenta.objects.all().order_by('num')
+
+        # los valores NULL son convertidos a cadenas vacías
+        if ffecha_ini == 'NULL':
+            ffecha_ini = ''
+        if ffecha_fin == 'NULL':
+            ffecha_fin = ''
+        if fcuenta == 'NULL':
+            fcuenta = ''
+        if fdescripcion == 'NULL':
+            fdescripcion = ''
+        if fasiento == 'NULL':
+            fasiento = ''
+
+        # aplicación del filtro
+        if ffecha_ini:
+            fecha = datetime.date.fromisoformat(ffecha_ini)
+            lista_movimientos = lista_movimientos.filter(fecha__gt=fecha)
+        if ffecha_fin:
+            fecha = datetime.date.fromisoformat(ffecha_fin)
+            lista_movimientos = lista_movimientos.filter(fecha__lt=fecha)
+        if fcuenta:
+            lista_movimientos = lista_movimientos.filter(cuenta=fcuenta)
+        if fdescripcion:
+            lista_movimientos = lista_movimientos.filter(descripcion__contains=fdescripcion)
+        if fasiento:
+            lista_movimientos = lista_movimientos.filter(num=fasiento)
+
+        total_haber = total_debe = 0
+        for m in lista_movimientos:
+            total_debe += m.debe
+            total_haber += m.haber
+
+        total = total_haber - total_debe
+
+        filtro = {
+            'ffecha_ini': ffecha_ini,
+            'ffecha_fin': ffecha_fin,
+            'fcuenta': fcuenta,
+            'fdescripcion': fdescripcion,
+            'fasiento': fasiento,
+        }
+
         context = {
             'lista_movimientos': lista_movimientos,
-            'lista_cuentas': lista_cuentas
+            'lista_cuentas': lista_cuentas,
+            'filtro': filtro,
+            'total_debe': total_debe,
+            'total_haber': total_haber,
+            'total': total,
             }
         return render(request, 'main/asientos.html', context)
+
 
     def post(self, request, *args, **kwargs):
         num = functions.max_num_asiento()
@@ -175,3 +242,52 @@ class CargarAsientos(View):
             }
 
         return render(request, 'main/cargar_asientos.html', context)
+
+
+class FiltroCuentas(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse('main:cuentas'))
+
+    def post(self, request, *args, **kwargs):
+        fnum = request.POST['f_num']
+        fnombre = request.POST['f_nombre']
+        if not fnum:
+            fnum = 'NULL'
+        if not fnombre:
+            fnombre = 'NULL'
+
+        return HttpResponseRedirect(reverse('main:cuentas_filtro', kwargs={
+            'fnum': fnum,
+            'fnombre': fnombre
+            }))
+
+
+class FiltroAsientos(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseRedirect(reverse('main:asientos'))
+
+    def post(self, request, *args, **kwargs):
+        ffecha_ini = request.POST['f_fecha_inicial']
+        ffecha_fin = request.POST['f_fecha_final']
+        fdescripcion = request.POST['f_descripcion']
+        fcuenta = request.POST['f_cuenta'].split(':')[0]
+        fasiento = request.POST['f_asiento']
+
+        if not ffecha_ini:
+            ffecha_ini = 'NULL'
+        if not ffecha_fin:
+            ffecha_fin = 'NULL'
+        if not fdescripcion:
+            fdescripcion = 'NULL'
+        if not fcuenta:
+            fcuenta = 'NULL'
+        if not fasiento:
+            fasiento = 'NULL'
+
+        return HttpResponseRedirect(reverse('main:asientos_filtro', kwargs={
+            'ffecha_ini': ffecha_ini,
+            'ffecha_fin': ffecha_fin,
+            'fdescripcion': fdescripcion,
+            'fcuenta': fcuenta,
+            'fasiento': fasiento,
+            }))

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block aside %}
-<div class="panel opr-sticky mt-4">
+<div class="panel mt-4">
   <p class="panel-heading">
     Cargar asientos
   </p>
@@ -37,6 +37,37 @@
 
   </div>
 </div>
+
+<div class="panel">
+  <p class="panel-heading">
+    Filtro
+  </p>
+
+  <form action="{% url 'main:filtro_asientos' %}" method="post">
+
+    <div class="panel-block">
+      {% csrf_token %}
+      <ul>
+        <li><input class="input is-small" type="date" title="Entra la fecha inicial" id="f_fecha_inicial" name="f_fecha_inicial" size=20 placeholder="Fecha inicial" value={{ filtro.ffecha_ini }}></li>
+        <li><input class="input is-small" type="date" title="Entra la fecha final" id="f_fecha_final" name="f_fecha_final" size=20 placeholder="Fecha final" value={{ filtro.ffecha_fin }}></li>
+        <li><input class="input is-small" type="text" title="Entra palabra(s) de la descripción" id="f_descripcion" name="f_descripcion" size=20 placeholder="Descripción" value={{ filtro.fdescripcion }}></li>
+        <li><input class="input is-small" type="text" title="Entra el número de cuenta" id="f_cuenta" name="f_cuenta" list="cuentas" size=20 placeholder="Cuenta" value={{ filtro.fcuenta }}></li>
+        <li><input class="input is-small" type="text" title="Entra el número de asiento" id="f_asiento" name="f_asiento" size=20 placeholder="Asiento" value={{ filtro.fasiento }} ></li>
+        <li>
+          <button type="submit" class="button is-small is-success is-outlined m-2">
+             <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+          <a href="{% url 'main:asientos' %}" class="button is-small is-danger is-outlined m-2">
+            <span class="icon iconify" data-icon="mdi-close-circle"></span>
+          </a>
+        </li>
+    </ul>
+    </div>
+
+  </form>
+
+</div>
+
 
 {% endblock aside %}
 
@@ -69,7 +100,7 @@
             <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
             <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
             <td>
-              <button type="submit" class="button is-small is-success">
+              <button type="submit" class="button is-small is-success is-outlined">
                 <span class="icon iconify" data-icon="mdi-check"></span>
                 <span>Añadir</span>
               </button>
@@ -136,9 +167,21 @@
 
     </table>
   </div>
+  <table>
+    <thead>
+      <th>Total debe</th>
+      <th>Total haber</th>
+      <th>Balance</th>
+    </thead>
+    <tbody>
+      <td>{{ total_debe }}</td>
+      <td>{{ total_haber }}</td>
+      <td>{{ total }}</td>
+    </tbody>
+  </table>
 
 {% else %}
-    <p>No hay ningún asiento todavía.</p>
+    <p>No hay ningún asiento.</p>
 {% endif %}
 
 {% endblock %}

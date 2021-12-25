@@ -207,6 +207,11 @@ def crear_asientos(simple, compleja):
 
 
 def valida_simple(movimiento_simple, cuentas):
+    """Valida el movimiento simple, que los campos sean todos correctos.
+    En aso de encontrar errores devuelve el error que ha encontrado;
+    si todo es correcto devuelve 'ok'
+    """
+
     try:
         movimiento_simple['debe'] = cuentas.get(pk=movimiento_simple['debe'])
         movimiento_simple['haber'] = cuentas.get(pk=movimiento_simple['haber'])
@@ -226,12 +231,17 @@ def valida_simple(movimiento_simple, cuentas):
 
 
 def valida_compleja(movimiento_complejo, cuentas):
+    """Valida el movimiento complejo, que los campos sean todos correctos.
+    En aso de encontrar errores devuelve el error que ha encontrado;
+    si todo es correcto devuelve 'ok'
+    """
+
     try:
         movimiento_complejo['cuenta'] = cuentas.get(pk=movimiento_complejo['cuenta'])
     except ObjectDoesNotExist:
         return 'Cuenta no existe'
 
-    if pd.isnull(movimiento_complejo['num']) or not isinstance(movimiento_complejo['num'], (int, np.int64)):
+    if pd.isnull(movimiento_complejo['num']) or not isinstance(movimiento_complejo['num'], (int, np.int64, np.float64)):
         return f'El número de asiento es incorrecto ({type(movimiento_complejo["num"])})'
 
     if pd.isnull(movimiento_complejo['fecha']) or not isinstance(movimiento_complejo['fecha'], (pd.Timestamp, datetime.datetime, datetime.date)):
@@ -243,6 +253,7 @@ def valida_compleja(movimiento_complejo, cuentas):
     if pd.isnull(movimiento_complejo['haber']) or not isinstance(movimiento_complejo['haber'], (int, float, np.float64, np.int64)):
         return 'Haber es incorrecto'
 
+    movimiento_complejo['num'] = int(movimiento_complejo['num'])
     movimiento_complejo['descripcion'] = str(movimiento_complejo['descripcion'])
     movimiento_complejo['debe'] = float(movimiento_complejo['debe'])
     movimiento_complejo['haber'] = float(movimiento_complejo['haber'])

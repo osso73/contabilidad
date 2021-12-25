@@ -18,4 +18,8 @@ urlpatterns = [
     path('borrar/cuenta/<slug:pk>/', views.borrar_cuenta, name='borrar_cuenta'),
     path('cargar/cuentas/', views.CargarCuentas.as_view(), name='cargar_cuentas'),
     path('cargar/asientos/', views.CargarAsientos.as_view(), name='cargar_asientos'),
+    path('filtro/cuentas/', views.FiltroCuentas.as_view(), name='filtro_cuentas'),
+    path('cuentas/num-<str:fnum>/nombre-<str:fnombre>', views.CuentasView.as_view(), name='cuentas_filtro'),
+    path('filtro/asientos/', views.FiltroAsientos.as_view(), name='filtro_asientos'),
+    path('asientos/de-<slug:ffecha_ini>-a-<slug:ffecha_fin>/cuenta-<str:fcuenta>/descripcion-<str:fdescripcion>/asiento-<str:fasiento>', views.AsientosView.as_view(), name='asientos_filtro'),
 ]
