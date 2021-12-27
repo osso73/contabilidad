@@ -11,6 +11,7 @@ class Cuenta(models.Model):
 
 
 class Movimiento(models.Model):
+    """Modelo de los movimientos"""
     num = models.IntegerField()
     fecha = models.DateField()
     descripcion = models.CharField(max_length=200)
@@ -20,3 +21,18 @@ class Movimiento(models.Model):
 
     def __str__(self):
         return str(self.num)
+
+
+class FiltroCuentas(models.Model):
+    """Modelo para el filtro de los asientos/movimientos"""
+    num = models.CharField(max_length=10, default='')
+    nombre = models.CharField(max_length=50, default='')
+
+
+class FiltroMovimientos(models.Model):
+    """Modelo para el filtro de los asientos/movimientos"""
+    fecha_inicial = models.CharField(max_length=10, default='')
+    fecha_final = models.CharField(max_length=10, default='')
+    descripcion = models.CharField(max_length=200, default='')
+    cuenta = models.CharField(max_length=10, default='')
+    asiento = models.CharField(max_length=10, default='')

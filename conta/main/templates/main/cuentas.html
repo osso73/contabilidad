@@ -51,13 +51,13 @@
     <form action="{% url 'main:filtro_cuentas' %}" method="post">
       {% csrf_token %}
       <ul>
-        <li><input class="input is-small" type="text" id="f_num" name="f_num" size=20 placeholder="Núm" value={{ fnum }}></li>
-        <li><input class="input is-small" type="text" id="f_nombre" name="f_nombre" size=20 placeholder="Nombre" value={{ fnombre }}></li>
+        <li><input class="input is-small" type="text" id="f_num" name="f_num" size=20 placeholder="Núm" value={{ filtro.num }}></li>
+        <li><input class="input is-small" type="text" id="f_nombre" name="f_nombre" size=20 placeholder="Nombre" value={{ filtro.nombre }}></li>
         <li>
           <button type="submit" class="button is-small is-success is-outlined m-2">
              <span class="icon iconify" data-icon="mdi-check"></span>
           </button>
-          <a href="{% url 'main:cuentas' %}" class="button is-small is-danger is-outlined m-2">
+          <a href="{% url 'main:borrar_filtro_cuentas' %}" class="button is-small is-danger is-outlined m-2">
             <span class="icon iconify" data-icon="mdi-close-circle"></span>
           </a>
         </li>
