@@ -1,0 +1,13 @@
+site_name: contrabilidad
+repo_url: https://github.com/osso73/contabilidad/
+site_url: https://osso73.github.io/contabilidad/
+site_author: osso73
+theme:
+  name: readthedocs
+  locale: es_ES
+nav:
+  - Inicio: index.md
+  - Empezando: empezando.md
+  - Manual de usuario: manual_usuario.md
+  - Manual de desarrollador: manual_desarrollo.md
+  - Acerca de: acerca_de.md

@@ -1,6 +1,6 @@
 # contabilidad
 
-Contabilidad sencilla para llevar las cuentas personales, desarrollada en Django y Bulma.
+Sencilla aplicación de contabilidad para llevar las cuentas personales, desarrollada en Django y Bulma.
 
 Basado en los principios básicos de contabilidad (e.g. utilizando asientos de 2 o más movimientos para entrar los movimientos de dinero de una cuenta a otra), esta pequeña aplicación permite hacer un seguimiento de los gastos personales.
 
@@ -34,9 +34,14 @@ Los pasos para instalar y ejecutar esta aplicación son los siguientes:
   python -m pip install -r requirements.txt
   ```
 
-4. Lanzar la aplicación con el servidor web de Django, utilizando el comando `runserver`.
+4. Actualizar la base de datos. El fichero de la base de datos no está en el repositorio, por lo que se tiene crear a partir de las migraciones:
   ```
   cd conta
+  python manage.py migrate
+  ```
+
+5. Lanzar la aplicación con el servidor web de Django, utilizando el comando `runserver`.
+  ```
   python manage.py runserver
   ```
 

@@ -5,6 +5,12 @@ Los cambios realizados en este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Para los números de versión, utilizo únicamente 2 dígitos para los cambios mayores y menores.
 
 
+## Nueva versión en curso, no publicada
+
+### Añadido
+- Documentación sobre el proyecto, según iss. #19.
+
+
 ## v0.5 -  2021-12-29
 Funcionalidad básica establecida:
 
