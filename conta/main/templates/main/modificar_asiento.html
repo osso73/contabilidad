@@ -12,7 +12,7 @@
 <div class="is-flex is-justify-content-space-between m-4">
   <p class="title">Asiento núm: {{ num_asiento }}</p>
   <p class="buttons">
-    <a class="button is-small is-info has-text-white" title="Añadir movimiento" href="{% url 'main:anadir_movimiento' num_asiento lista_movimientos.0.fecha %}">
+    <a class="button is-small is-info has-text-white" title="Añadir movimiento" id="anadir_movimiento" href="{% url 'main:anadir_movimiento' num_asiento lista_movimientos.0.fecha %}">
       <span class="icon iconify" data-icon="mdi-plus-thick"></span>
     </a>
 

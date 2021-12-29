@@ -25,11 +25,12 @@ class CuentasView(View):
         lista_cuentas = Cuenta.objects.all().order_by('num')
 
         # Si no existe el filtro lo crea, con los valores por defecto
-        try:
-            filtro = FiltroCuentas.objects.all()[0]
-        except IndexError:
+        filtro = FiltroCuentas.objects.all()
+        if len(filtro) == 0:
             filtro = FiltroCuentas()
             filtro.save()
+        else:
+            filtro = filtro[0]
 
         # aplica el filtro
         if filtro.num:
@@ -64,19 +65,20 @@ class AsientosView(View):
         lista_cuentas = Cuenta.objects.all().order_by('num')
 
         # Si no existe el filtro lo crea, con los valores por defecto
-        try:
-            filtro = FiltroMovimientos.objects.all()[0]
-        except IndexError:
+        filtro = FiltroMovimientos.objects.all()
+        if len(filtro) == 0:
             filtro = FiltroMovimientos()
             filtro.save()
+        else:
+            filtro = filtro[0]
 
         # aplicación del filtro
         if filtro.fecha_inicial:
             fecha = datetime.date.fromisoformat(filtro.fecha_inicial)
-            lista_movimientos = lista_movimientos.filter(fecha__gt=fecha)
+            lista_movimientos = lista_movimientos.filter(fecha__gte=fecha)
         if filtro.fecha_final:
             fecha = datetime.date.fromisoformat(filtro.fecha_final)
-            lista_movimientos = lista_movimientos.filter(fecha__lt=fecha)
+            lista_movimientos = lista_movimientos.filter(fecha__lte=fecha)
         if filtro.cuenta:
             lista_movimientos = lista_movimientos.filter(cuenta=filtro.cuenta)
         if filtro.descripcion:

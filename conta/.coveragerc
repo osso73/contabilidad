@@ -1,0 +1,7 @@
+[run]
+include = ./*
+branch = True
+command_line = manage.py test
+omit =
+  manage.py
+  */migrations/*

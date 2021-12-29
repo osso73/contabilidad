@@ -25,9 +25,16 @@ def extraer_cuentas(file):
         excel_data.append(row_data)
 
     # elimina la primera fila, ya que corresponde al título
-    excel_data.pop(0)
+    if len(excel_data):
+        first_row = excel_data.pop(0)
+    else:
+        first_row = []
 
-    return excel_data
+    # si el formato no es el esperado devuelve cadena vacía
+    if first_row == ['Cuenta', 'Descripción']:
+        return excel_data
+    else:
+        return []
 
 
 def crear_cuentas(excel_data, sobreescribir):

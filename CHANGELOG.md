@@ -5,7 +5,14 @@ Los cambios realizados en este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Para los números de versión, utilizo únicamente 2 dígitos para los cambios mayores y menores.
 
 
-## Nueva versión en curso
+## v0.5 -  2021-12-29
+Funcionalidad básica establecida:
+
+- añadir y borrar cuentas y asientos (movimientos),
+- cargar ficheros de cuentas y de movimientos
+- filtrar cuentas y movimientos
+
+Incluye los tests para comprobar estas funciones.
 
 
 ### Añadido

@@ -1,7 +1,8 @@
 from django.test import TestCase
 from unittest import skip
+from decimal import InvalidOperation
 
-from main.models import Cuenta, Movimiento
+from main.models import Cuenta, Movimiento, FiltroCuentas, FiltroMovimientos
 from django.db.models.deletion import ProtectedError
 
 
@@ -76,24 +77,88 @@ class AsientoModelTest(TestCase):
         self.movimiento = Movimiento.objects.get(pk=1)
         self.assertEqual(float(self.movimiento.haber), 5.00)
 
-    @skip("Needs an exception mgmt function")
     def test_debe_has_eight_digits_max(self):
         self.movimiento.debe = 1234567890
-        self.movimiento.save()
-        self.movimiento = Movimiento.objects.get(pk=1)
-        self.assertNotEqual(self.movimiento.debe, 1234567890)
+        with self.assertRaises(InvalidOperation):
+            self.movimiento.save()
+
+    def test_debe_ok_if_less_than_eight_digits(self):
         self.movimiento.debe = 123456
         self.movimiento.save()
         self.movimiento = Movimiento.objects.get(pk=1)
         self.assertEqual(self.movimiento.debe, 123456.00)
 
-    @skip("Needs an exception mgmt function")
     def test_haber_has_eight_digits_max(self):
         self.movimiento.haber = 1234567890
-        self.movimiento.save()
-        self.movimiento = Movimiento.objects.get(pk=1)
-        self.assertNotEqual(self.movimiento.haber, 1234567890)
+        with self.assertRaises(InvalidOperation):
+            self.movimiento.save()
+
+    def test_haber_ok_if_less_than_eight_digits(self):
         self.movimiento.haber = 123456
         self.movimiento.save()
         self.movimiento = Movimiento.objects.get(pk=1)
         self.assertEqual(self.movimiento.haber, 123456.00)
+        
+
+class FiltroCuentasTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up non-modified objects used by all test methods
+        cls.filtro = FiltroCuentas.objects.create()
+
+    def test_num_max_length(self):
+        max_length = self.filtro._meta.get_field('num').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_nombre_max_length(self):
+        max_length = self.filtro._meta.get_field('nombre').max_length
+        self.assertEqual(max_length, 50)
+
+    def test_num_default(self):
+        self.assertEqual(self.filtro.num, '')
+
+    def test_nombre_default(self):
+        self.assertEqual(self.filtro.nombre, '')
+
+
+
+class FiltroMovimientosTest(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up non-modified objects used by all test methods
+        cls.filtro = FiltroMovimientos.objects.create()
+
+    def test_fecha_inicial_max_length(self):
+        max_length = self.filtro._meta.get_field('fecha_inicial').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_fecha_final_max_length(self):
+        max_length = self.filtro._meta.get_field('fecha_final').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_descripcion_max_length(self):
+        max_length = self.filtro._meta.get_field('descripcion').max_length
+        self.assertEqual(max_length, 200)
+
+    def test_cuenta_max_length(self):
+        max_length = self.filtro._meta.get_field('cuenta').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_asiento_max_length(self):
+        max_length = self.filtro._meta.get_field('asiento').max_length
+        self.assertEqual(max_length, 10)
+
+    def test_fecha_inicial_default(self):
+        self.assertEqual(self.filtro.fecha_inicial, '')
+
+    def test_fecha_final_default(self):
+        self.assertEqual(self.filtro.fecha_final, '')
+
+    def test_descripcion_default(self):
+        self.assertEqual(self.filtro.descripcion, '')
+
+    def test_cuenta_default(self):
+        self.assertEqual(self.filtro.cuenta, '')
+
+    def test_asiento_default(self):
+        self.assertEqual(self.filtro.asiento, '')

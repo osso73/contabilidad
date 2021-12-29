@@ -13,7 +13,7 @@
   </p>
 
   <div class="panel-block">
-    <form action="{% url 'main:cargar_asientos' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'main:cargar_asientos' %}" method="post" enctype="multipart/form-data" id="cargar_fichero">
       {% csrf_token %}
 
       <div class="file mt-2 is-small is-centered">
@@ -43,7 +43,7 @@
     Filtro
   </p>
 
-  <form action="{% url 'main:filtro_asientos' %}" method="post">
+  <form action="{% url 'main:filtro_asientos' %}" method="post" id="filtro">
 
     <div class="panel-block">
       {% csrf_token %}
@@ -57,7 +57,7 @@
           <button type="submit" class="button is-small is-success is-outlined m-2">
              <span class="icon iconify" data-icon="mdi-check"></span>
           </button>
-          <a href="{% url 'main:borrar_filtro_asientos' %}" class="button is-small is-danger is-outlined m-2">
+          <a href="{% url 'main:borrar_filtro_asientos' %}" class="button is-small is-danger is-outlined m-2" id="button_clear">
             <span class="icon iconify" data-icon="mdi-close-circle"></span>
           </a>
         </li>
@@ -73,13 +73,13 @@
 
 {% block content %}
 
-<div class="panel m-3 opr-sticky is-warning has-background-warning-light">
+<div class="panel m-3 is-warning has-background-warning-light">
   <p class="panel-heading">
     Crea asiento simple
   </p>
 
   <div class="panel-block">
-    <form action="{% url 'main:asientos' %}" method="post">
+    <form action="{% url 'main:asientos' %}" method="post" id="crear_asiento">
       {% csrf_token %}
         <table class="table has-background-warning-light" >
         <thead>
