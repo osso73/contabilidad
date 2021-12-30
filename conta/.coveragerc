@@ -1,7 +1,10 @@
 [run]
-include = ./*
 branch = True
-command_line = manage.py test
 omit =
-  manage.py
-  */migrations/*
+   *apps.py
+   *migrations/*
+   *settings*
+   *urls.py
+   *wsgi.py
+   manage.py
+   *asgi.py
