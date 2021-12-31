@@ -113,29 +113,34 @@ def extraer_asientos(file):
     para la compleja.
     """
     # carga la información del excel. Si la hoja no existe, crea dt en blanco
-    fichero = pd.ExcelFile(file)
+    try:
+        fichero = pd.ExcelFile(file)
 
-    if 'simple' in fichero.sheet_names:
-        simple = fichero.parse(sheet_name='simple', usecols='b:f',
-            parse_dates=[1], header=2, dtype={'Debe': str, 'Haber': str})
-    else:
+        if 'simple' in fichero.sheet_names:
+            simple = fichero.parse(sheet_name='simple', usecols='b:f',
+                parse_dates=[1], header=2, dtype={'Debe': str, 'Haber': str})
+        else:
+            simple = pd.DataFrame(columns=['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber'])
+
+        if 'compleja' in fichero.sheet_names:
+            compleja = fichero.parse(sheet_name='compleja', usecols='b:g',
+                parse_dates=[2], header=2, dtype={'Cuenta': str})
+        else:
+            compleja = pd.DataFrame(columns=['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta'])
+
+
+        # elimina los datos incorrectos / incompletos
+        for n in simple.index:
+            if simple.loc[n].isnull().all():
+                simple.drop(labels=n, axis=0, inplace=True)
+
+        for n in compleja.index:
+            if compleja.loc[n].isnull().all():
+                compleja.drop(labels=n, axis=0, inplace=True)
+
+    except ValueError:
         simple = pd.DataFrame(columns=['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber'])
-
-    if 'compleja' in fichero.sheet_names:
-        compleja = fichero.parse(sheet_name='compleja', usecols='b:g',
-            parse_dates=[2], header=2, dtype={'Cuenta': str})
-    else:
         compleja = pd.DataFrame(columns=['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta'])
-
-
-    # elimina los datos incorrectos / incompletos
-    for n in simple.index:
-        if simple.loc[n].isnull().all():
-            simple.drop(labels=n, axis=0, inplace=True)
-
-    for n in compleja.index:
-        if compleja.loc[n].isnull().all():
-            compleja.drop(labels=n, axis=0, inplace=True)
 
     return simple, compleja
 

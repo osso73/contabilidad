@@ -197,8 +197,14 @@ def borrar_cuenta(request, pk):
     cuenta = Cuenta.objects.get(pk=pk)
     try:
         cuenta.delete()
+
     except ProtectedError as e:
-        pass    # implementar alguna función para mostrar errores
+        mensaje = "Esta cuenta no se puede borrar, porque tiene movimientos asociados."
+        context = {
+            'mensaje': mensaje,
+            'nuevo_url': reverse('main:cuentas')
+            }
+        return render(request, 'main/cuentas.html', context)
 
     return HttpResponseRedirect(reverse('main:cuentas'))
 

@@ -60,4 +60,20 @@
 	</div>
 </body>
 
+<div {% if mensaje %} class="modal is-active" {% else %} class="modal" {% endif %}>
+  <div class="modal-background"></div>
+  <div class="modal-content">
+    <div class="message is-danger">
+      <div class="message-header">
+        <p>Aviso</p>
+        <a href="{{ nuevo_url }}"><button class="delete" aria-label="delete"></button></a>
+      </div>
+      <div class="message-body">
+        {{ mensaje }}
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </html>

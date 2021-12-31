@@ -648,7 +648,6 @@ class TestCargarAsientos():
             'Comida',
             'Comida - propina',
             ]
-
         messages = [
             'Ha habido 8 errores.',
             'Se han cargado 8 movimientos.',
@@ -677,9 +676,7 @@ class TestCargarAsientos():
         form = form_cargar_movimientos
         form['file'] = Upload('main/tests/data/empty_file.xlsx')
         resp = form.submit()
-
-        movimientos = Movimiento.objects.all()
-        assert len(movimientos) == 0
+        self.validate_error_file(resp)
 
     def test_load_file_empty(self, form_cargar_movimientos, populate_database_cuentas):
         """Test that when uploaded file with no movements, nothing breaks"""
@@ -687,9 +684,23 @@ class TestCargarAsientos():
         form = form_cargar_movimientos
         form['file'] = Upload('main/tests/data/plantilla_vacia.xlsx')
         resp = form.submit()
+        self.validate_error_file(resp)
 
+    def test_load_file_non_excel(self, form_cargar_movimientos, populate_database_cuentas):
+        """Test that when uploaded file with no movements, nothing breaks"""
+        populate_database_cuentas
+        form = form_cargar_movimientos
+        form['file'] = Upload('main/tests/data/logo.svg')
+        resp = form.submit()
+        self.validate_error_file(resp)
+
+    def validate_error_file(self, resp):
         movimientos = Movimiento.objects.all()
         assert len(movimientos) == 0
+
+        msg = ['Se han cargado 0 movimientos.', 'Ha habido 0 errores.']
+        for m in msg:
+            assert m in resp.text
 
 
 class TestFiltroCuentasView():
