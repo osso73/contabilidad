@@ -8,7 +8,7 @@
 
 
 {% block aside %}
-<div class="panel mt-4">
+<div class="panel">
   <p class="panel-heading">
     Cargar cuentas
   </p>
@@ -63,13 +63,9 @@
         </li>
       </ul>
     </form>
-
   </div>
 
-
 </div>
-
-
 
 {% endblock aside %}
 
@@ -116,8 +112,26 @@
 
       <thead>
         <tr>
-          <th> Núm </th>
-          <th> Cuenta </th>
+          <th>
+            <a href="{% url 'main:cambiar_orden' 'cuentas' 'num' %}"> Núm </a>
+            {% if filtro.campo == 'num' %}
+              {% if filtro.ascendiente %}
+                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+              {% else %}
+                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+              {% endif %}
+            {% endif %}
+          </th>
+          <th>
+            <a href="{% url 'main:cambiar_orden' 'cuentas' 'nombre' %}"> Cuenta </a>
+            {% if filtro.campo == 'nombre' %}
+              {% if filtro.ascendiente %}
+                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+              {% else %}
+                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+              {% endif %}
+            {% endif %}
+          </th>
         </tr>
       </thead>
 

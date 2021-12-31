@@ -20,4 +20,6 @@ urlpatterns = [
     path('cargar/asientos/', views.CargarAsientos.as_view(), name='cargar_asientos'),
     path('filtro/asientos/', views.FiltroAsientosView.as_view(), name='filtro_asientos'),
     path('asientos/borrar/filtro/', views.borrar_filtro_asientos, name='borrar_filtro_asientos'),
+
+    path('cambiar/orden/<str:tipo>/<str:campo>/', views.cambiar_orden, name='cambiar_orden'),
 ]

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block aside %}
-<div class="panel mt-4">
+<div class="panel">
   <p class="panel-heading">
     Cargar asientos
   </p>
@@ -124,12 +124,66 @@
     <table class="table is-striped is-narrow is-hoverable">
     <thead>
       <tr>
-        <th> Núm </th>
-        <th> Fecha </th>
-        <th> Descripción </th>
-        <th> Debe </th>
-        <th> Haber </th>
-        <th> Cuenta </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'num' %}"> Núm </a>
+          {% if filtro.campo == 'num' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'fecha' %}"> Fecha </a>
+          {% if filtro.campo == 'fecha' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'descripcion' %}"> Descripción </a>
+          {% if filtro.campo == 'descripcion' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'debe' %}"> Debe </a>
+          {% if filtro.campo == 'debe' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'haber' %}"> Haber </a>
+          {% if filtro.campo == 'haber' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'cuenta' %}"> Cuenta </a>
+          {% if filtro.campo == 'cuenta' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
       </tr>
     </thead>
 

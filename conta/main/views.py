@@ -38,6 +38,10 @@ class CuentasView(View):
         if filtro.nombre:
             lista_cuentas = lista_cuentas.filter(nombre__contains=filtro.nombre)
 
+        # aplica orden
+        orden = '-' if not filtro.ascendiente else ''
+        lista_cuentas = lista_cuentas.order_by(orden+filtro.campo)
+
         context = {
             'lista_cuentas': lista_cuentas,
             'filtro': filtro,
@@ -92,6 +96,10 @@ class AsientosView(View):
             total_haber += m.haber
 
         total = total_haber - total_debe
+
+        # aplica orden
+        orden = '-' if not filtro.ascendiente else ''
+        lista_movimientos = lista_movimientos.order_by(orden+filtro.campo)
 
         context = {
             'lista_movimientos': lista_movimientos,
@@ -295,3 +303,22 @@ def borrar_filtro_asientos(request):
     filtro.save()
 
     return HttpResponseRedirect(reverse('main:asientos'))
+
+
+def cambiar_orden(request, tipo, campo):
+    if tipo == 'asientos':
+        filtro = FiltroMovimientos.objects.all()[0]
+    elif tipo == 'cuentas':
+        filtro = FiltroCuentas.objects.all()[0]
+    else:
+        return HttpResponseRedirect(reverse('main:index'))
+
+    if filtro.campo == campo.lower():
+        filtro.ascendiente = not filtro.ascendiente
+    else:
+        filtro.campo = campo.lower()
+        filtro.ascendiente = True
+
+    filtro.save()
+
+    return HttpResponseRedirect(reverse('main:'+tipo))
