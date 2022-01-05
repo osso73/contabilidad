@@ -3,6 +3,7 @@ from decimal import InvalidOperation
 
 from main.models import Cuenta, Movimiento, FiltroCuentas, FiltroMovimientos
 from django.db.models.deletion import ProtectedError
+from django.core.exceptions import ValidationError
 
 from main.models import Cuenta, Movimiento, FiltroCuentas, FiltroMovimientos
 
@@ -133,6 +134,11 @@ class TestFiltroCuentas():
         max_length = filtro._meta.get_field('nombre').max_length
         assert max_length == 50
 
+    def test_campo_max_length(self, create_filtro_cuentas):
+        filtro = create_filtro_cuentas
+        max_length = filtro._meta.get_field('campo').max_length
+        assert max_length == 10
+
     def test_num_default(self, create_filtro_cuentas):
         filtro = create_filtro_cuentas
         assert filtro.num == ''
@@ -140,6 +146,28 @@ class TestFiltroCuentas():
     def test_nombre_default(self, create_filtro_cuentas):
         filtro = create_filtro_cuentas
         assert filtro.nombre == ''
+
+    def test_campo_default(self, create_filtro_cuentas):
+        filtro = create_filtro_cuentas
+        assert filtro.campo == 'num'
+
+    def test_ascendiente_default(self, create_filtro_cuentas):
+        filtro = create_filtro_cuentas
+        assert filtro.ascendiente is True
+
+    def test_campo_choices(self, create_filtro_cuentas):
+        filtro = create_filtro_cuentas
+        filtro.num = '100'
+        filtro.nombre = 'Caja'
+        for c in ['num', 'nombre']:
+            filtro.campo = c
+            filtro.save()
+            filtro.full_clean()
+
+        filtro.campo = 'wrong'
+        filtro.save()
+        with pytest.raises(ValidationError):
+            filtro.full_clean()
 
 
 class TestFiltroMovimientos():
@@ -173,6 +201,11 @@ class TestFiltroMovimientos():
         max_length = filtro._meta.get_field('asiento').max_length
         assert max_length == 10
 
+    def test_campo_max_length(self, create_filtro_movimientos):
+        filtro = create_filtro_movimientos
+        max_length = filtro._meta.get_field('campo').max_length
+        assert max_length == 15
+
     def test_fecha_inicial_default(self, create_filtro_movimientos):
         filtro = create_filtro_movimientos
         assert filtro.fecha_inicial == ''
@@ -192,3 +225,24 @@ class TestFiltroMovimientos():
     def test_asiento_default(self, create_filtro_movimientos):
         filtro = create_filtro_movimientos
         assert filtro.asiento == ''
+
+    def test_campo_default(self, create_filtro_movimientos):
+        filtro = create_filtro_movimientos
+        assert filtro.campo == 'num'
+
+    def test_campo_choices(self, create_filtro_movimientos):
+        filtro = create_filtro_movimientos
+        filtro.fecha_inicial = '2021-10-31'
+        filtro.fecha_final = '2021-12-31'
+        filtro.descripcion = 'Probando'
+        filtro.cuenta = '100'
+        filtro.asiento = '1'
+        for c in ['num', 'fecha', 'descripcion', 'debe', 'haber', 'cuenta']:
+            filtro.campo = c
+            filtro.save()
+            filtro.full_clean()
+
+        filtro.campo = 'wrong'
+        filtro.save()
+        with pytest.raises(ValidationError):
+            filtro.full_clean()

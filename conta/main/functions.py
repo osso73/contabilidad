@@ -271,3 +271,48 @@ def valida_compleja(movimiento_complejo, cuentas):
     movimiento_complejo['haber'] = float(movimiento_complejo['haber'])
 
     return 'ok'
+
+
+def lista_paginas(paginas, actual, num=3):
+    """Calcula la lista de páginas a mostrar. Las cadenas
+    nulas corresponden a puntos suspensivos.
+
+    Argumentos
+    ----------
+    paginas: int
+        Total de páginas que hay.
+    actual: int
+        página actual.
+    num: int
+        número de paginas anteriores y posteriores que queremos
+        mostrar.
+
+
+    Devuelve
+    --------
+    paginacion: list
+        lista de páginas calculada.
+    """
+    if paginas < 10 or (actual <= num + 1 and actual >= paginas - num - 1):
+        pagination = list(range(1, paginas+1))
+    else:
+        if actual <= num + 1:
+            pagination = (actual + num + 2)*['']
+            pagination[-1] = paginas
+            pages = range(1, actual+num+1)
+            for i, p in enumerate(pages):
+                pagination[i] = p
+        elif actual >= paginas - num - 1:
+            pagination = (paginas - actual + num + 3)*['']
+            pagination[0] = 1
+            pages = range(actual-num, paginas+1)
+            for i, p in enumerate(pages):
+                pagination[i+2] = p
+        else:
+            pagination = (num*2 + 5)*['']
+            pagination[0] = 1
+            pagination[-1] = paginas
+            pages = range(actual-num, actual+num+1)
+            for i, p in enumerate(pages):
+                pagination[i+2] = p
+    return pagination

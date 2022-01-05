@@ -11,6 +11,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 - Documentación sobre el proyecto, según iss. #19.
 - Popup para indicar errores (iss. #15).
 - Ordenar las tablas pinchando en el título de la columna (iss. #16).
+- Paginación en asientos y cuentas (iss. #11).
 
 
 ## v0.5 -  2021-12-29

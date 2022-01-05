@@ -21,7 +21,7 @@ class IndexView(View):
 class CuentasView(View):
     """Listado de cuentas. Permite añadir una cuenta nueva."""
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, pag=1, *args, **kwargs):
         lista_cuentas = Cuenta.objects.all().order_by('num')
 
         # Si no existe el filtro lo crea, con los valores por defecto
@@ -42,9 +42,25 @@ class CuentasView(View):
         orden = '-' if not filtro.ascendiente else ''
         lista_cuentas = lista_cuentas.order_by(orden+filtro.campo)
 
+        # cálculo de paginación. 10 resultados por página
+        resultados_por_pagina = 25
+        total_paginas = int(len(lista_cuentas) / resultados_por_pagina + 1)
+        pag = total_paginas if pag > total_paginas else pag
+        pag = 1 if pag < 1 else pag
+        num_cuentas = {
+            'from': (pag-1)*resultados_por_pagina,
+            'to': min(pag*resultados_por_pagina, len(lista_cuentas)),
+            'total': len(lista_cuentas),
+        }
+        lista_cuentas = lista_cuentas[num_cuentas['from']:num_cuentas['to']]
+        paginacion = functions.lista_paginas(total_paginas, pag)
+
         context = {
             'lista_cuentas': lista_cuentas,
             'filtro': filtro,
+            'paginacion': paginacion,
+            'pagina_actual': pag,
+            'num_cuentas': num_cuentas,
             }
         return render(request, 'main/cuentas.html', context)
 
@@ -64,7 +80,7 @@ class AsientosView(View):
     simple nuevo.
     """
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, pag=1, *args, **kwargs):
         lista_movimientos = Movimiento.objects.all().order_by('num')
         lista_cuentas = Cuenta.objects.all().order_by('num')
 
@@ -101,6 +117,19 @@ class AsientosView(View):
         orden = '-' if not filtro.ascendiente else ''
         lista_movimientos = lista_movimientos.order_by(orden+filtro.campo)
 
+        # cálculo de paginación. 10 resultados por página
+        resultados_por_pagina = 25
+        total_paginas = int(len(lista_movimientos) / resultados_por_pagina + 1)
+        pag = total_paginas if pag > total_paginas else pag
+        pag = 1 if pag < 1 else pag
+        num_movimientos = {
+            'from': (pag-1)*resultados_por_pagina,
+            'to': min(pag*resultados_por_pagina, len(lista_movimientos)),
+            'total': len(lista_movimientos),
+        }
+        lista_movimientos = lista_movimientos[num_movimientos['from']:num_movimientos['to']]
+        paginacion = functions.lista_paginas(total_paginas, pag)
+
         context = {
             'lista_movimientos': lista_movimientos,
             'lista_cuentas': lista_cuentas,
@@ -108,6 +137,9 @@ class AsientosView(View):
             'total_debe': total_debe,
             'total_haber': total_haber,
             'total': total,
+            'paginacion': paginacion,
+            'pagina_actual': pag,
+            'num_movimientos': num_movimientos,
             }
         return render(request, 'main/asientos.html', context)
 

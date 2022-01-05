@@ -108,44 +108,86 @@
 </div>
 
 {% if lista_cuentas %}
-    <table class="table is-striped is-narrow is-hoverable">
 
-      <thead>
+  <table class="table is-striped is-narrow is-hoverable">
+
+    <thead>
+      <tr>
+        <th>
+          <a id="num_titulo" href="{% url 'main:cambiar_orden' 'cuentas' 'num' %}"> Núm </a>
+          {% if filtro.campo == 'num' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+        <th>
+          <a id="nombre_titulo" href="{% url 'main:cambiar_orden' 'cuentas' 'nombre' %}"> Cuenta </a>
+          {% if filtro.campo == 'nombre' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for cuenta in lista_cuentas %}
         <tr>
-          <th>
-            <a href="{% url 'main:cambiar_orden' 'cuentas' 'num' %}"> Núm </a>
-            {% if filtro.campo == 'num' %}
-              {% if filtro.ascendiente %}
-                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
-              {% else %}
-                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
-              {% endif %}
-            {% endif %}
-          </th>
-          <th>
-            <a href="{% url 'main:cambiar_orden' 'cuentas' 'nombre' %}"> Cuenta </a>
-            {% if filtro.campo == 'nombre' %}
-              {% if filtro.ascendiente %}
-                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
-              {% else %}
-                <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
-              {% endif %}
-            {% endif %}
-          </th>
+          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
+          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
+          <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
         </tr>
-      </thead>
+      {% endfor %}
+    </tbody>
 
-      <tbody>
-        {% for cuenta in lista_cuentas %}
-          <tr>
-            <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
-            <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
-            <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
-          </tr>
+  </table>
+
+  {% if paginacion %}
+
+  <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap">
+    <nav class="pagination is-small" role="navigation" aria-label="pagination">
+      <ul class="pagination-list">
+        {% for pag in paginacion %}
+          <li>
+            {% if pag %}
+              <a href="{% url 'main:cuentas_pagina' pag %}" class="pagination-link{% if pag == pagina_actual %} is-current{% endif %}" aria-label="Goto page {{ pag }}">{{ pag }}</a>
+            {% else %}
+              <span class="pagination-ellipsis">&hellip;</span>
+            {% endif %}
+          </li>
         {% endfor %}
-      </tbody>
+        <li>
+          <a class="pagination-next" href="{% url 'main:cuentas_pagina' pagina_actual|add:'-1' %}">
+            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-left"></span>
+          </a>
+        </li>
+        <li>
+          <a class="pagination-previous" href="{% url 'main:cuentas_pagina' pagina_actual|add:'1' %}">
+            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-right"></span>
+          </a>
+        </li>
+        <li class="m-2">
+          Página {{ pagina_actual}}, del {{ num_cuentas.from|add:'1' }} al {{ num_cuentas.to }} de {{ num_cuentas.total }} cuentas.
+        </li>
+      </ul>
+    </nav>
+    <div class="m-2">
+      Mostrar:
+      <a>10</a>
+      <a>25</a>
+      <a>100</a>
+      <a>200</a>
+    </div>
 
-    </table>
+  </div>
+  {% endif %}
+
 
 {% else %}
     <p>No hay ninguna cuenta todavía.</p>

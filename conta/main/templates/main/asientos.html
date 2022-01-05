@@ -125,7 +125,7 @@
     <thead>
       <tr>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'num' %}"> Núm </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'num' %}" id="num_titulo"> Núm </a>
           {% if filtro.campo == 'num' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -135,7 +135,7 @@
           {% endif %}
         </th>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'fecha' %}"> Fecha </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'fecha' %}" id="fecha_titulo"> Fecha </a>
           {% if filtro.campo == 'fecha' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -145,7 +145,7 @@
           {% endif %}
         </th>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'descripcion' %}"> Descripción </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'descripcion' %}" id="descripcion_titulo"> Descripción </a>
           {% if filtro.campo == 'descripcion' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -155,7 +155,7 @@
           {% endif %}
         </th>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'debe' %}"> Debe </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'debe' %}" id="debe_titulo"> Debe </a>
           {% if filtro.campo == 'debe' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -165,7 +165,7 @@
           {% endif %}
         </th>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'haber' %}"> Haber </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'haber' %}" id="haber_titulo"> Haber </a>
           {% if filtro.campo == 'haber' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -175,7 +175,7 @@
           {% endif %}
         </th>
         <th>
-          <a href="{% url 'main:cambiar_orden' 'asientos' 'cuenta' %}"> Cuenta </a>
+          <a href="{% url 'main:cambiar_orden' 'asientos' 'cuenta' %}" id="cuenta_titulo"> Cuenta </a>
           {% if filtro.campo == 'cuenta' %}
             {% if filtro.ascendiente %}
               <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
@@ -233,6 +233,47 @@
       <td>{{ total|floatformat:"2g" }}</td>
     </tbody>
   </table>
+
+  {% if paginacion %}
+
+  <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap">
+    <nav class="pagination is-small" role="navigation" aria-label="pagination">
+      <ul class="pagination-list">
+        {% for pag in paginacion %}
+          <li>
+            {% if pag %}
+              <a href="{% url 'main:asientos_pagina' pag %}" class="pagination-link{% if pag == pagina_actual %} is-current{% endif %}" aria-label="Goto page {{ pag }}">{{ pag }}</a>
+            {% else %}
+              <span class="pagination-ellipsis">&hellip;</span>
+            {% endif %}
+          </li>
+        {% endfor %}
+        <li>
+          <a class="pagination-next" href="{% url 'main:asientos_pagina' pagina_actual|add:'-1' %}">
+            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-left"></span>
+          </a>
+        </li>
+        <li>
+          <a class="pagination-previous" href="{% url 'main:asientos_pagina' pagina_actual|add:'1' %}">
+            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-right"></span>
+          </a>
+        </li>
+        <li class="m-2">
+          Página {{ pagina_actual}}, del {{ num_movimientos.from|add:'1' }} al {{ num_movimientos.to }} de {{ num_movimientos.total }} movimientos.
+        </li>
+      </ul>
+    </nav>
+    <div class="m-2">
+      Mostrar:
+      <a>10</a>
+      <a>25</a>
+      <a>100</a>
+      <a>200</a>
+    </div>
+
+  </div>
+  {% endif %}
+
 
 {% else %}
     <p>No hay ningún asiento.</p>

@@ -4,8 +4,8 @@ from . import views
 
 app_name = 'main'
 urlpatterns = [
-    path('', views.IndexView.as_view(), name='index'),
     path('cuentas/', views.CuentasView.as_view(), name='cuentas'),
+    path('cuentas/pag/<int:pag>/', views.CuentasView.as_view(), name='cuentas_pagina'),
     path('modificar/cuenta/<int:num>/', views.ModificarCuentaView.as_view(), name='modificar_cuenta'),
     path('borrar/cuenta/<slug:pk>/', views.borrar_cuenta, name='borrar_cuenta'),
     path('cargar/cuentas/', views.CargarCuentas.as_view(), name='cargar_cuentas'),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('cuentas/borrar/filtro/', views.borrar_filtro_cuentas, name='borrar_filtro_cuentas'),
 
     path('asientos/', views.AsientosView.as_view(), name='asientos'),
+    path('asientos/pag/<int:pag>', views.AsientosView.as_view(), name='asientos_pagina'),
     path('modificar/asiento/<int:num>/', views.ModificarAsientoView.as_view(), name='modificar_asiento'),
     path('anadir/movimiento/<int:num>/<slug:fecha>/', views.anadir_movimiento, name='anadir_movimiento'),
     path('borrar/movimiento/<int:pk>/<slug:pagina>/', views.borrar_movimiento, name='borrar_movimiento'),
@@ -21,5 +22,6 @@ urlpatterns = [
     path('filtro/asientos/', views.FiltroAsientosView.as_view(), name='filtro_asientos'),
     path('asientos/borrar/filtro/', views.borrar_filtro_asientos, name='borrar_filtro_asientos'),
 
+    path('', views.IndexView.as_view(), name='index'),
     path('cambiar/orden/<str:tipo>/<str:campo>/', views.cambiar_orden, name='cambiar_orden'),
 ]
