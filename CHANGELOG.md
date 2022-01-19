@@ -12,6 +12,11 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 - Popup para indicar errores (iss. #15).
 - Ordenar las tablas pinchando en el título de la columna (iss. #16).
 - Paginación en asientos y cuentas (iss. #11).
+- Nueva pestaña de informes, con capacidad para generar informes de una cuenta o grupo de cuentas (iss #5).
+- Campo etiqueta en las cuentas, para poder generar los informes.
+
+### Cambiado
+- Creación de cuentas, y filtro de cuentas, se puede también añadir etiquetas.
 
 
 ## v0.5 -  2021-12-29

@@ -20,21 +20,18 @@
 	<div class="container">
 
 		<!-- hero: https://bulma.io/documentation/layout/hero/ -->
-		<section class="hero is-success is-small">
+		<section class="hero is-primary is-small">
 			<div class="hero-body">
-        <p class="title has-text-centered">Contabilidad personal</p>
+        <p class="title has-text-centered"><a href="{% url 'main:index' %}">Contabilidad personal</a></p>
 			</div>
       <div class="tabs is-centered is-fullwidth is-boxed">
         <ul>
-          {% block tabs %}
-          <li class="is-active"><a href="{% url 'main:index' %}">Página principal</a></li>
-          <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-          <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
-          {% endblock %}
+          <li {% if tab == "cuentas" %} class="is-active"{% endif %}><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
+          <li {% if tab == "asientos" %} class="is-active"{% endif %}><a href="{% url 'main:asientos' %}">Asientos</a></li>
+          <li {% if tab == "informes" %} class="is-active"{% endif %}><a href="{% url 'main:informes' %}">Informes</a></li>
         </ul>
       </div>
 		</section>
-
 
 		<div class="columns">
 			<div class="column is-narrow m-3">
@@ -63,16 +60,16 @@
 	</div>
 </body>
 
-<div {% if mensaje %} class="modal is-active" {% else %} class="modal" {% endif %}>
+<div class="modal{% if aviso %} is-active{% endif %}">
   <div class="modal-background"></div>
   <div class="modal-content">
     <div class="message is-danger">
       <div class="message-header">
         <p>Aviso</p>
-        <a href="{{ nuevo_url }}"><button class="delete" aria-label="delete"></button></a>
+        <a href="{{ aviso.nuevo_url }}"><button class="delete" aria-label="delete"></button></a>
       </div>
       <div class="message-body">
-        {{ mensaje }}
+        {{ aviso.mensaje|linebreaks }}
       </div>
     </div>
   </div>

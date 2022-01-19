@@ -1,12 +1,5 @@
 {% extends "base_generic.html" %}
 
-{% block tabs %}
-    <li><a href="{% url 'main:index' %}">Página principal</a></li>
-    <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-    <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
-{% endblock %}
-
-
 {% block content %}
 
 <div class="is-flex is-justify-content-space-between m-4">
@@ -32,13 +25,15 @@
       <tr>
         <th> Núm </th>
         <th> Cuenta </th>
+        <th> Etiqueta </th>
       </tr>
     </thead>
 
     <tbody>
         <tr>
-          <td> <input class="input is-small" type="number" id="num" name="num" size=5 readonly value={{ cuenta.num }}></td>
-          <td> <input class="input is-small" type="text" id="nombre" name="nombre" required value="{{ cuenta.nombre }}"></td>
+          <td> <input class="input is-small" type="number" id="num" name="num" size=5 readonly value={{ cuenta.num }} title="Número de la cuenta"></td>
+          <td> <input class="input is-small" type="text" id="nombre" name="nombre" required value="{{ cuenta.nombre }}" title="Nombre de la cuenta"></td>
+          <td> <input class="input is-small" type="text" id="etiqueta" name="etiqueta" value="{{ cuenta.etiqueta.all|join:', '}}" title="Entra las etiquetas separadas por comas"></td>
           <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
         </tr>
     </tbody>

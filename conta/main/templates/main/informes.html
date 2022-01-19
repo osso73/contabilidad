@@ -1,0 +1,125 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+
+{% block aside %}
+<div class="panel">
+  <p class="panel-heading">
+    Parámetros
+  </p>
+
+  <div class="panel-block">
+    <form action="{% url 'main:informes' %}" method="post" id="parametros">
+      {% csrf_token %}
+      <ul>
+        <li><input class="input is-small" type="date" title="Entra la fecha inicial" id="f_fecha_inicial" name="f_fecha_inicial" size=20 placeholder="Fecha inicial" value="{{ filtro.f_fecha_inicial }}"></li>
+        <li><input class="input is-small" type="date" title="Entra la fecha final" id="f_fecha_final" name="f_fecha_final" size=20 placeholder="Fecha final" value="{{ filtro.f_fecha_final }}"></li>
+        <li>
+          <div class="select is-small">
+            <select id="f_tipo" name="f_tipo" title="Selecciona el tipo de informe" >
+              <option value="diario" {% if filtro.f_tipo == 'diario' %}selected{% endif %}>diario</option>
+              <option value="semanal" {% if filtro.f_tipo == 'semanal' %}selected{% endif %}>semanal</option>
+              <option value="mensual" {% if filtro.f_tipo == 'mensual' %}selected{% endif %}>mensual</option>
+              <option value="trimestral" {% if filtro.f_tipo == 'trimestral' %}selected{% endif %}>trimestral</option>
+              <option value="anual" {% if filtro.f_tipo == 'anual' %}is-selected{% endif %}>anual</option>
+            </select>
+          </div>
+        </li>
+        <li><input class="input is-small" type="text" title="Entra el número de cuenta sobre el que hacer el informe" id="f_cuenta" name="f_cuenta" list="cuentas_list" size=20 placeholder="Cuenta" value="{{ filtro.f_cuenta }}"></li>
+        <li><input class="input is-small" type="text" title="Entra la etiqueta para generar el informe sobre un número de cuentas" id="f_etiqueta" list="etiquetas_list" name="f_etiqueta" size=20 placeholder="Etiqueta" value="{{ filtro.f_etiqueta }}"></li>
+        <li class="has-text-centered">
+          <button type="submit" class="button is-small is-success is-outlined m-2" name="accion_filtro" value="aplicar" title="Generar informe">
+             <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+          <button type="reset" class="button is-small is-danger is-outlined m-2" name="accion_filtro" value="borrar" title="Limpiar parámetros">
+             <span class="icon iconify" data-icon="mdi-close-circle"></span>
+          </button>
+        </li>
+      </ul>
+    </form>
+  </div>
+</div>
+
+<datalist id="tipos">
+  <option value="diario">
+  <option value="semanal">
+  <option value="mensual">
+  <option value="trimestral">
+  <option value="anual">
+</datalist>
+
+<datalist id="cuentas_list">
+  {% for cuenta in lista_cuentas %}
+    <option value="{{ cuenta }}">
+  {% endfor %}
+</datalist>
+
+<datalist id="etiquetas_list">
+  {% for etiqueta in lista_etiquetas %}
+    <option value="{{ etiqueta }}">
+  {% endfor %}
+</datalist>
+
+{% endblock aside %}
+
+
+
+{% block content %}
+
+<h1 class="has-text-centered mt-2"> {{ titulo }} </h1>
+<h4 class="has-text-centered">{{ subtitulo }} </h4>
+
+{% if not df.empty %}
+
+<div class="has-text-centered">
+  {{ graph|safe }}
+</div>
+
+<div class="section ">
+  <table class="table is-striped is-narrow is-hoverable is-danger">
+  <thead>
+    <tr>
+      <th>{{ df.columns.0|capfirst }}</th>
+      <th class="has-text-right">Debe</th>
+      <th class="has-text-right">Haber</th>
+      <th class="has-text-right">Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for idx, row in df.iterrows %}
+      <tr>
+        <td> {{ row.0 }} </td>
+        <td class="has-text-right"> {% if row.debe == 0 %} - {% else %} {{ row.debe|floatformat:"2g" }} {% endif %} </td>
+        <td class="has-text-right"> {% if row.haber == 0 %} - {% else %} {{ row.haber|floatformat:"2g" }} {% endif %} </td>
+        <td class="has-text-right"> {% if row.total == 0 %} - {% else %} {{ row.total|floatformat:"2g" }} {% endif %} </td>
+      </tr>
+    {% endfor %}
+    <tr class="is-selected">
+      <td> <b>TOTALES</b> </td>
+      <td class="has-text-right"><b>{{ df.debe.sum|floatformat:"2g" }}</b></td>
+      <td class="has-text-right"><b>{{ df.haber.sum|floatformat:"2g" }}</b></td>
+      <td class="has-text-right"><b>{{ df.total.sum|floatformat:"2g" }}</b></td>
+    </tr>
+  </tbody>
+
+  </table>
+</div>
+
+{% else %}
+<div>
+  <article class="message">
+    <div class="message-header">
+      <p>Sin movimientos</p>
+    </div>
+    <div class="message-body">
+      No hay ningún movimiento en la selección. Selecciona en el panel de la izquierda la(s) cuenta(s) y el período para los que quieres generar el informe.
+    </div>
+  </article>
+
+</div>
+{% endif %}
+
+
+
+{% endblock %}

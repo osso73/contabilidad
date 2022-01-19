@@ -8,3 +8,4 @@ omit =
    *wsgi.py
    manage.py
    *asgi.py
+   main/tests/*

@@ -1,12 +1,5 @@
 {% extends "base_generic.html" %}
 
-{% block tabs %}
-    <li><a href="{% url 'main:index' %}">Página principal</a></li>
-    <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-    <li class="is-active"><a href="{% url 'main:asientos' %}">Asientos</a></li>
-{% endblock %}
-
-
 {% block content %}
 
 <div class="is-flex is-justify-content-space-between m-4">

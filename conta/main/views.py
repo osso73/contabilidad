@@ -1,4 +1,5 @@
 import datetime
+import pandas as pd
 
 from django.shortcuts import render
 from django.views import View
@@ -6,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models.deletion import ProtectedError
 
-from main.models import Cuenta, Movimiento, FiltroMovimientos, FiltroCuentas
+from main.models import Etiqueta, Cuenta, Movimiento, FiltroMovimientos, FiltroCuentas
 import main.functions as functions
 
 # Create your views here.
@@ -14,7 +15,7 @@ import main.functions as functions
 class IndexView(View):
     """Página principal"""
     def get(self, request, *args, **kwargs):
-        context = dict()
+        context = { 'tab': 'principal' }
         return render(request, 'main/index.html', context)
 
 
@@ -22,7 +23,8 @@ class CuentasView(View):
     """Listado de cuentas. Permite añadir una cuenta nueva."""
 
     def get(self, request, pag=1, *args, **kwargs):
-        lista_cuentas = Cuenta.objects.all().order_by('num')
+        lista_cuentas = Cuenta.objects.all()
+        lista_etiquetas = Etiqueta.objects.all().order_by('id')
 
         # Si no existe el filtro lo crea, con los valores por defecto
         filtro = FiltroCuentas.objects.all()
@@ -37,6 +39,8 @@ class CuentasView(View):
             lista_cuentas = lista_cuentas.filter(pk=filtro.num)
         if filtro.nombre:
             lista_cuentas = lista_cuentas.filter(nombre__contains=filtro.nombre)
+        if filtro.etiqueta:
+            lista_cuentas = lista_cuentas.filter(etiqueta=filtro.etiqueta)
 
         # aplica orden
         orden = '-' if not filtro.ascendiente else ''
@@ -56,7 +60,9 @@ class CuentasView(View):
         paginacion = functions.lista_paginas(total_paginas, pag)
 
         context = {
+            'tab': 'cuentas',
             'lista_cuentas': lista_cuentas,
+            'lista_etiquetas': lista_etiquetas,
             'filtro': filtro,
             'paginacion': paginacion,
             'pagina_actual': pag,
@@ -71,6 +77,12 @@ class CuentasView(View):
             nombre = request.POST['nombre']
         )
         nueva_cuenta.save()
+
+        e = request.POST['etiqueta']
+        if len(e):
+            nombres_etiquetas = e.split(', ')
+            nueva_cuenta.etiqueta.set(nombres_etiquetas)
+            nueva_cuenta.save()
 
         return HttpResponseRedirect(reverse('main:cuentas'))
 
@@ -117,7 +129,7 @@ class AsientosView(View):
         orden = '-' if not filtro.ascendiente else ''
         lista_movimientos = lista_movimientos.order_by(orden+filtro.campo)
 
-        # cálculo de paginación. 10 resultados por página
+        # cálculo de paginación. 25 resultados por página
         resultados_por_pagina = 25
         total_paginas = int(len(lista_movimientos) / resultados_por_pagina + 1)
         pag = total_paginas if pag > total_paginas else pag
@@ -131,6 +143,7 @@ class AsientosView(View):
         paginacion = functions.lista_paginas(total_paginas, pag)
 
         context = {
+            'tab': 'asientos',
             'lista_movimientos': lista_movimientos,
             'lista_cuentas': lista_cuentas,
             'filtro': filtro,
@@ -171,6 +184,7 @@ class ModificarAsientoView(View):
             movimiento.fecha = fecha_movimiento
 
         context = {
+            'tab': 'asientos',
             'num_asiento': num,
             'lista_movimientos': lista_movimientos,
             'lista_cuentas': lista_cuentas
@@ -197,13 +211,25 @@ class ModificarAsientoView(View):
 
 class ModificarCuentaView(View):
     def get(self, request, num):
-        context = { 'cuenta': Cuenta.objects.get(pk=num) }
+        context = {
+            'tab': 'cuentas',
+            'cuenta': Cuenta.objects.get(pk=num),
+         }
         return render(request, 'main/modificar_cuenta.html', context)
 
 
     def post(self, request, *args, **kwargs):
         cuenta = Cuenta.objects.get(pk=request.POST['num'])
         cuenta.nombre = request.POST['nombre']
+        etiquetas = request.POST['etiqueta'].split(', ')
+
+        # validación etiquetas
+        lista_etiquetas = Etiqueta.objects.all()
+        etiquetas_sin_error = list()
+        for e in etiquetas:
+            if lista_etiquetas.filter(id=e):
+                etiquetas_sin_error.append(e)
+        cuenta.etiqueta.set(etiquetas_sin_error)
         cuenta.save()
 
         return HttpResponseRedirect(reverse('main:cuentas'))
@@ -239,10 +265,14 @@ def borrar_cuenta(request, pk):
         cuenta.delete()
 
     except ProtectedError as e:
-        mensaje = "Esta cuenta no se puede borrar, porque tiene movimientos asociados."
+        aviso = {
+            'mensaje': "Esta cuenta no se puede borrar, porque tiene movimientos asociados.",
+            'nuevo_url': reverse('main:cuentas'),
+        }
+
         context = {
-            'mensaje': mensaje,
-            'nuevo_url': reverse('main:cuentas')
+            'tab': 'cuentas',
+            'aviso': aviso,
             }
         return render(request, 'main/cuentas.html', context)
 
@@ -259,7 +289,10 @@ class CargarCuentas(View):
 
         cuentas_anadidas = functions.crear_cuentas(datos_excel, sobreescribir)
 
-        context = { 'cuentas_anadidas': cuentas_anadidas }
+        context = {
+            'tab': 'cuentas',
+            'cuentas_anadidas': cuentas_anadidas,
+         }
 
         return render(request, 'main/cargar_cuentas.html', context)
 
@@ -274,6 +307,7 @@ class CargarAsientos(View):
         movimientos_anadidos, errores_simple, errores_compleja = functions.crear_asientos(simple, compleja)
 
         context = {
+            'tab': 'asientos',
             'movimientos_anadidos': movimientos_anadidos,
             'errores_simple': errores_simple,
             'errores_compleja': errores_compleja,
@@ -289,10 +323,19 @@ class FiltroCuentasView(View):
 
     def post(self, request, *args, **kwargs):
         filtro = FiltroCuentas.objects.all()[0]
-        filtro.num = request.POST['f_num']
-        filtro.nombre = request.POST['f_nombre']
 
-        filtro.save()
+        if request.POST['accion_filtro'] == 'aplicar':
+            filtro.num = request.POST['f_num']
+            filtro.nombre = request.POST['f_nombre']
+            filtro.etiqueta = request.POST['f_etiqueta']
+            filtro.save()
+        elif request.POST['accion_filtro'] == 'borrar':
+            filtro.num = ''
+            filtro.nombre = ''
+            filtro.etiqueta = ''
+            filtro.save()
+        else:
+            pass
 
         return HttpResponseRedirect(reverse('main:cuentas'))
 
@@ -302,39 +345,26 @@ class FiltroAsientosView(View):
         return HttpResponseRedirect(reverse('main:asientos'))
 
     def post(self, request, *args, **kwargs):
-        filtro = FiltroMovimientos.objects.all()[0]
-        filtro.fecha_inicial = request.POST['f_fecha_inicial']
-        filtro.fecha_final = request.POST['f_fecha_final']
-        filtro.descripcion = request.POST['f_descripcion']
-        filtro.cuenta = request.POST['f_cuenta'].split(':')[0]
-        filtro.asiento = request.POST['f_asiento']
-
-        filtro.save()
+        if request.POST['accion_filtro'] == 'aplicar':
+            filtro = FiltroMovimientos.objects.all()[0]
+            filtro.fecha_inicial = request.POST['f_fecha_inicial']
+            filtro.fecha_final = request.POST['f_fecha_final']
+            filtro.descripcion = request.POST['f_descripcion']
+            filtro.cuenta = request.POST['f_cuenta'].split(':')[0]
+            filtro.asiento = request.POST['f_asiento']
+            filtro.save()
+        elif request.POST['accion_filtro'] == 'borrar':
+            filtro = FiltroMovimientos.objects.all()[0]
+            filtro.fecha_inicial = ''
+            filtro.fecha_final = ''
+            filtro.descripcion = ''
+            filtro.cuenta = ''
+            filtro.asiento = ''
+            filtro.save()
+        else:
+            pass
 
         return HttpResponseRedirect(reverse('main:asientos'))
-
-
-def borrar_filtro_cuentas(request):
-    filtro = FiltroCuentas.objects.all()[0]
-    filtro.num = ''
-    filtro.nombre = ''
-
-    filtro.save()
-
-    return HttpResponseRedirect(reverse('main:cuentas'))
-
-
-def borrar_filtro_asientos(request):
-    filtro = FiltroMovimientos.objects.all()[0]
-    filtro.fecha_inicial = ''
-    filtro.fecha_final = ''
-    filtro.descripcion = ''
-    filtro.cuenta = ''
-    filtro.asiento = ''
-
-    filtro.save()
-
-    return HttpResponseRedirect(reverse('main:asientos'))
 
 
 def cambiar_orden(request, tipo, campo):
@@ -354,3 +384,59 @@ def cambiar_orden(request, tipo, campo):
     filtro.save()
 
     return HttpResponseRedirect(reverse('main:'+tipo))
+
+
+def gestionar_etiqueta(request):
+    accion = request.POST['accion_etiqueta']
+    id = request.POST['e_id']
+    nombre = request.POST['e_etiqueta']
+
+    if accion == 'anadir':
+        Etiqueta.objects.create(
+            id = id,
+            nombre = nombre,
+        )
+    elif accion == 'borrar':
+        e = Etiqueta.objects.filter(id=id)
+        if len(e):
+            e[0].delete()
+    else:
+        pass
+
+    return HttpResponseRedirect(reverse('main:cuentas'))
+
+
+class InformesView(View):
+    """Página principal"""
+    def get(self, request, *args, **kwargs):
+        lista_cuentas = Cuenta.objects.all().order_by('num')
+        lista_etiquetas = Etiqueta.objects.all().order_by('id')
+
+        context = {
+            'tab': 'informes',
+            'lista_cuentas': lista_cuentas,
+            'lista_etiquetas': lista_etiquetas,
+            'df': {'empty': True },
+            }
+        return render(request, 'main/informes.html', context)
+
+    def post(self, request):
+        lista_cuentas = Cuenta.objects.all().order_by('num')
+        lista_etiquetas = Etiqueta.objects.all().order_by('id')
+        movimientos = Movimiento.objects.all()
+
+        movimientos = functions.filtra_movimientos(request.POST, movimientos)
+        df = functions.genera_informe(request.POST['f_tipo'], movimientos)
+        titulo, subtitulo = functions.titulo_informe(request.POST)
+        graph = functions.grafico_informe(df)
+        context = {
+            'tab': 'informes',
+            'lista_cuentas': lista_cuentas,
+            'lista_etiquetas': lista_etiquetas,
+            'titulo': titulo,
+            'subtitulo': subtitulo,
+            'df': df,
+            'filtro': request.POST,
+            'graph': graph,
+            }
+        return render(request, 'main/informes.html', context)

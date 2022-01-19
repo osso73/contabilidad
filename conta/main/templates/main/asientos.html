@@ -1,12 +1,35 @@
 {% extends "base_generic.html" %}
 
-{% block tabs %}
-    <li><a href="{% url 'main:index' %}">Página principal</a></li>
-    <li><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-    <li class="is-active"><a href="{% url 'main:asientos' %}">Asientos</a></li>
-{% endblock %}
-
 {% block aside %}
+
+<div class="panel">
+  <p class="panel-heading">
+    Filtro
+  </p>
+
+  <form action="{% url 'main:filtro_asientos' %}" method="post" id="filtro">
+
+    <div class="panel-block">
+      {% csrf_token %}
+      <ul>
+        <li><input class="input is-small" type="date" title="Entra la fecha inicial" id="f_fecha_inicial" name="f_fecha_inicial" size=20 placeholder="Fecha inicial" value={{ filtro.fecha_inicial }}></li>
+        <li><input class="input is-small" type="date" title="Entra la fecha final" id="f_fecha_final" name="f_fecha_final" size=20 placeholder="Fecha final" value={{ filtro.fecha_final }}></li>
+        <li><input class="input is-small" type="text" title="Entra palabra(s) de la descripción" id="f_descripcion" name="f_descripcion" size=20 placeholder="Descripción" value={{ filtro.descripcion }}></li>
+        <li><input class="input is-small" type="text" title="Entra el número de cuenta" id="f_cuenta" name="f_cuenta" list="cuentas" size=20 placeholder="Cuenta" value={{ filtro.cuenta }}></li>
+        <li><input class="input is-small" type="text" title="Entra el número de asiento" id="f_asiento" name="f_asiento" size=20 placeholder="Asiento" value={{ filtro.asiento }} ></li>
+        <li>
+          <button type="submit" class="button is-small is-success is-outlined m-2" name="accion_filtro" value="aplicar" title="Aplicar filtro">
+             <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+          <button type="submit" class="button is-small is-danger is-outlined m-2" name="accion_filtro" value="borrar" title="Limpiar filtro">
+             <span class="icon iconify" data-icon="mdi-close-circle"></span>
+          </button>
+        </li>
+    </ul>
+    </div>
+  </form>
+</div>
+
 <div class="panel">
   <p class="panel-heading">
     Cargar asientos
@@ -37,37 +60,6 @@
 
   </div>
 </div>
-
-<div class="panel">
-  <p class="panel-heading">
-    Filtro
-  </p>
-
-  <form action="{% url 'main:filtro_asientos' %}" method="post" id="filtro">
-
-    <div class="panel-block">
-      {% csrf_token %}
-      <ul>
-        <li><input class="input is-small" type="date" title="Entra la fecha inicial" id="f_fecha_inicial" name="f_fecha_inicial" size=20 placeholder="Fecha inicial" value={{ filtro.fecha_inicial }}></li>
-        <li><input class="input is-small" type="date" title="Entra la fecha final" id="f_fecha_final" name="f_fecha_final" size=20 placeholder="Fecha final" value={{ filtro.fecha_final }}></li>
-        <li><input class="input is-small" type="text" title="Entra palabra(s) de la descripción" id="f_descripcion" name="f_descripcion" size=20 placeholder="Descripción" value={{ filtro.descripcion }}></li>
-        <li><input class="input is-small" type="text" title="Entra el número de cuenta" id="f_cuenta" name="f_cuenta" list="cuentas" size=20 placeholder="Cuenta" value={{ filtro.cuenta }}></li>
-        <li><input class="input is-small" type="text" title="Entra el número de asiento" id="f_asiento" name="f_asiento" size=20 placeholder="Asiento" value={{ filtro.asiento }} ></li>
-        <li>
-          <button type="submit" class="button is-small is-success is-outlined m-2">
-             <span class="icon iconify" data-icon="mdi-check"></span>
-          </button>
-          <a href="{% url 'main:borrar_filtro_asientos' %}" class="button is-small is-danger is-outlined m-2" id="button_clear">
-            <span class="icon iconify" data-icon="mdi-close-circle"></span>
-          </a>
-        </li>
-    </ul>
-    </div>
-
-  </form>
-
-</div>
-
 
 {% endblock aside %}
 
@@ -109,14 +101,15 @@
 
 
         </table>
-        <datalist id="cuentas">
-          {% for cuenta in lista_cuentas %}
-            <option value="{{ cuenta }}">
-          {% endfor %}
-        </datalist>
     </form>
   </div>
 </div>
+
+<datalist id="cuentas">
+  {% for cuenta in lista_cuentas %}
+    <option value="{{ cuenta }}">
+  {% endfor %}
+</datalist>
 
 
 {% if lista_movimientos %}
@@ -194,18 +187,14 @@
           <td> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.fecha }}</a></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.descripcion }}</a></td>
           <td class="has-text-right">
-            {% if movimiento.debe == 0 %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">-</a>
-            {% else %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.debe|floatformat:"2g" }}</a>
-            {% endif %}
+            <a href="{% url 'main:modificar_asiento' movimiento.num %}">
+              {% if movimiento.debe == 0 %} - {% else %} {{ movimiento.debe|floatformat:"2g" }} {% endif %}
+            </a>
           </td>
           <td class="has-text-right">
-            {% if movimiento.haber == 0 %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">-</a>
-            {% else %}
-              <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.haber|floatformat:"2g" }}</a>
-            {% endif %}
+            <a href="{% url 'main:modificar_asiento' movimiento.num %}">
+              {% if movimiento.haber == 0 %} - {% else %} {{ movimiento.haber|floatformat:"2g" }} {% endif %}
+            </a>
           <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.cuenta }}</a></td>
           <td>
             <a href="{% url 'main:modificar_asiento' movimiento.num %}">

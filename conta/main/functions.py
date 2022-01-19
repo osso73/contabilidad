@@ -2,10 +2,13 @@ import datetime
 import openpyxl
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from io import StringIO
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from main.models import Cuenta, Movimiento
+from main.models import Etiqueta, Cuenta, Movimiento
 
 
 def extraer_cuentas(file):
@@ -316,3 +319,117 @@ def lista_paginas(paginas, actual, num=3):
             for i, p in enumerate(pages):
                 pagination[i+2] = p
     return pagination
+
+
+def filtra_movimientos(filtro, movimientos):
+    f_inicial = filtro['f_fecha_inicial']
+    f_final = filtro['f_fecha_final']
+    cuenta = filtro['f_cuenta'].split(':')[0]
+    etiqueta = filtro['f_etiqueta']
+
+    if f_inicial:
+        movimientos = movimientos.filter(fecha__gte=f_inicial)
+    if f_final:
+        movimientos = movimientos.filter(fecha__lte=f_final)
+    if cuenta:
+        movimientos = movimientos.filter(cuenta__num=cuenta)
+    elif etiqueta:   # solo aplica si la cuenta está vacía.
+        movimientos = movimientos.filter(cuenta__etiqueta=etiqueta)
+
+    return movimientos
+
+
+def genera_informe(tipo, movimientos):
+    # si no hay movimientos devuelve la variable indicando que está vacío
+    if not movimientos:
+        return {'empty': True }
+
+    MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    TRIMESTRES = ['1r trimestre', '2o trimestre', '3r trimestre', '4o trimestre']
+    # transforma registros base de datos en pandas.DataFrame
+    df = pd.DataFrame(movimientos.values())
+    df.fecha = pd.to_datetime(df.fecha)
+    df.debe = df.debe.astype('float')
+    df.haber = df.haber.astype('float')
+
+    # aplica transformación
+    if tipo == 'diario':
+        informe = df.groupby(df.fecha).sum().reset_index()
+        informe.fecha = informe.fecha.dt.date
+
+    elif tipo == 'semanal':
+        informe = df.groupby(df.fecha.dt.week).sum().reset_index()
+        informe.rename(columns={'fecha': 'semana'}, inplace=True)
+        informe.semana = [ f'Semana {m:d}' for m in informe.semana ]
+
+    elif tipo == 'mensual':
+        informe = df.groupby(df.fecha.dt.month).sum().reset_index()
+        informe.rename(columns={'fecha': 'mes'}, inplace=True)
+        informe.mes = [ MESES[m-1] for m in informe.mes ]
+
+    elif tipo == 'trimestral':
+        informe = df.groupby(df.fecha.dt.quarter).sum().reset_index()
+        informe.rename(columns={'fecha': 'trimestre'}, inplace=True)
+        informe.trimestre = [ TRIMESTRES[m-1] for m in informe.trimestre ]
+
+    elif tipo == 'anual':
+        informe = df.groupby(df.fecha.dt.year).sum().reset_index()
+        informe.fecha = [ f'{a:d}' for a in informe.fecha ]  # transforma a int
+        informe.rename(columns={'fecha': 'año'}, inplace=True)
+
+    else:
+        return None   # error, no debería pasar (cambiar por algún raise?)
+
+    informe = informe.drop(columns=['id', 'num'])
+    informe['total'] = informe.haber - informe.debe
+
+    return informe
+
+def titulo_informe(filtro):
+    f_inicial = filtro['f_fecha_inicial']
+    f_final = filtro['f_fecha_final']
+    cuenta = filtro['f_cuenta'].split(':')[0]
+    etiqueta = filtro['f_etiqueta']
+    tipo = filtro['f_tipo']
+
+    if cuenta:
+        nombre_cuenta = Cuenta.objects.get(num=cuenta)
+        titulo = f'Cuenta {nombre_cuenta}'
+    elif etiqueta:
+        nombre_etiqueta = Etiqueta.objects.get(id=etiqueta)
+        titulo = f'Cuentas del tipo: {nombre_etiqueta.nombre}'
+    else:
+        titulo = 'Todas las cuentas'
+
+    subtitulo = f'Informe {tipo}'
+    if f_inicial:
+        subtitulo += f', desde {f_inicial}'
+        if f_final:
+            subtitulo += f' hasta {f_final}'
+        else:
+            subtitulo += ' hasta el final'
+    elif f_final:
+        subtitulo += f', desde el principio hasta {f_final}'
+    else:
+        subtitulo += ', todas las fechas'
+
+    return titulo, subtitulo
+
+
+def grafico_informe(df):
+    periodo = df.columns[0]
+    df.index = df[periodo]
+    plt.style.use('seaborn')
+    fig, ax = plt.subplots(figsize=(10,5))  # Create a figure and an axes.
+    df.total.plot.bar()
+    ax.set_ylabel('euros')
+
+    imgdata = StringIO()
+
+    fig.savefig(imgdata, format='svg')
+    imgdata.seek(0)
+
+    data = imgdata.getvalue()
+
+
+    return data

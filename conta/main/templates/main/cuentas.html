@@ -1,13 +1,33 @@
 {% extends "base_generic.html" %}
 
-{% block tabs %}
-    <li><a href="{% url 'main:index' %}">Página principal</a></li>
-    <li class="is-active"><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-    <li><a href="{% url 'main:asientos' %}">Asientos</a></li>
-{% endblock %}
-
 
 {% block aside %}
+<div class="panel">
+  <p class="panel-heading">
+    Filtro
+  </p>
+
+  <div class="panel-block">
+    <form action="{% url 'main:filtro_cuentas' %}" method="post" id="filtro">
+      {% csrf_token %}
+      <ul>
+        <li><input class="input is-small" type="text" id="f_num" name="f_num" size=20 placeholder="Núm" value={{ filtro.num }}></li>
+        <li><input class="input is-small" type="text" id="f_nombre" name="f_nombre" size=20 placeholder="Nombre" value={{ filtro.nombre }}></li>
+        <li><input class="input is-small" type="text" id="f_etiqueta" name="f_etiqueta" list="etiquetas_list" size=20 placeholder="Etiqueta" value={{ filtro.etiqueta }}></li>
+        <li>
+          <button type="submit" class="button is-small is-success is-outlined m-2" title="Aplicar filtro" name="accion_filtro" value="aplicar">
+             <span class="icon iconify" data-icon="mdi-check"></span>
+          </button>
+          <button type="submit" class="button is-small is-danger is-outlined m-2" title="Borrar filtro" name="accion_filtro" value="borrar" id="button_clear">
+             <span class="icon iconify" data-icon="mdi-close-circle"></span>
+          </button>
+        </li>
+      </ul>
+    </form>
+  </div>
+
+</div>
+
 <div class="panel">
   <p class="panel-heading">
     Cargar cuentas
@@ -44,22 +64,22 @@
 
 <div class="panel">
   <p class="panel-heading">
-    Filtro
+    Etiquetas
   </p>
 
   <div class="panel-block">
-    <form action="{% url 'main:filtro_cuentas' %}" method="post" id="filtro">
+    <form action="{% url 'main:gestionar_etiqueta' %}" method="post" id="etiquetas">
       {% csrf_token %}
       <ul>
-        <li><input class="input is-small" type="text" id="f_num" name="f_num" size=20 placeholder="Núm" value={{ filtro.num }}></li>
-        <li><input class="input is-small" type="text" id="f_nombre" name="f_nombre" size=20 placeholder="Nombre" value={{ filtro.nombre }}></li>
+        <li><input class="input is-small" type="text" id="e_id" name="e_id" list="etiquetas_list" size=20 placeholder="Etiqueta"></li>
+        <li><input class="input is-small" type="text" id="e_etiqueta" name="e_etiqueta" size=20 placeholder="Texto largo etiqueta"></li>
         <li>
-          <button type="submit" class="button is-small is-success is-outlined m-2">
+          <button type="submit" class="button is-small is-success is-outlined m-2" name="accion_etiqueta" value="anadir" title="Crear etiqueta">
              <span class="icon iconify" data-icon="mdi-check"></span>
           </button>
-          <a href="{% url 'main:borrar_filtro_cuentas' %}" class="button is-small is-danger is-outlined m-2" id="button_clear">
+          <button type="submit" class="button is-small is-danger is-outlined m-2" name="accion_etiqueta" value="borrar" title="Borrar etiqueta">
             <span class="icon iconify" data-icon="mdi-close-circle"></span>
-          </a>
+          </button>
         </li>
       </ul>
     </form>
@@ -86,6 +106,7 @@
           <tr>
             <th> <label for="num" class="label"> Número </label></th>
             <th> <label for="nombre" class="label"> Nombre </label></th>
+            <th> <label for="etiqueta" class="label"> Etiqueta </label></th>
             <th></th>
           </tr>
         </thead>
@@ -94,6 +115,7 @@
           <tr>
             <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
             <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
+            <td> <input class="input is-small is-rounded" type="text" id="etiqueta" name="etiqueta" list="etiquetas_list" required maxlength="100" size=100></td>
             <td> <button type="submit" class="button is-small is-success is-outlined">
                    <span class="icon iconify" data-icon="mdi-check"></span>
                    <span>Añadir</span>
@@ -106,6 +128,12 @@
     </form>
   </div>
 </div>
+
+<datalist id="etiquetas_list">
+  {% for etiqueta in lista_etiquetas %}
+    <option value="{{ etiqueta }}">
+  {% endfor %}
+</datalist>
 
 {% if lista_cuentas %}
 
@@ -133,6 +161,16 @@
             {% endif %}
           {% endif %}
         </th>
+        <th>
+          <a id="etiqueta_titulo" href="{% url 'main:cambiar_orden' 'cuentas' 'etiqueta' %}"> Etiqueta </a>
+          {% if filtro.campo == 'etiqueta' %}
+            {% if filtro.ascendiente %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-up-thin"></span>
+            {% else %}
+              <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-arrow-down-thin"></span>
+            {% endif %}
+          {% endif %}
+        </th>
       </tr>
     </thead>
 
@@ -141,6 +179,7 @@
         <tr>
           <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
+          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.etiqueta.all|join:", " }}</a></td>
           <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
         </tr>
       {% endfor %}
