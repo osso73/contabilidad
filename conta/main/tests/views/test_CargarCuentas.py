@@ -28,7 +28,8 @@ class TestCargarCuentas():
         for f in ['sobreescribir', 'file']:
             assert f in fields
 
-    def test_load_file(self, form_cargar_cuentas):
+    def test_load_file_not_sobreescribir(self, form_cargar_cuentas, populate_database_etiquetas):
+        populate_database_etiquetas
         # before loading, we have 0 cuentas
         cuentas = Cuenta.objects.all()
         assert len(cuentas) == 0
@@ -58,7 +59,8 @@ class TestCargarCuentas():
             assert c in cuentas
             assert c in resp
 
-    def test_load_file_sobreescribir(self, form_cargar_cuentas):
+    def test_load_file_sobreescribir(self, form_cargar_cuentas, populate_database_etiquetas):
+        populate_database_etiquetas
         Cuenta.objects.create(num='100', nombre='Dinero')
         form = form_cargar_cuentas
         form['file'] = Upload('main/tests/data/cuentas.xlsx')

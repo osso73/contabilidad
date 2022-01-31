@@ -3,7 +3,7 @@ from main.models import FiltroMovimientos
 from fixtures_views import *
 
 
-class TestFiltroAsientosView():
+class TestFiltroAsientos():
     @pytest.fixture
     def create_filter(self):
         # Create filter with default values (all blanks)
@@ -166,3 +166,23 @@ class TestFiltroAsientosView():
         assert filtro.descripcion == ''
         assert filtro.cuenta == ''
         assert filtro.asiento == ''
+
+    def test_filter_url_with_wrong_action(self, populate_database, create_and_populate_filter, csrf_exempt_django_app):
+        original_filtro = create_and_populate_filter
+        form = {
+            'f_num': '204',
+            'f_nombre': 'Wrong name',
+            'f_etiqueta': 'Wrong etiqueta',
+            'accion_filtro': 'wrong_action',
+        }
+        resp = csrf_exempt_django_app.post(reverse('main:filtro_asientos'), form)
+
+        # check that nothing is changed
+        current_filtro = FiltroMovimientos.objects.all()[0]
+        assert current_filtro.fecha_inicial == original_filtro.fecha_inicial
+        assert current_filtro.fecha_final == original_filtro.fecha_final
+        assert current_filtro.descripcion == original_filtro.descripcion
+        assert current_filtro.cuenta == original_filtro.cuenta
+        assert current_filtro.asiento == original_filtro.asiento
+
+        # check redirect to the correct page

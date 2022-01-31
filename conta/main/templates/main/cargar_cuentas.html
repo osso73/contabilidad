@@ -16,6 +16,7 @@
       <tr>
         <th>Núm</th>
         <th>Descripción</th>
+        <th>Etiqueta(s)</th>
       </tr>
     </thead>
 
@@ -24,6 +25,7 @@
         <tr>
           <td>{{ cuenta.num }}</td>
           <td>{{ cuenta.nombre }}</td>
+          <td>{{ cuenta.etiqueta.all|join:", " }}</td>
         </tr>
       {% endfor %}
     </tbody>

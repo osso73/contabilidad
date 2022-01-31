@@ -1,6 +1,4 @@
 import pytest
-from django.urls import reverse
-
 from main.models import Cuenta, Movimiento, Etiqueta
 
 

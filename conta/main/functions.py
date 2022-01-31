@@ -1,74 +1,86 @@
+from typing import Sequence, List, Tuple
+from django.core.files import File
+
 import datetime
-import openpyxl
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from io import StringIO
 
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db.models.query import QuerySet
 from main.models import Etiqueta, Cuenta, Movimiento
 
 
-def extraer_cuentas(file):
-    """Extrae las cuentas del fichero excel cargado, y devuelve una lista
-    de listas: cada cuenta es representada por una lista del número y la
-    descripción.
+###############################################################################
+#                        funciones para cargar cuentas                        #
+###############################################################################
+def extraer_cuentas(file: File) -> pd.DataFrame:
+    """Extrae las cuentas del fichero excel cargado, y devuelve un DataFrame
+    con la información de las cuentas. Si el formato es incorrecto, el
+    dataframe estará vacío.
     """
+    # carga la información del excel. Si la hoja no existe, crea DataFrame en blanco
+    columns = ['num', 'nombre', 'etiqueta']
+    try:
+        fichero = pd.ExcelFile(file)
 
-    cuenta = {}
-    wb = openpyxl.load_workbook(file)
-    worksheet = wb.active
-    excel_data = list()
-    for row in worksheet.iter_rows():
-        row_data = list()
-        for cell in row:
-            row_data.append(str(cell.value))
-        excel_data.append(row_data)
+        if 'cuentas' in fichero.sheet_names:
+            cuentas = fichero.parse(sheet_name='cuentas', usecols='f:h',
+                header=3)
+            cuentas.columns = columns
+            cuentas.num = cuentas.num.astype('str')
+        else:
+            cuentas = pd.DataFrame(columns=columns)
 
-    # elimina la primera fila, ya que corresponde al título
-    if len(excel_data):
-        first_row = excel_data.pop(0)
-    else:
-        first_row = []
+    except ValueError:
+        cuentas = pd.DataFrame(columns=columns)
 
-    # si el formato no es el esperado devuelve cadena vacía
-    if first_row == ['Cuenta', 'Descripción']:
-        return excel_data
-    else:
-        return []
+    return cuentas
 
 
-def crear_cuentas(excel_data, sobreescribir):
+def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[Cuenta]:
     """Escribe las cuentas en la base de datos tomando en cuenta el valor de
-    sobreescribir para determinar qué hacer en caso de duplicado.
+    sobreescribir para determinar qué hacer en caso de cuenta existente.
     """
 
     lista_cuentas = Cuenta.objects.all()
+    lista_etiquetas = Etiqueta.objects.all()
+    etiqueta_ids = [ et.id for et in lista_etiquetas ]
     lista_nums = [ a.num for a in lista_cuentas ]
-    cuentas_anadidas = list()
 
-    for cuenta in excel_data:
-        num, nombre = cuenta
+    cuentas_anadidas = list()
+    for n in excel_data.index:
+        num = excel_data.loc[n]['num']
+        nombre = excel_data.loc[n]['nombre']
+        etiqueta = excel_data.loc[n]['etiqueta'].split(', ')
+
         if num in lista_nums:
             if sobreescribir:
                 cuenta_existente = lista_cuentas.get(pk=num)
                 cuenta_existente.nombre = nombre
                 cuenta_existente.save()
                 cuentas_anadidas.append(cuenta_existente)
-
         else:
             nueva_cuenta = Cuenta(
                 num = num,
                 nombre = nombre
             )
             nueva_cuenta.save()
+            for et in etiqueta:
+                if et not in etiqueta_ids:
+                    etiqueta.remove(et)
+            nueva_cuenta.etiqueta.set(etiqueta)
+            nueva_cuenta.save()
             cuentas_anadidas.append(nueva_cuenta)
 
     return cuentas_anadidas
 
-def max_num_asiento():
+
+##############################################################################
+#                       funciones para cargar asientos                       #
+##############################################################################
+def max_num_asiento() -> int:
     """Devuelve el número de asiento más alto"""
 
     asientos_nums = [ movimiento.num for movimiento in Movimiento.objects.all() ]
@@ -77,27 +89,27 @@ def max_num_asiento():
     return num
 
 
-def crea_asiento_simple(num, fecha, descripcion, valor, cuenta_debe, cuenta_haber):
+def crea_asiento_simple(simple: dict) -> Sequence[Movimiento]:
     """Crea un asiento simple de dos movimientos, a partir de los
     datos proporcionados, y los añade a la base de datos. Calcula el
     número de asiento automáticamente.
     """
 
     nuevo_debe = Movimiento(
-        num = num,
-        fecha = fecha,
-        descripcion = descripcion,
-        debe = valor,
+        num = simple['num'],
+        fecha = simple['fecha'],
+        descripcion = simple['descripcion'],
+        debe = simple['valor'],
         haber = 0,
-        cuenta = cuenta_debe,
+        cuenta = simple['debe'],
         )
     nuevo_haber = Movimiento(
-        num = num,
-        fecha = fecha,
-        descripcion = descripcion,
+        num = simple['num'],
+        fecha = simple['fecha'],
+        descripcion = simple['descripcion'],
         debe = 0,
-        haber = valor,
-        cuenta = cuenta_haber,
+        haber = simple['valor'],
+        cuenta = simple['haber'],
         )
     nuevo_debe.save()
     nuevo_haber.save()
@@ -105,7 +117,7 @@ def crea_asiento_simple(num, fecha, descripcion, valor, cuenta_debe, cuenta_habe
     return nuevo_debe, nuevo_haber
 
 
-def extraer_asientos(file):
+def extraer_asientos(file: File) -> Sequence[pd.DataFrame]:
     """Extrae los datos de la plantilla. Existen dos pestañas: simple, para
     los asientos simples, y compleja para los asientos de 3 o más movimientos.
     La extracción se hace con un dataframe de pandas para cada pestaña, y
@@ -115,7 +127,10 @@ def extraer_asientos(file):
     Retorna dos dataframes de pandas, uno para la plantilla simple y otro
     para la compleja.
     """
+
     # carga la información del excel. Si la hoja no existe, crea dt en blanco
+    cols_simple = ['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber']
+    cols_compleja = ['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta']
     try:
         fichero = pd.ExcelFile(file)
 
@@ -123,13 +138,13 @@ def extraer_asientos(file):
             simple = fichero.parse(sheet_name='simple', usecols='b:f',
                 parse_dates=[1], header=2, dtype={'Debe': str, 'Haber': str})
         else:
-            simple = pd.DataFrame(columns=['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber'])
+            simple = pd.DataFrame(columns=cols_simple)
 
         if 'compleja' in fichero.sheet_names:
             compleja = fichero.parse(sheet_name='compleja', usecols='b:g',
                 parse_dates=[2], header=2, dtype={'Cuenta': str})
         else:
-            compleja = pd.DataFrame(columns=['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta'])
+            compleja = pd.DataFrame(columns=cols_compleja)
 
 
         # elimina los datos incorrectos / incompletos
@@ -142,13 +157,13 @@ def extraer_asientos(file):
                 compleja.drop(labels=n, axis=0, inplace=True)
 
     except ValueError:
-        simple = pd.DataFrame(columns=['Fecha', 'Descripción', 'Valor', 'Debe', 'Haber'])
-        compleja = pd.DataFrame(columns=['id', 'Fecha', 'Descripción', 'Debe', 'Haber', 'Cuenta'])
+        simple = pd.DataFrame(columns=cols_simple)
+        compleja = pd.DataFrame(columns=cols_compleja)
 
     return simple, compleja
 
 
-def crear_asientos(simple, compleja):
+def crear_asientos(simple: pd.DataFrame, compleja: pd.DataFrame) -> List[List[dict]]:
     """Crea los asientos en la base de datos, a partir de los dataframes
     recibidos. El simple contiene asientos simples, y el compleja contiene
     asientos de 3 o más movimientos. Calcula el número de asiento correcto
@@ -175,14 +190,8 @@ def crear_asientos(simple, compleja):
         check = valida_simple(movimiento_simple, cuentas)
         if check == 'ok':
             max_asiento += 1
-            mov_debe, mov_haber = crea_asiento_simple(
-                num = max_asiento,
-                fecha = movimiento_simple['fecha'],
-                descripcion = movimiento_simple['descripcion'],
-                valor = movimiento_simple['valor'],
-                cuenta_debe = movimiento_simple['debe'],
-                cuenta_haber = movimiento_simple['haber'],
-                )
+            movimiento_simple['num'] = max_asiento
+            mov_debe, mov_haber = crea_asiento_simple(movimiento_simple)
             movimientos_anadidos.append(mov_debe)
             movimientos_anadidos.append(mov_haber)
 
@@ -221,7 +230,7 @@ def crear_asientos(simple, compleja):
     return movimientos_anadidos, errores_simple, errores_compleja
 
 
-def valida_simple(movimiento_simple, cuentas):
+def valida_simple(movimiento_simple: dict, cuentas: QuerySet[Cuenta]) -> str:
     """Valida el movimiento simple, que los campos sean todos correctos.
     En aso de encontrar errores devuelve el error que ha encontrado;
     si todo es correcto devuelve 'ok'
@@ -245,7 +254,7 @@ def valida_simple(movimiento_simple, cuentas):
     return 'ok'
 
 
-def valida_compleja(movimiento_complejo, cuentas):
+def valida_compleja(movimiento_complejo: dict, cuentas: QuerySet[Cuenta]) -> str:
     """Valida el movimiento complejo, que los campos sean todos correctos.
     En aso de encontrar errores devuelve el error que ha encontrado;
     si todo es correcto devuelve 'ok'
@@ -276,9 +285,12 @@ def valida_compleja(movimiento_complejo, cuentas):
     return 'ok'
 
 
-def lista_paginas(paginas, actual, num=3):
-    """Calcula la lista de páginas a mostrar. Las cadenas
-    nulas corresponden a puntos suspensivos.
+###############################################################################
+#                          funciones para paginación                          #
+###############################################################################
+def lista_paginas(paginas: int, actual: int, num: int=3) -> List[int]:
+    """Calcula la lista de páginas a mostrar. Un valor
+    nulo corresponde a puntos suspensivos.
 
     Argumentos
     ----------
@@ -293,26 +305,26 @@ def lista_paginas(paginas, actual, num=3):
 
     Devuelve
     --------
-    paginacion: list
+    paginacion: list(int)
         lista de páginas calculada.
     """
     if paginas < 10 or (actual <= num + 1 and actual >= paginas - num - 1):
         pagination = list(range(1, paginas+1))
     else:
-        if actual <= num + 1:
-            pagination = (actual + num + 2)*['']
+        if actual <= num + 2:
+            pagination = (actual + num + 2)*[0]
             pagination[-1] = paginas
             pages = range(1, actual+num+1)
             for i, p in enumerate(pages):
                 pagination[i] = p
         elif actual >= paginas - num - 1:
-            pagination = (paginas - actual + num + 3)*['']
+            pagination = (paginas - actual + num + 3)*[0]
             pagination[0] = 1
             pages = range(actual-num, paginas+1)
             for i, p in enumerate(pages):
                 pagination[i+2] = p
         else:
-            pagination = (num*2 + 5)*['']
+            pagination = (num*2 + 5)*[0]
             pagination[0] = 1
             pagination[-1] = paginas
             pages = range(actual-num, actual+num+1)
@@ -321,7 +333,45 @@ def lista_paginas(paginas, actual, num=3):
     return pagination
 
 
-def filtra_movimientos(filtro, movimientos):
+def get_pagination(pag: int, lineas: Sequence) -> Tuple[List[int], dict, int, List]:
+    """Hace los cálculos para obtener la lista de páginas, a partir del
+    número de página actual, y la lista de lineas (pueden ser Cuentas o
+    Movimientos). Ajusta el número de página, y reduce la lista de líneas
+    para mostrar solo la página actual.
+
+    Devuelve paginación y las variables calculadas, así como el número de
+    página corregido y la lista de líneas a mostrar.
+    """
+
+    resultados_por_pagina = 15
+    total_lineas = len(lineas)
+    total_paginas = int(total_lineas / resultados_por_pagina + 1)
+    pag = total_paginas if pag > total_paginas else pag
+    pag = 1 if pag < 1 else pag
+
+    start = (pag-1)*resultados_por_pagina
+    end = min(pag*resultados_por_pagina, total_lineas)
+    total = total_lineas
+
+    num_lineas = {
+        'from': start,
+        'to': end,
+        'total': total,
+    }
+    lineas = lineas[start:end]
+    paginacion = lista_paginas(total_paginas, pag)
+
+    return paginacion, num_lineas, pag, lineas
+
+
+###############################################################################
+#                       funciones para generar informes                       #
+###############################################################################
+def filtra_movimientos(filtro: dict, movimientos: Sequence[Movimiento]) -> List[Movimiento]:
+    """Filtra los movimientos para la generación de informes, en función
+    de los parámetros del formulario de Informes.
+    """
+
     f_inicial = filtro['f_fecha_inicial']
     f_final = filtro['f_fecha_final']
     cuenta = filtro['f_cuenta'].split(':')[0]
@@ -339,12 +389,13 @@ def filtra_movimientos(filtro, movimientos):
     return movimientos
 
 
-def genera_informe(tipo, movimientos):
+def genera_informe(tipo: str, movimientos: QuerySet[Movimiento]) -> pd.DataFrame:
     # si no hay movimientos devuelve la variable indicando que está vacío
     if not movimientos:
         return {'empty': True }
 
-    MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    MESES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio',
+             'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
     TRIMESTRES = ['1r trimestre', '2o trimestre', '3r trimestre', '4o trimestre']
     # transforma registros base de datos en pandas.DataFrame
     df = pd.DataFrame(movimientos.values())
@@ -358,8 +409,8 @@ def genera_informe(tipo, movimientos):
         informe.fecha = informe.fecha.dt.date
 
     elif tipo == 'semanal':
-        informe = df.groupby(df.fecha.dt.week).sum().reset_index()
-        informe.rename(columns={'fecha': 'semana'}, inplace=True)
+        informe = df.groupby(df.fecha.dt.isocalendar().week).sum().reset_index()
+        informe.rename(columns={'week': 'semana'}, inplace=True)
         informe.semana = [ f'Semana {m:d}' for m in informe.semana ]
 
     elif tipo == 'mensual':
@@ -385,7 +436,12 @@ def genera_informe(tipo, movimientos):
 
     return informe
 
-def titulo_informe(filtro):
+
+def titulo_informe(filtro: dict) -> Tuple[str, str]:
+    """ A partir del filtro pasado, genera un título y subtítulo para
+    el informe. Devuelve el título y subtítulo.
+    """
+
     f_inicial = filtro['f_fecha_inicial']
     f_final = filtro['f_fecha_final']
     cuenta = filtro['f_cuenta'].split(':')[0]
@@ -393,11 +449,17 @@ def titulo_informe(filtro):
     tipo = filtro['f_tipo']
 
     if cuenta:
-        nombre_cuenta = Cuenta.objects.get(num=cuenta)
-        titulo = f'Cuenta {nombre_cuenta}'
+        try:
+            nombre_cuenta = Cuenta.objects.get(num=cuenta)
+            titulo = f'Cuenta {nombre_cuenta}'
+        except ObjectDoesNotExist:
+            titulo = 'Cuenta no encontrada'
     elif etiqueta:
-        nombre_etiqueta = Etiqueta.objects.get(id=etiqueta)
-        titulo = f'Cuentas del tipo: {nombre_etiqueta.nombre}'
+        try:
+            nombre_etiqueta = Etiqueta.objects.get(id=etiqueta)
+            titulo = f'Cuentas del tipo: {nombre_etiqueta.nombre}'
+        except ObjectDoesNotExist:
+            titulo = 'Etiqueta no encontrada'
     else:
         titulo = 'Todas las cuentas'
 
@@ -416,7 +478,10 @@ def titulo_informe(filtro):
     return titulo, subtitulo
 
 
-def grafico_informe(df):
+def grafico_informe(df: pd.DataFrame) -> str:
+    if isinstance(df, dict) and df['empty']:
+        return None
+
     periodo = df.columns[0]
     df.index = df[periodo]
     plt.style.use('seaborn')
@@ -430,6 +495,5 @@ def grafico_informe(df):
     imgdata.seek(0)
 
     data = imgdata.getvalue()
-
 
     return data

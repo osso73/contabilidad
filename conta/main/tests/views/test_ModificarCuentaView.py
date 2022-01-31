@@ -4,6 +4,11 @@ from fixtures_views import *
 
 
 class TestModificarCuentaView():
+    @pytest.fixture
+    def form_modificar_cuenta(self, django_app):
+        resp = django_app.get(reverse('main:modificar_cuenta', args=[100]))
+        return resp.forms['formulario']
+
     @pytest.mark.parametrize('page', ['/cuentas/modificar/100/', reverse('main:modificar_cuenta', args=[100])])
     def test_view_url_exists_at_desired_location(self, page, django_app, populate_database_cuentas):
         populate_database_cuentas
@@ -16,10 +21,9 @@ class TestModificarCuentaView():
         resp = django_app.get(page)
         assertTemplateUsed(resp, 'main/modificar_cuenta.html')
 
-    def test_form_attributes(self, django_app, populate_database_cuentas):
+    def test_form_attributes(self, populate_database_cuentas, form_modificar_cuenta):
         populate_database_cuentas
-        resp = django_app.get(reverse('main:modificar_cuenta', args=[100]))
-        form = resp.forms['formulario']
+        form = form_modificar_cuenta
 
         assert form.id == 'formulario'
         assert form.method == 'post'
@@ -30,12 +34,36 @@ class TestModificarCuentaView():
         for f in ['num', 'nombre']:
             assert f in fields
 
-    def test_modify_nombre(self, django_app, populate_database_cuentas):
+    def test_modify_nombre(self, populate_database_cuentas, form_modificar_cuenta):
         populate_database_cuentas
-        resp = django_app.get(reverse('main:modificar_cuenta', args=[100]))
-        form = resp.forms['formulario']
+        form = form_modificar_cuenta
         form['nombre'] = 'Tarjeta visa'
         form.submit()
 
         cuenta = Cuenta.objects.get(pk=100)
         assert cuenta.nombre == 'Tarjeta visa'
+
+    def test_modify_etiqueta_no_error(self, populate_database_cuentas, form_modificar_cuenta):
+        populate_database_cuentas
+        form = form_modificar_cuenta
+        form['etiqueta'] = 'gastos'
+        form.submit()
+
+        cuenta = Cuenta.objects.get(pk=100)
+        etiqueta_db = cuenta.etiqueta.all()
+        assert len(etiqueta_db) == 1
+        assert etiqueta_db[0].id == 'gastos'
+
+    def test_modify_several_etiquetas_with_error(self, populate_database_cuentas, form_modificar_cuenta):
+        populate_database_cuentas
+        form = form_modificar_cuenta
+        form['etiqueta'] = 'gastos, casa, etiqueta incorrecta'
+        form.submit()
+
+        cuenta = Cuenta.objects.get(pk=100)
+        etiqueta_db = cuenta.etiqueta.all()
+        etiqueta_names = [ e.id for e in etiqueta_db ]
+        assert len(etiqueta_db) == 2
+        assert 'gastos' in etiqueta_names
+        assert 'casa' in etiqueta_names
+        assert 'etiqueta incorrecta' not in etiqueta_names

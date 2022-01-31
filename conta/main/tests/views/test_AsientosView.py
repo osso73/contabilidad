@@ -16,6 +16,23 @@ class TestAsientosView():
         resp = django_app.get(page)
         assertTemplateUsed(resp, 'main/asientos.html')
 
+    @pytest.fixture
+    def populate_movimientos_for_pagination(self):
+        results = 15  # number of entries per page
+        total = 125   # number of entries to create
+
+        cuenta = Cuenta.objects.create(num='100', nombre='Caja')
+        for n in range(total):
+            Movimiento.objects.create(
+                num = n+1,
+                fecha = datetime.date(2021, 10, 15),
+                descripcion = f'Movimiento núm {n+1:03d}',
+                debe = 10.52,
+                haber = 0,
+                cuenta = cuenta,
+            )
+        return results, total
+
     def test_list_of_movimientos(self, populate_database, django_app):
         resp = django_app.get(reverse('main:asientos'))
         _, _, movimientos = populate_database
@@ -67,3 +84,34 @@ class TestAsientosView():
         assert movimientos[1].haber == 34
         assert movimientos[1].cuenta.num == '300'
         assert movimientos[1].cuenta.nombre == 'Comida'
+
+
+    @pytest.mark.parametrize('page', ['/asientos/pag/1/', reverse('main:asientos_pagina', args=[1])])
+    def test_view_url_page_exists_at_desired_location(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 200
+
+    @pytest.mark.parametrize('page', [1, 2, 3, 4, 5, 6, 7, 8])
+    def test_pagination_by_url(self, django_app, page, populate_movimientos_for_pagination):
+        results, total = populate_movimientos_for_pagination
+
+        # check pagination page
+        resp = django_app.get(reverse('main:asientos_pagina', args=[page]))
+        for n in range(total):
+            if n in range((page-1)*results, page*results):
+                assert f'Movimiento núm {n+1:03d}' in resp.text
+            else:
+                assert f'Movimiento núm {n+1:03d}' not in resp.text
+
+    @pytest.mark.parametrize('page', [1, 2, 3, 4, 5, 6, 7, 8])
+    def test_pagination_by_click(self, django_app, page, populate_movimientos_for_pagination):
+        results, total = populate_movimientos_for_pagination
+
+        # check pagination page
+        initial = django_app.get(reverse('main:asientos'))
+        resp = initial.click(href=reverse('main:asientos_pagina', args=[page]), index=0)
+        for n in range(total):
+            if n in range((page-1)*results, page*results):
+                assert f'Movimiento núm {n+1:03d}' in resp.text
+            else:
+                assert f'Movimiento núm {n+1:03d}' not in resp.text

@@ -14,7 +14,7 @@
         <li><input class="input is-small" type="text" id="f_num" name="f_num" size=20 placeholder="Núm" value={{ filtro.num }}></li>
         <li><input class="input is-small" type="text" id="f_nombre" name="f_nombre" size=20 placeholder="Nombre" value={{ filtro.nombre }}></li>
         <li><input class="input is-small" type="text" id="f_etiqueta" name="f_etiqueta" list="etiquetas_list" size=20 placeholder="Etiqueta" value={{ filtro.etiqueta }}></li>
-        <li>
+        <li class="has-text-centered">
           <button type="submit" class="button is-small is-success is-outlined m-2" title="Aplicar filtro" name="accion_filtro" value="aplicar">
              <span class="icon iconify" data-icon="mdi-check"></span>
           </button>
@@ -72,8 +72,8 @@
       {% csrf_token %}
       <ul>
         <li><input class="input is-small" type="text" id="e_id" name="e_id" list="etiquetas_list" size=20 placeholder="Etiqueta"></li>
-        <li><input class="input is-small" type="text" id="e_etiqueta" name="e_etiqueta" size=20 placeholder="Texto largo etiqueta"></li>
-        <li>
+        <li><input class="input is-small" type="text" id="e_nombre" name="e_nombre" size=20 placeholder="Texto largo etiqueta"></li>
+        <li class="has-text-centered">
           <button type="submit" class="button is-small is-success is-outlined m-2" name="accion_etiqueta" value="anadir" title="Crear etiqueta">
              <span class="icon iconify" data-icon="mdi-check"></span>
           </button>

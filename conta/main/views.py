@@ -1,5 +1,4 @@
 import datetime
-import pandas as pd
 
 from django.shortcuts import render
 from django.views import View
@@ -47,17 +46,7 @@ class CuentasView(View):
         lista_cuentas = lista_cuentas.order_by(orden+filtro.campo)
 
         # cálculo de paginación. 10 resultados por página
-        resultados_por_pagina = 25
-        total_paginas = int(len(lista_cuentas) / resultados_por_pagina + 1)
-        pag = total_paginas if pag > total_paginas else pag
-        pag = 1 if pag < 1 else pag
-        num_cuentas = {
-            'from': (pag-1)*resultados_por_pagina,
-            'to': min(pag*resultados_por_pagina, len(lista_cuentas)),
-            'total': len(lista_cuentas),
-        }
-        lista_cuentas = lista_cuentas[num_cuentas['from']:num_cuentas['to']]
-        paginacion = functions.lista_paginas(total_paginas, pag)
+        paginacion, num_cuentas, pag, lista_cuentas = functions.get_pagination(pag, lista_cuentas)
 
         context = {
             'tab': 'cuentas',
@@ -130,17 +119,7 @@ class AsientosView(View):
         lista_movimientos = lista_movimientos.order_by(orden+filtro.campo)
 
         # cálculo de paginación. 25 resultados por página
-        resultados_por_pagina = 25
-        total_paginas = int(len(lista_movimientos) / resultados_por_pagina + 1)
-        pag = total_paginas if pag > total_paginas else pag
-        pag = 1 if pag < 1 else pag
-        num_movimientos = {
-            'from': (pag-1)*resultados_por_pagina,
-            'to': min(pag*resultados_por_pagina, len(lista_movimientos)),
-            'total': len(lista_movimientos),
-        }
-        lista_movimientos = lista_movimientos[num_movimientos['from']:num_movimientos['to']]
-        paginacion = functions.lista_paginas(total_paginas, pag)
+        paginacion, num_movimientos, pag, lista_movimientos = functions.get_pagination(pag, lista_movimientos)
 
         context = {
             'tab': 'asientos',
@@ -161,15 +140,16 @@ class AsientosView(View):
         num = functions.max_num_asiento()
         pk_debe = request.POST['debe'].split(':')[0]
         pk_haber = request.POST['haber'].split(':')[0]
+        simple = {
+            'num': num+1,
+            'fecha': request.POST['fecha'],
+            'descripcion': request.POST['descripcion'],
+            'valor': request.POST['valor'],
+            'debe': Cuenta.objects.get(pk=pk_debe),
+            'haber': Cuenta.objects.get(pk=pk_haber)
+        }
 
-        functions.crea_asiento_simple(
-            num+1,
-            request.POST['fecha'],
-            request.POST['descripcion'],
-            request.POST['valor'],
-            Cuenta.objects.get(pk=pk_debe),
-            Cuenta.objects.get(pk=pk_haber)
-            )
+        functions.crea_asiento_simple(simple)
 
         return HttpResponseRedirect(reverse('main:asientos'))
 
@@ -317,11 +297,8 @@ class CargarAsientos(View):
         return render(request, 'main/cargar_asientos.html', context)
 
 
-class FiltroCuentasView(View):
-    def get(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse('main:cuentas'))
-
-    def post(self, request, *args, **kwargs):
+def filtro_cuentas(request):
+    if request.method == 'POST':
         filtro = FiltroCuentas.objects.all()[0]
 
         if request.POST['accion_filtro'] == 'aplicar':
@@ -337,14 +314,11 @@ class FiltroCuentasView(View):
         else:
             pass
 
-        return HttpResponseRedirect(reverse('main:cuentas'))
+    return HttpResponseRedirect(reverse('main:cuentas'))
 
 
-class FiltroAsientosView(View):
-    def get(self, request, *args, **kwargs):
-        return HttpResponseRedirect(reverse('main:asientos'))
-
-    def post(self, request, *args, **kwargs):
+def filtro_asientos(request):
+    if request.method == 'POST':
         if request.POST['accion_filtro'] == 'aplicar':
             filtro = FiltroMovimientos.objects.all()[0]
             filtro.fecha_inicial = request.POST['f_fecha_inicial']
@@ -364,7 +338,7 @@ class FiltroAsientosView(View):
         else:
             pass
 
-        return HttpResponseRedirect(reverse('main:asientos'))
+    return HttpResponseRedirect(reverse('main:asientos'))
 
 
 def cambiar_orden(request, tipo, campo):
@@ -387,21 +361,25 @@ def cambiar_orden(request, tipo, campo):
 
 
 def gestionar_etiqueta(request):
-    accion = request.POST['accion_etiqueta']
-    id = request.POST['e_id']
-    nombre = request.POST['e_etiqueta']
+    """Gestiona el formulario para añadir o borrar etiquetas, dentro de la
+    vista de cuentas. Solo gestiona peticiones de tipo post.
+    """
+    if request.method == 'POST':
+        accion = request.POST['accion_etiqueta']
+        id = request.POST['e_id']
+        nombre = request.POST['e_nombre']
 
-    if accion == 'anadir':
-        Etiqueta.objects.create(
-            id = id,
-            nombre = nombre,
-        )
-    elif accion == 'borrar':
-        e = Etiqueta.objects.filter(id=id)
-        if len(e):
-            e[0].delete()
-    else:
-        pass
+        if accion == 'anadir':
+            Etiqueta.objects.create(
+                id = id,
+                nombre = nombre,
+            )
+        elif accion == 'borrar':
+            e = Etiqueta.objects.filter(id=id)
+            if len(e):
+                e[0].delete()
+        else:
+            pass
 
     return HttpResponseRedirect(reverse('main:cuentas'))
 
