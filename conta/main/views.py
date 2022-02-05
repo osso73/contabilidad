@@ -5,11 +5,12 @@ from django.views import View
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models.deletion import ProtectedError
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from main.models import Etiqueta, Cuenta, Movimiento, FiltroMovimientos, FiltroCuentas
 import main.functions as functions
 
-# Create your views here.
 
 class IndexView(View):
     """Página principal"""
@@ -18,7 +19,7 @@ class IndexView(View):
         return render(request, 'main/index.html', context)
 
 
-class CuentasView(View):
+class CuentasView(LoginRequiredMixin, View):
     """Listado de cuentas. Permite añadir una cuenta nueva."""
 
     def get(self, request, pag=1, *args, **kwargs):
@@ -76,7 +77,7 @@ class CuentasView(View):
         return HttpResponseRedirect(reverse('main:cuentas'))
 
 
-class AsientosView(View):
+class AsientosView(LoginRequiredMixin, View):
     """Listado de asientos (o movimientos). Permite añadir un asiento
     simple nuevo.
     """
@@ -154,7 +155,7 @@ class AsientosView(View):
         return HttpResponseRedirect(reverse('main:asientos'))
 
 
-class ModificarAsientoView(View):
+class ModificarAsientoView(LoginRequiredMixin, View):
     def get(self, request, num):
         lista_movimientos = [ a for a in Movimiento.objects.all() if a.num == num ]
         lista_cuentas = Cuenta.objects.all()
@@ -189,7 +190,7 @@ class ModificarAsientoView(View):
         return HttpResponseRedirect(reverse('main:asientos'))
 
 
-class ModificarCuentaView(View):
+class ModificarCuentaView(LoginRequiredMixin, View):
     def get(self, request, num):
         context = {
             'tab': 'cuentas',
@@ -214,7 +215,7 @@ class ModificarCuentaView(View):
 
         return HttpResponseRedirect(reverse('main:cuentas'))
 
-
+@login_required
 def borrar_movimiento(request, pk, pagina, num_asiento=None):
     movimiento = Movimiento.objects.get(pk=pk)
     movimiento.delete()
@@ -225,6 +226,7 @@ def borrar_movimiento(request, pk, pagina, num_asiento=None):
         return HttpResponseRedirect(reverse(f'main:{pagina}'))
 
 
+@login_required
 def anadir_movimiento(request, num, fecha):
     movimiento = Movimiento(
         num = num,
@@ -239,6 +241,7 @@ def anadir_movimiento(request, num, fecha):
     return HttpResponseRedirect(reverse(f'main:modificar_asiento', args=[num]))
 
 
+@login_required
 def borrar_cuenta(request, pk):
     cuenta = Cuenta.objects.get(pk=pk)
     try:
@@ -259,7 +262,7 @@ def borrar_cuenta(request, pk):
     return HttpResponseRedirect(reverse('main:cuentas'))
 
 
-class CargarCuentas(View):
+class CargarCuentas(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse('main:cuentas'))
 
@@ -277,7 +280,7 @@ class CargarCuentas(View):
         return render(request, 'main/cargar_cuentas.html', context)
 
 
-class CargarAsientos(View):
+class CargarAsientos(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return HttpResponseRedirect(reverse('main:asientos'))
 
@@ -297,6 +300,7 @@ class CargarAsientos(View):
         return render(request, 'main/cargar_asientos.html', context)
 
 
+@login_required
 def filtro_cuentas(request):
     if request.method == 'POST':
         filtro = FiltroCuentas.objects.all()[0]
@@ -317,6 +321,7 @@ def filtro_cuentas(request):
     return HttpResponseRedirect(reverse('main:cuentas'))
 
 
+@login_required
 def filtro_asientos(request):
     if request.method == 'POST':
         if request.POST['accion_filtro'] == 'aplicar':
@@ -341,6 +346,7 @@ def filtro_asientos(request):
     return HttpResponseRedirect(reverse('main:asientos'))
 
 
+@login_required
 def cambiar_orden(request, tipo, campo):
     if tipo == 'asientos':
         filtro = FiltroMovimientos.objects.all()[0]
@@ -360,6 +366,7 @@ def cambiar_orden(request, tipo, campo):
     return HttpResponseRedirect(reverse('main:'+tipo))
 
 
+@login_required
 def gestionar_etiqueta(request):
     """Gestiona el formulario para añadir o borrar etiquetas, dentro de la
     vista de cuentas. Solo gestiona peticiones de tipo post.
@@ -384,7 +391,7 @@ def gestionar_etiqueta(request):
     return HttpResponseRedirect(reverse('main:cuentas'))
 
 
-class InformesView(View):
+class InformesView(LoginRequiredMixin, View):
     """Página principal"""
     def get(self, request, *args, **kwargs):
         lista_cuentas = Cuenta.objects.all().order_by('num')

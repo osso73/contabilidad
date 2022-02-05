@@ -15,15 +15,22 @@ class TestFiltroCuentas():
 
     @pytest.fixture
     def form_filtro_cuentas(self, django_app):
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         return resp.forms['filtro']
 
     @pytest.mark.parametrize('page', ['/cuentas/filtro/', reverse('main:filtro_cuentas')])
-    def test_redirect_get_requests(self, page, client):
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == reverse('main:cuentas')
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+
+    @pytest.mark.parametrize('page', ['/cuentas/filtro/', reverse('main:filtro_cuentas')])
+    def test_redirect_get_requests(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302
+        assert resp.url.startswith('/cuentas/')
+
 
     def test_load_file_form_attributes(self, form_filtro_cuentas):
         form = form_filtro_cuentas
@@ -81,7 +88,7 @@ class TestFiltroCuentas():
         lista_cuentas = [ c.nombre for c in cuentas ]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         for name in lista_cuentas:
             if name == test_nombre:
                 assert name in resp.text
@@ -100,7 +107,7 @@ class TestFiltroCuentas():
         lista_cuentas = [ c.nombre for c in cuentas ]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         for name in lista_cuentas:
             if test_name in name:
                 assert name in resp.text
@@ -119,7 +126,7 @@ class TestFiltroCuentas():
         lista_cuentas = [ c.nombre for c in cuentas ]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         for cuenta in cuentas:
             etiquetas_cuenta = [ e.id for e in cuenta.etiqueta.all() ]
             if test_etiqueta in etiquetas_cuenta:
@@ -145,7 +152,7 @@ class TestFiltroCuentas():
             'f_etiqueta': 'Wrong etiqueta',
             'accion_filtro': 'wrong_action',
         }
-        resp = csrf_exempt_django_app.post(reverse('main:filtro_cuentas'), form)
+        resp = csrf_exempt_django_app.post(reverse('main:filtro_cuentas'), form, user='username')
 
         # check that nothing is changed
         current_filtro = FiltroCuentas.objects.all()[0]

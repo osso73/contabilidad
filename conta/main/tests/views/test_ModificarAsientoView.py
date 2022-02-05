@@ -8,19 +8,25 @@ from fixtures_views import *
 class TestModificarAsientoView():
     @pytest.fixture
     def form_modificar_asiento(self, django_app):
-        resp = django_app.get(reverse('main:modificar_asiento', args=[1]))
+        resp = django_app.get(reverse('main:modificar_asiento', args=[1]), user='username')
         return resp.forms['formulario']
+
+    @pytest.mark.parametrize('page', ['/asientos/modificar/1/', reverse('main:modificar_asiento', args=[1])])
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
 
     @pytest.mark.parametrize('page', ['/asientos/modificar/1/', reverse('main:modificar_asiento', args=[1])])
     def test_view_url_exists_at_desired_location(self, page, django_app, populate_database):
         populate_database
-        resp = django_app.get(page)
+        resp = django_app.get(page, user='username')
         assert resp.status_code == 200
 
     @pytest.mark.parametrize('page', ['/asientos/modificar/1/', reverse('main:modificar_asiento', args=[1])])
-    def test_view_uses_correct_template_oriol(self, page, django_app, populate_database):
+    def test_view_uses_correct_template(self, page, django_app, populate_database):
         populate_database
-        resp = django_app.get(page)
+        resp = django_app.get(page, user='username')
         assertTemplateUsed(resp, 'main/modificar_asiento.html')
 
     def test_form_attributes(self, populate_database, form_modificar_asiento):
@@ -94,7 +100,7 @@ class TestModificarAsientoView():
         assert movimiento.cuenta.nombre == 'Tarjeta visa probando'
 
     def test_add_movimiento(self, django_app, populate_database, form_modificar_asiento):
-        resp = django_app.get(reverse('main:modificar_asiento', args=[1]))
+        resp = django_app.get(reverse('main:modificar_asiento', args=[1]), user='username')
         resp.click(linkid='anadir_movimiento')
 
         mov = Movimiento.objects.filter(num=1)

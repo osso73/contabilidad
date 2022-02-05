@@ -16,12 +16,18 @@ class TestCambiarOrden():
 
     @pytest.mark.parametrize('page', ['/cambiar/orden/cuentas/num/',
         reverse('main:cambiar_orden', args=['cuentas', 'num'])])
-    def test_redirect_page_cuentas(self, page, client, create_filter_cuentas):
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302  # redirect
+        assert resp.url.startswith('/accounts/login/')
+
+    @pytest.mark.parametrize('page', ['/cambiar/orden/cuentas/num/',
+        reverse('main:cambiar_orden', args=['cuentas', 'num'])])
+    def test_redirect_page_cuentas(self, page, django_app, create_filter_cuentas):
         create_filter_cuentas
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == '/cuentas/'
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302  # redirect
+        assert resp.url.startswith('/cuentas/')
 
     @pytest.mark.parametrize('access_type', ['url', 'click'])
     @pytest.mark.parametrize('campo', ['num', 'nombre'])
@@ -31,10 +37,10 @@ class TestCambiarOrden():
         assert filtro.campo == 'num'
         assert filtro.ascendiente == True
         if access_type == 'click':
-            resp = django_app.get(reverse('main:cuentas'))
+            resp = django_app.get(reverse('main:cuentas'), user='username')
             resp.click(linkid=campo+"_titulo", verbose=True)
         else:
-            django_app.get(reverse('main:cambiar_orden', args=['cuentas', campo]))
+            django_app.get(reverse('main:cambiar_orden', args=['cuentas', campo]), user='username')
         filtro = FiltroCuentas.objects.all()[0]
         assert filtro.campo == campo
         if campo.lower() == 'num':
@@ -45,7 +51,7 @@ class TestCambiarOrden():
         if access_type == 'click':
             resp.click(linkid=campo+"_titulo", verbose=True)
         else:
-            django_app.get(reverse('main:cambiar_orden', args=['cuentas', campo]))
+            django_app.get(reverse('main:cambiar_orden', args=['cuentas', campo]), user='username')
         filtro = FiltroCuentas.objects.all()[0]
         assert filtro.campo == campo
         if campo.lower() == 'num':
@@ -55,12 +61,11 @@ class TestCambiarOrden():
 
     @pytest.mark.parametrize('page', ['/cambiar/orden/asientos/num/',
         reverse('main:cambiar_orden', args=['asientos', 'num'])])
-    def test_redirect_page_asientos(self, page, client, create_filter_asientos):
+    def test_redirect_page_asientos(self, page, django_app, create_filter_asientos):
         create_filter_asientos
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == '/asientos/'
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302  # redirect
+        assert resp.url.startswith('/asientos/')
 
     @pytest.mark.parametrize('access_type', ['url', 'click'])
     @pytest.mark.parametrize('campo', ['num', 'fecha', 'descripcion', 'debe', 'haber', 'cuenta'])
@@ -70,10 +75,10 @@ class TestCambiarOrden():
         assert filtro.campo == 'num'
         assert filtro.ascendiente == True
         if access_type == 'click':
-            resp = django_app.get(reverse('main:asientos'))
+            resp = django_app.get(reverse('main:asientos'), user='username')
             resp.click(linkid=campo+"_titulo", verbose=True)
         else:
-            django_app.get(reverse('main:cambiar_orden', args=['asientos', campo]))
+            django_app.get(reverse('main:cambiar_orden', args=['asientos', campo]), user='username')
         filtro = FiltroMovimientos.objects.all()[0]
         assert filtro.campo == campo
         if campo.lower() == 'num':
@@ -84,7 +89,7 @@ class TestCambiarOrden():
         if access_type == 'click':
             resp.click(linkid=campo+"_titulo", verbose=True)
         else:
-            django_app.get(reverse('main:cambiar_orden', args=['asientos', campo]))
+            django_app.get(reverse('main:cambiar_orden', args=['asientos', campo]), user='username')
         filtro = FiltroMovimientos.objects.all()[0]
         assert filtro.campo == campo
         if campo.lower() == 'num':
@@ -94,13 +99,12 @@ class TestCambiarOrden():
 
     @pytest.mark.parametrize('page', ['/cambiar/orden/wrong/num/',
         reverse('main:cambiar_orden', args=['wrong', 'num'])])
-    def test_redirect_page_wrong(self, page, client, create_filter_cuentas, create_filter_asientos):
+    def test_redirect_page_wrong(self, page, django_app, create_filter_cuentas, create_filter_asientos):
         create_filter_cuentas
         create_filter_asientos
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == '/'
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302  # redirect
+        assert resp.url.startswith('/')
 
     def test_validate_order(self):
-        pass
+        assert False  # Test to be developed, I don't know how...

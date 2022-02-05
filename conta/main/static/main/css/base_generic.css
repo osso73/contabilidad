@@ -1,0 +1,23 @@
+.has-background-image {
+  background-image: url("../img/background.jpg");
+}
+
+.overlay-background {
+    position: relative;
+    min-height: 100%;
+    min-width: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.opr-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.opr-center {
+  display: flex;
+	justify-content: center;
+	align-items: center;
+}

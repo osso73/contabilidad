@@ -6,15 +6,20 @@ from fixtures_views import *
 class TestCargarCuentas():
     @pytest.fixture
     def form_cargar_cuentas(self, django_app):
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         return resp.forms['cargar_fichero']
 
     @pytest.mark.parametrize('page', ['/cuentas/cargar/', reverse('main:cargar_cuentas')])
-    def test_redirect_get_requests(self, page, client):
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == '/cuentas/'
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+    @pytest.mark.parametrize('page', ['/cuentas/cargar/', reverse('main:cargar_cuentas')])
+    def test_redirect_get_requests(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302
+        assert resp.url.startswith('/cuentas/')
 
     def test_load_file_form_attributes(self, form_cargar_cuentas):
         form = form_cargar_cuentas

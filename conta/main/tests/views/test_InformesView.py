@@ -6,13 +6,8 @@ from fixtures_views import *
 class TestInformesView:
     @pytest.fixture
     def form_parametros(self, django_app):
-        resp = django_app.get(reverse('main:informes'))
+        resp = django_app.get(reverse('main:informes'), user='username')
         return resp.forms['parametros']
-
-    @pytest.fixture
-    def form_parametrps(self, django_app):
-        resp = django_app.get(reverse('main:informes'))
-        return resp.forms['crear_cuenta']
 
     @pytest.fixture
     def populate_db_informes(self, populate_database):
@@ -32,13 +27,19 @@ class TestInformesView:
                 descripcion=descripcion, debe=debe, haber=haber, cuenta=cuenta)
 
     @pytest.mark.parametrize('page', ['/informes/', reverse('main:informes')])
-    def test_view_url_exists_at_desired_location(self, page, django_app):
+    def test_redirect_if_not_logged_in(self, page, django_app):
         resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+    @pytest.mark.parametrize('page', ['/informes/', reverse('main:informes')])
+    def test_view_url_exists_at_desired_location(self, page, django_app):
+        resp = django_app.get(page, user='username')
         assert resp.status_code == 200
 
     @pytest.mark.parametrize('page', ['/informes/', reverse('main:informes')])
     def test_view_uses_correct_template(self, page, django_app):
-        resp = django_app.get(page)
+        resp = django_app.get(page, user='username')
         assertTemplateUsed(resp, 'main/informes.html')
 
     def test_parametros_form_attributes(self, form_parametros):

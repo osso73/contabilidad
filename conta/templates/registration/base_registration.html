@@ -1,0 +1,22 @@
+{% extends "base_generic.html" %}
+{% load static %}
+
+{% block content %}
+<div class="hero is-fullheight is-primary has-background" style="background-image: url({% static 'main/img/pesetas.jpg' %})">
+  <div class="columns">
+    <div class="column"></div>
+    <div class="column">
+      <div class="box mt-6 has-text-centered">
+
+        {% block info %}{% endblock info %}
+
+      </div>
+
+    </div>
+    <div class="column"></div>
+
+  </div>
+
+</div>
+
+{% endblock content %}

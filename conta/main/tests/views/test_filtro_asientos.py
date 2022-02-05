@@ -22,15 +22,21 @@ class TestFiltroAsientos():
 
     @pytest.fixture
     def form_filtro_movimientos(self, django_app):
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         return resp.forms['filtro']
 
     @pytest.mark.parametrize('page', ['/asientos/filtro/', reverse('main:filtro_asientos')])
-    def test_redirect_get_requests(self, page, client):
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == '/asientos/'
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+
+    @pytest.mark.parametrize('page', ['/asientos/filtro/', reverse('main:filtro_asientos')])
+    def test_redirect_get_requests(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302
+        assert resp.url.startswith('/asientos/')
 
     def test_load_file_form_attributes(self, form_filtro_movimientos):
         form = form_filtro_movimientos
@@ -74,7 +80,7 @@ class TestFiltroAsientos():
         movimientos_out = [ m.descripcion for m in movimientos if m.fecha <= fecha]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         for name in movimientos_in:
             assert name in resp.text
         for name in movimientos_out:
@@ -93,7 +99,7 @@ class TestFiltroAsientos():
         movimientos_out = [ m.descripcion for m in movimientos if m.fecha > fecha]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         for name in movimientos_in:
             assert name in resp.text
         for name in movimientos_out:
@@ -112,7 +118,7 @@ class TestFiltroAsientos():
         movimientos_out = [ m.descripcion for m in movimientos if descripcion not in m.descripcion]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         for name in movimientos_in:
             assert name in resp.text
         for name in movimientos_out:
@@ -131,7 +137,7 @@ class TestFiltroAsientos():
         movimientos_out = [ m.descripcion for m in movimientos if m.cuenta.num != cuenta]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         for name in movimientos_in:
             assert name in resp.text
 
@@ -148,7 +154,7 @@ class TestFiltroAsientos():
         movimientos_out = [ m.descripcion for m in movimientos if m.num != int(asiento)]
 
         # check only account filtered appears
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         for name in movimientos_in:
             assert name in resp.text
         for name in movimientos_out:
@@ -175,7 +181,7 @@ class TestFiltroAsientos():
             'f_etiqueta': 'Wrong etiqueta',
             'accion_filtro': 'wrong_action',
         }
-        resp = csrf_exempt_django_app.post(reverse('main:filtro_asientos'), form)
+        resp = csrf_exempt_django_app.post(reverse('main:filtro_asientos'), form, user='username')
 
         # check that nothing is changed
         current_filtro = FiltroMovimientos.objects.all()[0]

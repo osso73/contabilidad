@@ -228,6 +228,12 @@
   <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap">
     <nav class="pagination is-small" role="navigation" aria-label="pagination">
       <ul class="pagination-list">
+        <li>
+          <a class="pagination-previous" href="{% url 'main:asientos_pagina' pagina_actual|add:'-1' %}">
+            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-left"></span>
+            <span> Anterior </span>
+          </a>
+        </li>
         {% for pag in paginacion %}
           <li>
             {% if pag %}
@@ -238,12 +244,8 @@
           </li>
         {% endfor %}
         <li>
-          <a class="pagination-next" href="{% url 'main:asientos_pagina' pagina_actual|add:'-1' %}">
-            <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-left"></span>
-          </a>
-        </li>
-        <li>
-          <a class="pagination-previous" href="{% url 'main:asientos_pagina' pagina_actual|add:'1' %}">
+          <a class="pagination-next" href="{% url 'main:asientos_pagina' pagina_actual|add:'1' %}">
+            <span> Siguiente </span>
             <span class="icon iconify is-small has-text-grey-light" data-icon="mdi-chevron-right"></span>
           </a>
         </li>

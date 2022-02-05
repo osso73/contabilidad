@@ -1,0 +1,42 @@
+{% extends "registration/base_registration.html" %}
+
+{% block info %}
+
+  {% if form.errors %}
+    <p>El usuario y el password no concuerdan. Prueba de nuevo. </p>
+  {% endif %}
+
+  {% if next %}
+    {% if user.is_authenticated %}
+      <p>Tu cuenta no tiene acceso a esta página. Para seguir, por favor
+        conéctate con una cuenta que tenga acceso.</p>
+    {% else %}
+      <p>Por favor, conéctate para acceder a esta página.</p>
+    {% endif %}
+  {% endif %}
+
+  <p>Entra tu usuario y password.</p>
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <table class="table">
+      <tr>
+        <td>{{ form.username.label_tag }}</td>
+        <td>{{ form.username }}</td>
+      </tr>
+      <tr>
+        <td>{{ form.password.label_tag }}</td>
+        <td>{{ form.password }}</td>
+      </tr>
+    </table>
+    <button type="submit" class="button is-info is-fullwidth" value="Login">
+      <span class="icon iconify" data-icon="mdi-login"></span>
+      <span>Login</span>
+    </button>
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+
+  {# Assumes you setup the password_reset view in your URLconf #}
+  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+
+{% endblock %}

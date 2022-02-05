@@ -4,15 +4,20 @@ from fixtures_views import *
 class TestGestionarEtiqueta():
     @pytest.fixture
     def form_filtro_etiquetas(self, django_app):
-        resp = django_app.get(reverse('main:cuentas'))
+        resp = django_app.get(reverse('main:cuentas'), user='username')
         return resp.forms['etiquetas']
 
     @pytest.mark.parametrize('page', ['/cuentas/etiqueta/gestionar/', reverse('main:gestionar_etiqueta')])
-    def test_redirect_get_requests(self, page, client):
-        resp = client.get(page, follow=True)
-        assert len(resp.redirect_chain) == 1
-        page_redirected = resp.redirect_chain[0][0]
-        assert page_redirected == reverse('main:cuentas')
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+    @pytest.mark.parametrize('page', ['/cuentas/etiqueta/gestionar/', reverse('main:gestionar_etiqueta')])
+    def test_redirect_get_requests(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 302
+        assert resp.url == reverse('main:cuentas')
 
     def test_load_file_form_attributes(self, form_filtro_etiquetas):
         form = form_filtro_etiquetas
@@ -68,7 +73,7 @@ class TestGestionarEtiqueta():
             'e_nombre': 'Wrong name',
             'accion_etiqueta': 'wrong_action',
         }
-        resp = csrf_exempt_django_app.post(reverse('main:gestionar_etiqueta'), form)
+        resp = csrf_exempt_django_app.post(reverse('main:gestionar_etiqueta'), form, user='username')
 
         current_etiquetas = Etiqueta.objects.all()
         assert original_etiquetas == list(current_etiquetas), "The list of etiquetas should be unchanged"

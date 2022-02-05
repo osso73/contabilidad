@@ -7,6 +7,11 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 
 ## Nueva versión en curso, no publicada
 
+Primera versión funcional. Incluye funcionalidad básica para crear, borrar y filtrar movimientos y cuentas, así como re-ordenar y visualizar algún informe básico (informe de gastos, informe de ingresos, etc.).
+
+También realiza la gestión de usuarios y logins.
+
+
 ### Añadido
 - Documentación sobre el proyecto, según iss. #19.
 - Popup para indicar errores (iss. #15).
@@ -14,9 +19,12 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.
 - Paginación en asientos y cuentas (iss. #11).
 - Nueva pestaña de informes, con capacidad para generar informes de una cuenta o grupo de cuentas (iss #5).
 - Campo etiqueta en las cuentas, para poder generar los informes.
+- Obligación de hacer login para acceder a la aplicación (iss. #7).
+
 
 ### Cambiado
 - Creación de cuentas, y filtro de cuentas, se puede también añadir etiquetas.
+- Cambios GUI: navegación por menú, en lugar de tabs; añadido imagen y ajustados colores. Y cambiado las páginas anterior/siguiente en asientos/cuentas.
 
 
 ## v0.5 -  2021-12-29

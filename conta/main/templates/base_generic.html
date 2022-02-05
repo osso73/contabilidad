@@ -10,7 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% load static %}
   <link rel="stylesheet" href="{% static 'main/css/bulma.min.css' %}">
-  <link rel="stylesheet" href="{% static 'main/css/oriol.css' %}">
+  <link rel="stylesheet" href="{% static 'main/css/base_generic.css' %}">
   <script src="https://code.iconify.design/2/2.1.0/iconify.min.js"></script>
   {% block head %}{% endblock %}
 
@@ -20,17 +20,46 @@
 	<div class="container">
 
 		<!-- hero: https://bulma.io/documentation/layout/hero/ -->
-		<section class="hero is-primary is-small">
-			<div class="hero-body">
-        <p class="title has-text-centered"><a href="{% url 'main:index' %}">Contabilidad personal</a></p>
-			</div>
-      <div class="tabs is-centered is-fullwidth is-boxed">
-        <ul>
-          <li {% if tab == "cuentas" %} class="is-active"{% endif %}><a href="{% url 'main:cuentas' %}">Cuentas</a></li>
-          <li {% if tab == "asientos" %} class="is-active"{% endif %}><a href="{% url 'main:asientos' %}">Asientos</a></li>
-          <li {% if tab == "informes" %} class="is-active"{% endif %}><a href="{% url 'main:informes' %}">Informes</a></li>
-        </ul>
+		<section class="hero is-link is-small has-background-image">
+      <div class="hero-head">
+        <div class="overlay-background">
+
+          <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+              <a class="navbar-item is-static" href="/">
+                <img src="{% static 'main/img/logo.svg' %}" width="50" height="28">
+              </a>
+              <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+              </a>
+            </div>
+            <div class="navbar-menu" id="navMenu">
+              <div class="navbar-start">
+                <a class="navbar-item" href="{% url 'main:cuentas' %}">Cuentas</a>
+                <a class="navbar-item" href="{% url 'main:asientos' %}">Asientos</a>
+                <a class="navbar-item" href="{% url 'main:informes' %}">Informes</a>
+              </div>
+              <div class="navbar-end">
+                {% if user.is_authenticated %}
+                  <div class="navbar-item">
+                    Usuario: <b>{{ user.get_username }}</b>
+                  </div>
+                  <a class="navbar-item" href="{% url 'logout'%}?next={{ request.path }}"> Logout </a>
+                {% else %}
+                  <a class="navbar-item" href="{% url 'login'%}?next={{ request.path }}"> Login </a>
+                {% endif %}
+              </div>
+            </div>
+          </nav>
+
+        </div>
       </div>
+			<div class="hero-body">
+        <h1 class="title has-text-centered">Contabilidad personal</h1>
+        <h2 class="subtitle has-text-centered">{{ tab|capfirst }}</h2>
+			</div>
 		</section>
 
 		<div class="columns">
@@ -43,7 +72,7 @@
 
 			<div class="column">
 				<main class="content">
-          {% block content %}{% endblock %}
+          {% block content %}{% endblock content %}
         </main>
 
 				<footer class="footer">
@@ -51,7 +80,7 @@
   				  <div class="content has-text-centered">
   				    <p>&copy; 2021. Oriol Pujol Romanyà</p>
   				  </div>
-          {% endblock %}
+          {% endblock footer %}
 				</footer>
 
 			</div>
@@ -75,5 +104,6 @@
   </div>
 </div>
 
+<script src="{% static 'main/js/burger-menu.js' %}"></script>
 
 </html>

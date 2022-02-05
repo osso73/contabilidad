@@ -12,3 +12,6 @@ Para su desarrollo he utilizado varias librerías o frameworks, que detallo a co
 - [WebTest](https://docs.pylonsproject.org/projects/webtest): permite realizar tests más precisos de un entorno web, más allá del estándar proporcionado por django.
 - [Coverage](https://coverage.readthedocs.io/): paquete para analizar los tests realizados. Detecta qué partes del código han sido testeadas, y qué partes no han sido.
 - [MkDocs](https://www.mkdocs.org/): paquete para la generación y mantenimiento de documentación.
+
+Además utilizo los siguientes recursos:
+- Imagen de fondo del título: photo by [Paweł Czerwiński](https://unsplash.com/@pawel_czerwinski) on [Unsplash](https://unsplash.com/).

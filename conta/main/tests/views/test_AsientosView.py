@@ -6,15 +6,10 @@ from fixtures_views import *
 
 
 class TestAsientosView():
-    @pytest.mark.parametrize('page', ['/asientos/', reverse('main:asientos')])
-    def test_view_url_exists_at_desired_location(self, page, django_app):
-        resp = django_app.get(page)
-        assert resp.status_code == 200
-
-    @pytest.mark.parametrize('page', ['/asientos/', reverse('main:asientos')])
-    def test_view_uses_correct_template(self, page, django_app):
-        resp = django_app.get(page)
-        assertTemplateUsed(resp, 'main/asientos.html')
+    @pytest.fixture
+    def form_crear_asiento(self, django_app):
+        resp = django_app.get(reverse('main:asientos'), user='username')
+        return resp.forms['crear_asiento']
 
     @pytest.fixture
     def populate_movimientos_for_pagination(self):
@@ -33,15 +28,30 @@ class TestAsientosView():
             )
         return results, total
 
+    @pytest.mark.parametrize('page', ['/asientos/', reverse('main:asientos')])
+    def test_redirect_if_not_logged_in(self, page, django_app):
+        resp = django_app.get(page)
+        assert resp.status_code == 302
+        assert resp.url.startswith('/accounts/login/')
+
+    @pytest.mark.parametrize('page', ['/asientos/', reverse('main:asientos')])
+    def test_view_url_exists_at_desired_location(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assert resp.status_code == 200
+
+    @pytest.mark.parametrize('page', ['/asientos/', reverse('main:asientos')])
+    def test_view_uses_correct_template(self, page, django_app):
+        resp = django_app.get(page, user='username')
+        assertTemplateUsed(resp, 'main/asientos.html')
+
     def test_list_of_movimientos(self, populate_database, django_app):
-        resp = django_app.get(reverse('main:asientos'))
+        resp = django_app.get(reverse('main:asientos'), user='username')
         _, _, movimientos = populate_database
         for mov in movimientos:
             assert mov.descripcion in resp
 
-    def test_add_simple_asiento_form_attributes(self, django_app):
-        resp = django_app.get(reverse('main:asientos'))
-        form = resp.forms['crear_asiento']
+    def test_add_simple_asiento_form_attributes(self, form_crear_asiento):
+        form = form_crear_asiento
 
         assert form.id == 'crear_asiento'
         assert form.method == 'post'
@@ -53,10 +63,9 @@ class TestAsientosView():
             assert f in fields
 
 
-    def test_add_simple_asiento(self, django_app, populate_database_cuentas):
+    def test_add_simple_asiento(self, form_crear_asiento, populate_database_cuentas):
         cuentas = populate_database_cuentas
-        resp = django_app.get(reverse('main:asientos'))
-        form = resp.forms['crear_asiento']
+        form = form_crear_asiento
 
         # fill the form
         form['fecha'] = '2021-12-28'
@@ -88,7 +97,7 @@ class TestAsientosView():
 
     @pytest.mark.parametrize('page', ['/asientos/pag/1/', reverse('main:asientos_pagina', args=[1])])
     def test_view_url_page_exists_at_desired_location(self, page, django_app):
-        resp = django_app.get(page)
+        resp = django_app.get(page, user='username')
         assert resp.status_code == 200
 
     @pytest.mark.parametrize('page', [1, 2, 3, 4, 5, 6, 7, 8])
@@ -96,7 +105,7 @@ class TestAsientosView():
         results, total = populate_movimientos_for_pagination
 
         # check pagination page
-        resp = django_app.get(reverse('main:asientos_pagina', args=[page]))
+        resp = django_app.get(reverse('main:asientos_pagina', args=[page]), user='username')
         for n in range(total):
             if n in range((page-1)*results, page*results):
                 assert f'Movimiento núm {n+1:03d}' in resp.text
@@ -108,7 +117,7 @@ class TestAsientosView():
         results, total = populate_movimientos_for_pagination
 
         # check pagination page
-        initial = django_app.get(reverse('main:asientos'))
+        initial = django_app.get(reverse('main:asientos'), user='username')
         resp = initial.click(href=reverse('main:asientos_pagina', args=[page]), index=0)
         for n in range(total):
             if n in range((page-1)*results, page*results):
