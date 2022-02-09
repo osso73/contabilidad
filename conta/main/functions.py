@@ -26,10 +26,10 @@ def extraer_cuentas(file: File) -> pd.DataFrame:
         fichero = pd.ExcelFile(file)
 
         if 'cuentas' in fichero.sheet_names:
-            cuentas = fichero.parse(sheet_name='cuentas', usecols='f:h',
-                header=3)
+            cuentas = fichero.parse(sheet_name='cuentas', usecols='a:c')
             cuentas.columns = columns
             cuentas.num = cuentas.num.astype('str')
+            cuentas.fillna('', inplace=True)
         else:
             cuentas = pd.DataFrame(columns=columns)
 
@@ -39,9 +39,11 @@ def extraer_cuentas(file: File) -> pd.DataFrame:
     return cuentas
 
 
-def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[Cuenta]:
+def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[List[Cuenta]]:
     """Escribe las cuentas en la base de datos tomando en cuenta el valor de
     sobreescribir para determinar qué hacer en caso de cuenta existente.
+    Devuelve la lista de cuentas creadas, y la lista de cuentas con error,
+    incluyendo un mensaje de error para cada una.
     """
 
     lista_cuentas = Cuenta.objects.all()
@@ -49,23 +51,30 @@ def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[Cuenta]
     etiqueta_ids = [ et.id for et in lista_etiquetas ]
     lista_nums = [ a.num for a in lista_cuentas ]
 
-    cuentas_anadidas = list()
+    cuentas_anadidas = []
+    cuentas_error = []
     for n in excel_data.index:
+        result = valida_cuenta(excel_data.loc[n])
+        if result is not 'ok':
+            excel_data.loc[n, 'error'] = result
+            cuentas_error.append(excel_data.loc[n])
+            continue
+
         num = excel_data.loc[n]['num']
         nombre = excel_data.loc[n]['nombre']
         etiqueta = excel_data.loc[n]['etiqueta'].split(', ')
-
         if num in lista_nums:
             if sobreescribir:
                 cuenta_existente = lista_cuentas.get(pk=num)
                 cuenta_existente.nombre = nombre
                 cuenta_existente.save()
                 cuentas_anadidas.append(cuenta_existente)
+            else:
+                excel_data.loc[n, 'error'] = 'Cuenta ya existente'
+                cuentas_error.append(excel_data.loc[n])
+
         else:
-            nueva_cuenta = Cuenta(
-                num = num,
-                nombre = nombre
-            )
+            nueva_cuenta = Cuenta(num=num, nombre=nombre)
             nueva_cuenta.save()
             for et in etiqueta:
                 if et not in etiqueta_ids:
@@ -74,7 +83,14 @@ def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[Cuenta]
             nueva_cuenta.save()
             cuentas_anadidas.append(nueva_cuenta)
 
-    return cuentas_anadidas
+    return cuentas_anadidas, cuentas_error
+
+
+def valida_cuenta(cuenta: pd.Series) -> str:
+    if cuenta.nombre == '':
+        return 'Cuenta en blanco no permitida'
+
+    return 'ok'
 
 
 ##############################################################################

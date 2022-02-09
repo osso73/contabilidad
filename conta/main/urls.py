@@ -8,6 +8,7 @@ urlpatterns = [
     path('cuentas/pag/<int:pag>/', views.CuentasView.as_view(), name='cuentas_pagina'),
     path('cuentas/modificar/<str:num>/', views.ModificarCuentaView.as_view(), name='modificar_cuenta'),
     path('cuentas/borrar/<slug:pk>/', views.borrar_cuenta, name='borrar_cuenta'),
+    path('cuentas/borrar/', views.borrar_multiples_cuentas, name='borrar_cuenta_multiple'),
     path('cuentas/cargar/', views.CargarCuentas.as_view(), name='cargar_cuentas'),
     path('cuentas/filtro/', views.filtro_cuentas, name='filtro_cuentas'),
     path('cuentas/etiqueta/gestionar/', views.gestionar_etiqueta, name='gestionar_etiqueta'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('movimiento/anadir/<int:num>/<slug:fecha>/', views.anadir_movimiento, name='anadir_movimiento'),
     path('movimiento/borrar/<int:pk>/<slug:pagina>/', views.borrar_movimiento, name='borrar_movimiento'),
     path('movimiento/borrar/<int:pk>/<slug:pagina>/<int:num_asiento>/', views.borrar_movimiento, name='borrar_movimiento_complejo'),
+    path('movimiento/borrar/', views.borrar_multiples_movimientos, name='borrar_movimiento_multiple'),
 
     path('', views.IndexView.as_view(), name='index'),
     path('cambiar/orden/<str:tipo>/<str:campo>/', views.cambiar_orden, name='cambiar_orden'),

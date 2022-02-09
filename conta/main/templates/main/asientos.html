@@ -1,4 +1,5 @@
 {% extends "base_generic.html" %}
+{% load static %}
 
 {% block aside %}
 
@@ -65,44 +66,38 @@
 
 {% block content %}
 
-<div class="panel m-3 is-warning has-background-warning-light">
-  <p class="panel-heading">
-    Crea asiento simple
-  </p>
+<div class="box mt-3 is-warning has-background-warning-light opr-sticky">
+  <form action="{% url 'main:asientos' %}" method="post" id="crear_asiento">
+    {% csrf_token %}
+    <table class="table has-background-warning-light" >
+      <thead>
+        <tr>
+          <th> <label for="fecha" class="label"> Fecha </label> </th>
+          <th> <label for="descripcion" class="label"> Descripción </label> </th>
+          <th> <label for="valor" class="label"> Valor </label> </th>
+          <th> <label for="debe" class="label"> Cuenta debe </label> </th>
+          <th> <label for="haber" class="label"> Cuenta haber </label> </th>
+          <th> </th>
+        </tr>
+      </thead>
 
-  <div class="panel-block">
-    <form action="{% url 'main:asientos' %}" method="post" id="crear_asiento">
-      {% csrf_token %}
-        <table class="table has-background-warning-light" >
-        <thead>
-          <tr>
-            <th> <label for="fecha" class="label"> Fecha </label> </th>
-            <th> <label for="descripcion" class="label"> Descripción </label> </th>
-            <th> <label for="valor" class="label"> Valor </label> </th>
-            <th> <label for="debe" class="label"> Cuenta debe </label> </th>
-            <th> <label for="haber" class="label"> Cuenta haber </label> </th>
-            <th> </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td> <input class="input is-small is-rounded" type="date" id="fecha" name="fecha" required>
-            <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=60>
-            <td> <input class="input is-small is-rounded" type="number" id="valor" name="valor" step="0.01" required min=0.01>
-            <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
-            <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
-            <td>
-              <button type="submit" class="button is-small is-success is-outlined">
-                <span class="icon iconify" data-icon="mdi-check"></span>
-                <span>Añadir</span>
-              </button>
-          </tr>
-        </tbody>
+      <tbody>
+        <tr>
+          <td> <input class="input is-small is-rounded" type="date" id="fecha" name="fecha" required>
+          <td> <input class="input is-small is-rounded" type="text" id="descripcion" name="descripcion" required maxlength="200" size=60>
+          <td> <input class="input is-small is-rounded" type="number" id="valor" name="valor" step="0.01" required min=0.01>
+          <td> <input class="input is-small is-rounded" type="text" id="debe" name="debe" list="cuentas" required size=20>
+          <td> <input class="input is-small is-rounded" type="text" id="haber" name="haber" list="cuentas" required size=20>
+          <td>
+            <button type="submit" class="button is-small is-success is-outlined">
+              <span class="icon iconify" data-icon="mdi-check"></span>
+              <span>Añadir</span>
+            </button>
+        </tr>
+      </tbody>
 
-
-        </table>
-    </form>
-  </div>
+    </table>
+  </form>
 </div>
 
 <datalist id="cuentas">
@@ -117,6 +112,12 @@
     <table class="table is-striped is-narrow is-hoverable">
     <thead>
       <tr>
+        <th>
+          <input type="checkbox" id="master-check">
+          <button type="submit" form="borrar" class="button is-danger is-inverted is-small" title="Borrar los movimientos seleccionados" name="borrar_multiple">
+            <span class="icon iconify" data-icon="mdi-trash-can"></span>
+          </button>
+        </th>
         <th>
           <a href="{% url 'main:cambiar_orden' 'asientos' 'num' %}" id="num_titulo"> Núm </a>
           {% if filtro.campo == 'num' %}
@@ -181,8 +182,11 @@
     </thead>
 
     <tbody>
+      <form action="{% url 'main:borrar_movimiento_multiple' %}" method="post" id="borrar">
+      {% csrf_token %}
       {% for movimiento in lista_movimientos %}
         <tr>
+          <td><input type="checkbox" id="check_{{ forloop.counter }}" name="check_{{ forloop.counter }}" value="{{ movimiento.id }}" class="check"></td>
           <td class="has-text-right"><a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.num }}</a></td>
           <td> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.fecha }}</a></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.descripcion }}</a></td>
@@ -206,6 +210,7 @@
           </td>
         </tr>
       {% endfor %}
+      </form>
     </tbody>
 
     </table>
@@ -269,5 +274,7 @@
 {% else %}
     <p>No hay ningún asiento.</p>
 {% endif %}
+
+<script type="text/javascript" src="{% static 'main/js/multi-check.js' %}"></script>
 
 {% endblock %}

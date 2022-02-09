@@ -270,11 +270,12 @@ class CargarCuentas(LoginRequiredMixin, View):
         datos_excel = functions.extraer_cuentas(request.FILES['file'])
         sobreescribir = request.POST.get('sobreescribir', False)
 
-        cuentas_anadidas = functions.crear_cuentas(datos_excel, sobreescribir)
+        cuentas_anadidas, cuentas_error = functions.crear_cuentas(datos_excel, sobreescribir)
 
         context = {
             'tab': 'cuentas',
             'cuentas_anadidas': cuentas_anadidas,
+            'cuentas_error': cuentas_error,
          }
 
         return render(request, 'main/cargar_cuentas.html', context)
@@ -425,3 +426,43 @@ class InformesView(LoginRequiredMixin, View):
             'graph': graph,
             }
         return render(request, 'main/informes.html', context)
+
+
+@login_required
+def borrar_multiples_cuentas(request):
+    if request.method == 'POST':
+        errors = list()
+        for checked in request.POST.keys():
+            if not checked.startswith('check'):
+                continue
+            cuenta = Cuenta.objects.get(pk=request.POST[checked])
+            try:
+                cuenta.delete()
+            except ProtectedError as e:
+                errors.append(cuenta)
+        context = { 'tab': 'cuentas' }
+
+        if errors:
+            nombres = [ c.nombre for c in errors ]
+            nombres = ", ".join(nombres)
+            aviso = {
+                'mensaje': f"La(s) siguiente(s) cuentas no se pueden borrar, porque tienen movimientos asociados: {nombres}.",
+                'nuevo_url': reverse('main:cuentas'),
+            }
+            context['aviso'] = aviso
+            return render(request, 'main/cuentas.html', context)
+
+    return HttpResponseRedirect(reverse('main:cuentas'))
+
+
+@login_required
+def borrar_multiples_movimientos(request):
+    if request.method == 'POST':
+        errors = list()
+        for checked in request.POST.keys():
+            if not checked.startswith('check'):
+                continue
+            movimiento = Movimiento.objects.get(pk=request.POST[checked])
+            movimiento.delete()
+
+    return HttpResponseRedirect(reverse('main:asientos'))

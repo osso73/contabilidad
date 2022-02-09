@@ -1,5 +1,5 @@
 {% extends "base_generic.html" %}
-
+{% load static %}
 
 {% block aside %}
 <div class="panel">
@@ -91,42 +91,37 @@
 
 {% block content %}
 
-<div class="panel m-3 is-warning has-background-warning-light">
-  <p class="panel-heading">
-    Crea cuenta nueva
-  </p>
+<div class="box mt-3 is-warning has-background-warning-light opr-sticky">
 
-  <div class="panel-block">
-    <form action="{% url 'main:cuentas' %}" method="post" id="crear_cuenta">
-      {% csrf_token %}
+  <form action="{% url 'main:cuentas' %}" method="post" id="crear_cuenta">
+    {% csrf_token %}
 
-      <table class="table has-background-warning-light" >
+    <table class="table has-background-warning-light" >
 
-        <thead>
-          <tr>
-            <th> <label for="num" class="label"> Número </label></th>
-            <th> <label for="nombre" class="label"> Nombre </label></th>
-            <th> <label for="etiqueta" class="label"> Etiqueta </label></th>
-            <th></th>
-          </tr>
-        </thead>
+      <thead>
+        <tr>
+          <th> <label for="num" class="label"> Número </label></th>
+          <th> <label for="nombre" class="label"> Nombre </label></th>
+          <th> <label for="etiqueta" class="label"> Etiqueta </label></th>
+          <th></th>
+        </tr>
+      </thead>
 
-        <tbody>
-          <tr>
-            <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
-            <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
-            <td> <input class="input is-small is-rounded" type="text" id="etiqueta" name="etiqueta" list="etiquetas_list" required maxlength="100" size=100></td>
-            <td> <button type="submit" class="button is-small is-success is-outlined">
-                   <span class="icon iconify" data-icon="mdi-check"></span>
-                   <span>Añadir</span>
-                 </button></td>
-          </tr>
-        </tbody>
+      <tbody>
+        <tr>
+          <td> <input class="input is-small is-rounded" type="text" id="num" name="num" required size=20></td>
+          <td> <input class="input is-small is-rounded" type="text" id="nombre" name="nombre" required maxlength="200" size=200></td>
+          <td> <input class="input is-small is-rounded" type="text" id="etiqueta" name="etiqueta" list="etiquetas_list" required maxlength="100" size=100></td>
+          <td> <button type="submit" class="button is-small is-success is-outlined" title="Añadir cuenta nueva">
+                 <span class="icon iconify" data-icon="mdi-check"></span>
+                 <span>Añadir</span>
+               </button></td>
+        </tr>
+      </tbody>
 
-      </table>
+    </table>
 
-    </form>
-  </div>
+  </form>
 </div>
 
 <datalist id="etiquetas_list">
@@ -141,6 +136,12 @@
 
     <thead>
       <tr>
+        <th>
+          <input type="checkbox" id="master-check">
+          <button type="submit" form="borrar" class="button is-danger is-inverted is-small" title="Borrar las cuentas seleccionadas" name="borrar_multiple">
+            <span class="icon iconify" data-icon="mdi-trash-can"></span>
+          </button>
+        </th>
         <th>
           <a id="num_titulo" href="{% url 'main:cambiar_orden' 'cuentas' 'num' %}"> Núm </a>
           {% if filtro.campo == 'num' %}
@@ -175,14 +176,18 @@
     </thead>
 
     <tbody>
+      <form action="{% url 'main:borrar_cuenta_multiple' %}" method="post" id="borrar">
+      {% csrf_token %}
       {% for cuenta in lista_cuentas %}
         <tr>
+          <td><input type="checkbox" id="check_{{ forloop.counter }}" name="check_{{ forloop.counter }}" value="{{ cuenta.num }}" class="check"></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
           <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.etiqueta.all|join:", " }}</a></td>
           <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
         </tr>
       {% endfor %}
+      </form>
     </tbody>
 
   </table>
@@ -234,5 +239,6 @@
     <p>No hay ninguna cuenta todavía.</p>
 {% endif %}
 
+<script type="text/javascript" src="{% static 'main/js/multi-check.js' %}"></script>
 
 {% endblock %}

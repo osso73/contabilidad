@@ -3,19 +3,18 @@
 
 {% block content %}
 
-<p class="mt-3">Se han cargado {{ cuentas_anadidas|length }} cuentas:</p>
-
-<a href="{% url 'main:cuentas' %}" class="button is-primary is-outlined">
-  Ok
-</a>
-
 {% if cuentas_anadidas %}
 <div class="section">
+  <p class="mt-3">Se han cargado {{ cuentas_anadidas|length }} cuentas:</p>
+
+  <a href="{% url 'main:cuentas' %}" class="button is-primary is-outlined">
+    Ok
+  </a>
   <table>
     <thead>
       <tr>
         <th>Núm</th>
-        <th>Descripción</th>
+        <th>Cuenta</th>
         <th>Etiqueta(s)</th>
       </tr>
     </thead>
@@ -34,6 +33,39 @@
 
 {% else %}
   <p class="mt-3">No se ha encontrado ninguna cuenta.</p>
+  <a href="{% url 'main:cuentas' %}" class="button is-primary is-outlined">
+    Ok
+  </a>
+
+{% endif %}
+
+{% if cuentas_anadidas %}
+<div class="section">
+  <p class="mt-3">Las siguientes cuentas no se han cargado:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Núm</th>
+        <th>Cuenta</th>
+        <th>Etiqueta(s)</th>
+        <th>Error</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for cuenta in cuentas_error %}
+        <tr>
+          <td>{{ cuenta.num }}</td>
+          <td>{{ cuenta.nombre }}</td>
+          <td>{{ cuenta.etiqueta }}</td>
+          <td>{{ cuenta.error }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
 {% endif %}
 
 {% endblock %}
