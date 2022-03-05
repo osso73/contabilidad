@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es_ES">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="osso73">
+        <link rel="canonical" href="https://osso73.github.io/contabilidad/manual_usuario/funcionamiento/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Funcionamiento - contabilidad</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/atelier-dune-light.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">contabilidad</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../../inicio/" class="nav-link">Inicio rápido</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de usuario <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Funcionamiento</a>
+</li>
+                                    
+<li>
+    <a href="../bienvenida/" class="dropdown-item">Bienvenida y login</a>
+</li>
+                                    
+<li>
+    <a href="../cuentas/" class="dropdown-item">Cuentas</a>
+</li>
+                                    
+<li>
+    <a href="../asientos/" class="dropdown-item">Asientos</a>
+</li>
+                                    
+<li>
+    <a href="../informes/" class="dropdown-item">Informes</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de desarrollador <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../manual_desarrollador/estructura/" class="dropdown-item">Estructura repositorio</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/tests/" class="dropdown-item">Tests</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/documentacion/" class="dropdown-item">Documentación</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/despliegue/" class="dropdown-item">Despliegue</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../acerca_de/" class="nav-link">Acerca de</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Buscar
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../../inicio/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Anterior
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../bienvenida/" class="nav-link">
+                                    Siguiente <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/osso73/contabilidad/blob/main/docs/manual_usuario/funcionamiento.md" class="nav-link"><i class="fa fa-github"></i> Editar en GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Tabla de contenidos">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#mecanismo-de-funcionamiento" class="nav-link">Mecanismo de funcionamiento</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#teoria" class="nav-link">Teoría</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#estructura-de-las-cuentas" class="nav-link">Estructura de las cuentas</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#ejemplos" class="nav-link">Ejemplos</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="mecanismo-de-funcionamiento">Mecanismo de funcionamiento</h1>
+<h2 id="teoria">Teoría</h2>
+<p>Esta aplicación funciona con los mismos principios de contabilidad que pueda utilizar una empresa, pero de forma muy simplificada. Básicamente, tenemos 3 tipos de información:</p>
+<ol>
+<li>
+<p>Los movimientos: son las transacciones de dinero. Registran el movimiento de dinero entre dos o más cuentas. Los movimientos se agrupan por asiento, siendo cada asiento de uno o más movimientos.</p>
+</li>
+<li>
+<p>Las cuentas: son las que contienen el dinero. Puede haber cuentas de gastos, es decir que registran los gastos que tenemos, como por ejemplo: "Gastos de la casa", "Comida", "Ropa", o "Viajes"; otras cuentas de ingresos, como por ejemplo: "Nómina del trabajo", o "Intereses del banco" o "Alquiler recibido"; y otras donde hay entradas y salidas de dinero, como son las cuentas de los bancos, tarjetas, etc.</p>
+</li>
+<li>
+<p>Las etiquetas: se aplican a las cuentas, y permiten agrupar las cuentas para hacer los informes. Por ejemplo, podemos agrupar todas las cuentas de gastos bajo la etiqueta "gastos". Cada cuenta puede tener varias etiquetas.</p>
+</li>
+</ol>
+<p>En cada movimiento o transacción <em>sale</em> o <em>entra</em> dinero de una cuenta. <em>Salir</em> significa que el dinero se resta del total que tiene la cuenta; <em>entrar</em> significa que se suma el dinero. La diferencia entre entradas y salidas se denomina el saldo de la cuenta.</p>
+<p>Cada movimiento consta del número de asiento al que pertenece, la fecha, una descripción, los campos <em>debe</em> y <em>haber</em>, y la cuenta involucrada en el movimiento. En cada movimiento, sólo uno de los campos <em>debe</em> o <em>haber</em> tiene un valor, y además debe ser positivo; el otro vale 0. Si el campo <em>debe</em> es el que tiene el valor distinto de 0, significa que el dinero <em>sale</em> de la cuenta en ese movimiento; si es el campo <em>haber</em>, entonces el dinero <em>entra</em> a la cuenta.</p>
+<h2 id="estructura-de-las-cuentas">Estructura de las cuentas</h2>
+<p>La estructura que se define de cuentas es muy importante para poder obtener información de los datos que entramos. Si esta estructura no es correcta, la información que obtenemos al hacer los informes no es interesante. Debemos tener el nivel de detalle adecuado: si agregamos muchos gastos en una sola cuenta, no sabremos bien cómo se distribuyen los gastos o ingresos; si somos demasiado detallados, será más difícil obtener una fotos general de los gastos (aunque se pueden agrupar por etiquetas, no tiene demasiado sentido entrar en un sistema muy complejo).</p>
+<p>Vamos a definir 3 tipos de cuentas, como hemos comentado antes: las de gastos, las de ingresos, y las que llamo de <em>balance</em>, donde tenemos tanto entradas como salidas.</p>
+<h3 id="ingresos">Ingresos</h3>
+<p>Estas son las más sencillas, ya que corresponden a las fuentes de ingresos que tenemos. Creamos una cuenta para cada fuente de ingresos, de esta forma podremos ver cómo contribuye cada fuente a nuestro patrimonio. Ejemplos que encontramos en este apartado son:</p>
+<ul>
+<li>
+<p>nómina del lugar donde trabajamos. En caso de ser varias personas en la unidad familiar, crear una cuenta para cada uno. Y en caso de tener varios trabajos, también crear varias cuentas.</p>
+</li>
+<li>
+<p>intereses bancos. Se puede desglosar en varias cuentas (por banco, u otros criterios) si se quiere tener más detalle.</p>
+</li>
+<li>
+<p>regalos. Eso puede ser otra fuente de ingresos que queremos identificar.</p>
+</li>
+<li>
+<p>alquiler recibido. En caso de tener más de una propiedad en alquiler, tiene sentido crear una cuenta por propiedad.</p>
+</li>
+<li>
+<p>rendimiento fondos / acciones: esta cuenta debería ser en general una cuenta de ingresos, aunque también puede tener pérdidas. Se pueden varias, por ejemplo para separar rendimientos de acciones de los de fondos, o por banco, etc. A gusto de cada uno.</p>
+</li>
+</ul>
+<h3 id="balance">Balance</h3>
+<p>Estas cuentas también son relativamente sencillas, ya que deberían reflejar las cuentas y tarjetas que tengamos. En general hay que definir:</p>
+<ul>
+<li>
+<p>una cuenta para cada cuenta bancaria que tenemos. De esta forma podremos comprobar después el extracto del banco si corresponde a los movimientos que tenemos registrados.</p>
+</li>
+<li>
+<p>una cuenta para cada tarjeta de crédito. Ojo, las tarjetas de débito no, ya que estas cargan directamente a la cuenta del banco. Por tanto, pagar con una tarjeta de débito es equivalente a pagar con la cuenta asociada. Las tarjetas de crédito son las que pagan los gastos, y a final de mes reciben los fondos para quedarse a 0, cuando el banco nos carga el importe de la tarjeta (es decir, en ese momento el dinero pasa de una de las cuentas a la tarjeta)</p>
+</li>
+<li>
+<p>una cuenta para cada mecanismo de pago que tengamos, entendiendo los mecanismos como una forma de acumular dinero que luego puedo gastar. Por ejemplo: paypal, tarjetas via-T, tarjetas de pre-pago, botes para compartir gastos, etc.</p>
+</li>
+<li>
+<p>cada préstamo bancario o hipoteca debería tener su cuenta asociada. De esta forma vemos cúanto debemos, y cómo se va reduciendo la deuda al hacer pagos.</p>
+</li>
+<li>
+<p>también puede ser interesante crear una cuenta para deudas (i.e. dinero que nos han prestado y deberíamos devolver), y préstamos que hemos hecho (y esperamos que nos devuelvan). También podría ser la misma cuenta, aunque es más sencillo que estén separadas. De esta forma podemos ver fácilmente cuánto dinero nos deben, y cuánto debemos (igual que en el caso de la hipoteca). Cuando todas las deudas y préstamos estén saldados, el saldo debe ser 0.</p>
+</li>
+</ul>
+<h3 id="gastos">Gastos</h3>
+<p>Esta categoría es la más complicada y difícil de definir, ya que depende mucho de la granularidad que se quiera tener. Por ejemplo, puedo definir una cuenta de gastos de viaje, que incluya todos los gastos; o bien cuentas distintas para gastos de transporte, gastos de alojamiento, gastos de comidas, gastos de visitas; o bien incluso dentro de transporte distinguir el medio de transporte (una cuenta para aviones, otra para tren, etc.).</p>
+<p>Se puede tener un nivel de granularidad distinto en cada cosa: quizás quiero tener mucho detalle en los viajes, porque hago muchos y luego puedo analizar cómo he gastado el dinero; y menos detalle en los gastos médicos, y tener una sola cuenta para todos los gastos médicos (farmacia, consultas, ingresos hospital, vacunas, PCRs, etc.).</p>
+<p>Algunos ejemplos de cuentas pueden ser:</p>
+<ul>
+<li>gastos educación</li>
+<li>gastos comida</li>
+<li>gastos ropa</li>
+<li>etc.</li>
+</ul>
+<h2 id="ejemplos">Ejemplos</h2>
+<h3 id="ejemplo-1-compro-un-jersey">Ejemplo 1. Compro un jersey</h3>
+<p>Pongamos que compro un jersey con mi tarjeta, la transacción se representa con un asiento simple, es decir un asiento con dos movimientos: uno asociado a la cuenta de la tarjeta, con el valor del jersey en el debe (es decir, el dinero sale de la cuenta de la tarjeta), y otro movimiento asociado a la cuenta "Ropa" con el valor del jersey en el haber (el dinero entra en la cuenta "Ropa"). Cuando pida un informe de la cuenta "Ropa", podré ver todos los movimientos donde entra dinero en esa cuenta, y sumando sabré lo que me he gastado en ropa (por día, por semana, por mes, etc.).</p>
+<h3 id="ejemplo-2-hipoteca">Ejemplo 2. Hipoteca.</h3>
+<p>Cuando compro un piso, pongamos que me cuesta 100.000€. Yo pago 20.000€ de la cuenta de ahorro, y el banco me da una hipoteca por 80.000€. Esto se representa con un asiento complejo, de 3 movimientos:</p>
+<ul>
+<li>De la cuenta "Cuenta Ahorro" salen 20.000€, es decir tengo 20,000€ en el debe (lógicamente esto requeriría que la cuenta tuviera un saldo superior a 20.000€, pero eso no lo comprueba la aplicación).</li>
+<li>De la cuenta "Hipoteca" salen 80.000€, por tanto también en el debe.</li>
+<li>Y tenemos 100.000€ que entran a la cuenta "Gastos casa", por tanto en el haber.</li>
+</ul>
+<p>Tanto en el debe como en el haber tenemos un total de 100.000€.</p>
+<p>Ahora la cuenta "Hipoteca" tiene un saldo negativo de 80.000€. Eso es lo que debemos al banco. Cada mes iremos pagando la cuota de la hipoteca, lo cual será otra vez un asiento complejo de 3 movimientos. Pongamos que la cuota es de 1.000 €:</p>
+<ul>
+<li>De la cuenta "Cuenta Nómina" salen 1.000€, es decir están en su debe</li>
+<li>A la cuenta "Intereses hipoteca" entran la parte de los intereses (que será variable, ya que depende del interés de cada mes, y de la cantidad de capital restante). Pongamos que es 400€. Este valor irá en el haber.</li>
+<li>A la cuenta "Hipoteca" entrará la parte de capital, para ir amortizando la deuda que tengo pendiente. Por tanto pongo 600€ en el haber.</li>
+</ul>
+<p>Ahora tengo también en el debe y en el haber la misma cantidad, 1.000€. Cuando pida un informe sobre la cuenta "Hipoteca", obtengo que tenía 80.000€ en el debe, y 600€ en el haber. Por tanto, mi saldo restante es de 79,400€. Es la deuda que tengo pendiente. A medida que pasen los meses, esa deuda se irá decrementando con la aportación de las cuotas.</p>
+<h3 id="ejemplo-3-saldo-inicial">Ejemplo 3. Saldo inicial</h3>
+<p>Para que salgan bien las cuentas, debemos partir de un saldo inicial. Es decir, cuando empezamos a hacer la contabilidad, ya tengo algún dinero en las cuentas del banco, algunos gastos hechos en mis tarjetas, quizás una hipoteca a medio pagar, y algún fondo de inversión.</p>
+<p>Todo eso se puede definir en un asiento inicial, donde se pone el valor de cada una de las cuentas:</p>
+<ul>
+<li>
+<p>El dinero que tengo en cuentas bancarias, paypal, tarjetas de prepago, etc. se pone en el haber de cada cuenta.</p>
+</li>
+<li>
+<p>El dinero que he gastado con mi tarjeta de crédito se pone en el debe de la cuenta correspondiente.</p>
+</li>
+<li>
+<p>En la cuenta "Hipoteca" se pone el valor de capital pendiente de amortizar en el debe.</p>
+</li>
+<li>
+<p>Los fondos de inversión, acciones, etc. también se añade su valor en la fecha inicial de empezar la contabilidad, y se pone en el haber.</p>
+</li>
+<li>
+<p>Para completar el asiento, se puede añadir un movimiento a una cuenta "Patrimonio inicial", de forma que el total del debe y el haber de este asiento sean iguales. Esta cuenta nos indica cuál es el valor neto de nuestro patrimonio al empezar la contabilidad, teniendo en cuenta todas las deudas, y todos los activos.</p>
+</li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentación construida con <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Buscar</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Desde aquí puede buscar estos documentos. Ingrese sus términos de búsqueda a continuación.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Buscando..." id="mkdocs-search-query" title="Escriba el término de búsqueda aquí">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No se encontraron resultados"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Atajos de teclado</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Teclas</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Abrir esta ayuda</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Página siguiente</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Página anterior</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Buscar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es_ES">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="osso73">
+        <link rel="canonical" href="https://osso73.github.io/contabilidad/manual_usuario/cuentas/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Cuentas - contabilidad</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/atelier-dune-light.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">contabilidad</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../../inicio/" class="nav-link">Inicio rápido</a>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de usuario <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../funcionamiento/" class="dropdown-item">Funcionamiento</a>
+</li>
+                                    
+<li>
+    <a href="../bienvenida/" class="dropdown-item">Bienvenida y login</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Cuentas</a>
+</li>
+                                    
+<li>
+    <a href="../asientos/" class="dropdown-item">Asientos</a>
+</li>
+                                    
+<li>
+    <a href="../informes/" class="dropdown-item">Informes</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de desarrollador <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../manual_desarrollador/estructura/" class="dropdown-item">Estructura repositorio</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/tests/" class="dropdown-item">Tests</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/documentacion/" class="dropdown-item">Documentación</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_desarrollador/despliegue/" class="dropdown-item">Despliegue</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../acerca_de/" class="nav-link">Acerca de</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Buscar
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../bienvenida/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Anterior
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../asientos/" class="nav-link">
+                                    Siguiente <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/osso73/contabilidad/blob/main/docs/manual_usuario/cuentas.md" class="nav-link"><i class="fa fa-github"></i> Editar en GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Tabla de contenidos">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#cuentas" class="nav-link">Cuentas</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#1-menus-laterales" class="nav-link">1. Menús laterales</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#2-formulario-nueva-cuenta" class="nav-link">2. Formulario nueva cuenta</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#3-pantalla-principal" class="nav-link">3. Pantalla principal</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#formato-plantilla-cuentas" class="nav-link">Formato plantilla cuentas</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="cuentas">Cuentas</h1>
+<p><img alt="Pantalla de cuentas" src="../../img/cuentas.png" /></p>
+<p>La plantalla de Cuentas está dividia en varias partes:</p>
+<ol>
+<li>
+<p>a la izquierda tenemos una serie de menús que nos permiten varias acciones, como filtrar, cargar un fichero o gestionar las etiquetas.</p>
+</li>
+<li>
+<p>arriba tenemos un formulario que nos permite entrar una nueva cuenta</p>
+</li>
+<li>
+<p>y en la parte central de la pantalla tenemos el listado de cuentas.</p>
+</li>
+</ol>
+<h2 id="1-menus-laterales">1. Menús laterales</h2>
+<ul>
+<li>
+<p><strong>Filtro</strong>: permite filtrar las cuentas a mostrar. Puedes filtrar por número de cuenta, nombre o etiqueta. Se pueden rellenar más de un campo. Para filtrar pulsar el botón de aplicar el filtro. El filtro se queda activo incluso si se cambia de pantalla. El botón de borrar elimina el filtro y muestra otra vez todas las cuentas.</p>
+</li>
+<li>
+<p><strong>Cargar cuentas</strong>: se pueden crear cuentas a partir de un fichero excel. En este submenú se escoge el fichero a cargar, y se confirma con el botón verde. El formato del fichero está explicado <a href="#formato-plantilla-cuentas">más abajo</a>.</p>
+</li>
+<li>
+<p><strong>Etiquetas</strong>: formulario para crear etiquetas nuevas o borrar una existente. Para crear una nueva etiqueta, entrar el nombre de la etiqueta, y una descripción más larga. Esa descripción servirá de título a la hora de generar los informes. Luego pulsar el botón verde.</p>
+<p>Para borrar una etiqueta existente entrar el nombre de la etiqueta que se quiere borrar, y pulsar el botón rojo. Al borrar una etiqueta, se eliminará de todas las cuentas donde exista.</p>
+<p>El nombre de la etiqueta se puede escoger de un menú <em>dropdown</em> que muestra todas las etiquetas existentes.</p>
+</li>
+</ul>
+<h2 id="2-formulario-nueva-cuenta">2. Formulario nueva cuenta</h2>
+<p>Para crear una nueva cuenta, hay que entrar obligatoriamente el número de cuenta y la descripción. La(s) etiqueta(s) son opcionales. Para entrar más de una etiqueta, separarlas por comas.</p>
+<p>La etiqueta se puede escoger de un menú <em>dropdown</em> que muestra todas las etiquetas existentes.</p>
+<h2 id="3-pantalla-principal">3. Pantalla principal</h2>
+<p>En esta pantalla vemos una lista de todas las cuentas. El listado está divido en páginas, de momento no se puede escoger el tamaño de página, está fijado a 15 entradas por página.</p>
+<p>Pinchando el título de la columna permite cambiar el orden de la tabla. El campo utilizado para ordenar tiene al lado una flecha indicando si el orden es ascendiente o descendiente. Pinchando de nuevo sobre el campo cambia el orden de ascendiente a descendiente o viceversa.</p>
+<p>La papelera roja a la derecha de cada cuenta permite borrar la cuenta. También se pueden borrar múltiples cuentas seleccionándolas, y pulsando la papelera que hay arriba. El <em>checkbox</em> que hay al lado de esa papelera sirve para seleccionar / deseleccionar todas las cuentas de la página.</p>
+<p>Pinchando en cualquier campo de la tabla (número, cuenta, etiqueta), se puede modificar la cuenta. Esto abre una nueva pantalla con un formulario que permite modificar los campos de la cuenta. El único campo que no se puede modificar es el número. Se pueden añadir / borrar etiquetas, y modificar el nombre de la cuenta.</p>
+<p><img alt="Pantalla de modificar cuenta" src="../../img/modificar_cuenta.png" /></p>
+<p>El botón verde para guardar los cambios, y el rojo para cancelar y volver atrás.</p>
+<h2 id="formato-plantilla-cuentas">Formato plantilla cuentas</h2>
+<p>Para la carga de cuentas desde un fichero excel, este debe tener el siguiente formato:</p>
+<ul>
+<li>
+<p>El nombre de la pestaña con las cuentas debe ser: "cuentas". Si no existe una pestaña con este nombre no se cargará ninguna cuenta.</p>
+</li>
+<li>
+<p>La información debe estar en las 3 primeras columnas de la hoja (A:C).</p>
+</li>
+<li>
+<p>La primera fila contiene los nombres de las columnas, no importa el nombre que se ponga.</p>
+</li>
+<li>
+<p>Las 3 columnas corresponden a los 3 campos de las cuentas.</p>
+</li>
+<li>
+<p>Las etiquetas van separadas por comas.</p>
+</li>
+</ul>
+<p>Hay un ejemplo de fichero excel a utilizar como plantilla en el repositorio de github. El mismo fichero también sirve para cargar los asientos, como se describe más adelante.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentación construida con <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Buscar</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Desde aquí puede buscar estos documentos. Ingrese sus términos de búsqueda a continuación.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Buscando..." id="mkdocs-search-query" title="Escriba el término de búsqueda aquí">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No se encontraron resultados"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Atajos de teclado</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Teclas</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Abrir esta ayuda</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Página siguiente</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Página anterior</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Buscar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

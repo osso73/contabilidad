@@ -1,170 +1,211 @@
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="es_ES" > <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="None">
-  <meta name="author" content="osso73">
-  <link rel="canonical" href="https://osso73.github.io/contabilidad/">
-  <link rel="shortcut icon" href="img/favicon.ico">
-  <title>contrabilidad</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+<html lang="es_ES">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        <meta name="author" content="osso73">
+        <link rel="canonical" href="https://osso73.github.io/contabilidad/">
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>contabilidad</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/atelier-dune-light.min.css">
 
-  <link rel="stylesheet" href="css/theme.css" />
-  <link rel="stylesheet" href="css/theme_extra.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
-  
-  <script>
-    // Current page data
-    var mkdocs_page_name = "Inicio";
-    var mkdocs_page_input_path = "index.md";
-    var mkdocs_page_url = "/contabilidad/";
-  </script>
-  
-  <script src="js/jquery-2.1.1.min.js" defer></script>
-  <script src="js/modernizr-2.8.3.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
-  <script>hljs.initHighlightingOnLoad();</script> 
-</head>
+        <script src="js/jquery-1.10.2.min.js" defer></script>
+        <script src="js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
 
-<body class="wy-body-for-nav" role="document">
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">contabilidad</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-  <div class="wy-grid-for-nav">
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="inicio/" class="nav-link">Inicio rápido</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de usuario <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="manual_usuario/funcionamiento/" class="dropdown-item">Funcionamiento</a>
+</li>
+                                    
+<li>
+    <a href="manual_usuario/bienvenida/" class="dropdown-item">Bienvenida y login</a>
+</li>
+                                    
+<li>
+    <a href="manual_usuario/cuentas/" class="dropdown-item">Cuentas</a>
+</li>
+                                    
+<li>
+    <a href="manual_usuario/asientos/" class="dropdown-item">Asientos</a>
+</li>
+                                    
+<li>
+    <a href="manual_usuario/informes/" class="dropdown-item">Informes</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de desarrollador <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="manual_desarrollador/estructura/" class="dropdown-item">Estructura repositorio</a>
+</li>
+                                    
+<li>
+    <a href="manual_desarrollador/tests/" class="dropdown-item">Tests</a>
+</li>
+                                    
+<li>
+    <a href="manual_desarrollador/documentacion/" class="dropdown-item">Documentación</a>
+</li>
+                                    
+<li>
+    <a href="manual_desarrollador/despliegue/" class="dropdown-item">Despliegue</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="navitem">
+                                <a href="acerca_de/" class="nav-link">Acerca de</a>
+                            </li>
+                        </ul>
 
-    
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
-    <div class="wy-side-scroll">
-      <div class="wy-side-nav-search">
-        <a href="." class="icon icon-home"> contrabilidad</a>
-        <div role="search">
-  <form id ="rtd-search-form" class="wy-form" action="./search.html" method="get">
-      <input type="text" name="q" placeholder="Buscar documentos" title="Escriba el término de búsqueda aquí" />
-  </form>
-</div>
-      </div>
-
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-                <ul class="current">
-                    <li class="toctree-l1 current"><a class="reference internal current" href=".">Inicio</a>
-    <ul class="current">
-    </ul>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="empezando/">Empezando</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="manual_usuario/">Manual de usuario</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="manual_desarrollo/">Manual de desarrollador</a>
-                    </li>
-                </ul>
-                <ul>
-                    <li class="toctree-l1"><a class="reference internal" href="acerca_de/">Acerca de</a>
-                    </li>
-                </ul>
-      </div>
-    </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href=".">contrabilidad</a>
-      </nav>
-
-      
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
-  <ul class="wy-breadcrumbs">
-    <li><a href=".">Documentos</a> &raquo;</li>
-    
-      
-    
-    <li>Inicio</li>
-    <li class="wy-breadcrumbs-aside">
-      
-        <a href="https://github.com/osso73/contabilidad/edit/master/docs/index.md"
-          class="icon icon-github"> Editar en GitHub</a>
-      
-    </li>
-  </ul>
-  
-  <hr/>
-</div>
-
-          <div role="main">
-            <div class="section">
-              
-                <h1 id="contabilidad">contabilidad</h1>
-<p>Sencilla aplicación de contabilidad para llevar las cuentas personales, desarrollada en Django y Bulma.</p>
-<p>Basado en los principios básicos de contabilidad (e.g. utilizando asientos de 2 o más movimientos para entrar los movimientos de dinero de una cuenta a otra), esta pequeña aplicación permite hacer un seguimiento de los gastos personales.</p>
-<p>Una vez entrados los gastos, se podrán sacar informes de movimientos por cuenta, o grupos de cuentas. Los informes no están todavía implementados.</p>
-              
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Buscar
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/osso73/contabilidad/blob/main/docs/index.md" class="nav-link"><i class="fa fa-github"></i> Editar en GitHub</a>
+                            </li>
+                    </ul>
+                </div>
             </div>
-          </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="empezando/" class="btn btn-neutral float-right" title="Empezando">Siguiente <span class="icon icon-circle-arrow-right"></span></a>
-      
-      
-    </div>
-  
-
-  <hr/>
-
-  <div role="contentinfo">
-    <!-- Copyright etc -->
-    
-  </div>
-
-  Construído con <a href="https://www.mkdocs.org/">MkDocs</a> usando <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provisto por<a href="https://readthedocs.org">Read the Docs</a>.
-</footer>
-      
         </div>
-      </div>
 
-    </section>
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Tabla de contenidos">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
 
-  </div>
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#contabilidad" class="nav-link">contabilidad</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
 
-  <div class="rst-versions" role="note" aria-label="versions">
-  <span class="rst-current-version" data-toggle="rst-current-version">
-    
-        <span>
-          <a href="https://github.com/osso73/contabilidad/" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
-        </span>
-    
-    
-    
-      <span><a href="empezando/" style="color: #fcfcfc">Siguiente &raquo;</a></span>
-    
-  </span>
+<h1 id="contabilidad">contabilidad</h1>
+<p>Esta es una sencilla aplicación de contabilidad para llevar las cuentas personales, desarrollada en Django y Bulma.</p>
+<p>Basado en los principios básicos de contabilidad (e.g. utilizando asientos de 2 o más movimientos para entrar los movimientos de dinero de una cuenta a otra), esta pequeña aplicación permite hacer un seguimiento de los gastos personales.</p>
+<p>Una vez entrados los gastos, se pueden sacar informes de movimientos por cuenta, o grupos de cuentas, en varios formatos.</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentación construida con <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js" defer></script>
+        <script src="search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Buscar</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Desde aquí puede buscar estos documentos. Ingrese sus términos de búsqueda a continuación.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Buscando..." id="mkdocs-search-query" title="Escriba el término de búsqueda aquí">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No se encontraron resultados"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Atajos de teclado</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Teclas</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Abrir esta ayuda</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Página siguiente</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Página anterior</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Buscar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>
-    <script>var base_url = '.';</script>
-    <script src="js/theme_extra.js" defer></script>
-    <script src="js/theme.js" defer></script>
-      <script src="search/main.js" defer></script>
-    <script defer>
-        window.onload = function () {
-            SphinxRtdTheme.Navigation.enable(true);
-        };
-    </script>
 
-</body>
+    </body>
 </html>
 
 <!--
 MkDocs version : 1.2.3
-Build Date UTC : 2021-12-29 15:09:39.088770+00:00
+Build Date UTC : 2022-03-05 18:14:00.732996+00:00
 -->

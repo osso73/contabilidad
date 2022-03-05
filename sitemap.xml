@@ -2,27 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://osso73.github.io/contabilidad/</loc>
-         <lastmod>2021-12-29</lastmod>
+         <lastmod>2022-03-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://osso73.github.io/contabilidad/acerca_de/</loc>
-         <lastmod>2021-12-29</lastmod>
+         <lastmod>2022-03-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://osso73.github.io/contabilidad/empezando/</loc>
-         <lastmod>2021-12-29</lastmod>
+         <loc>https://osso73.github.io/contabilidad/inicio/</loc>
+         <lastmod>2022-03-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://osso73.github.io/contabilidad/manual_desarrollo/</loc>
-         <lastmod>2021-12-29</lastmod>
+         <loc>https://osso73.github.io/contabilidad/manual_desarrollador/despliegue/</loc>
+         <lastmod>2022-03-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://osso73.github.io/contabilidad/manual_usuario/</loc>
-         <lastmod>2021-12-29</lastmod>
+         <loc>https://osso73.github.io/contabilidad/manual_desarrollador/documentacion/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_desarrollador/estructura/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_desarrollador/tests/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_usuario/asientos/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_usuario/bienvenida/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_usuario/cuentas/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_usuario/funcionamiento/</loc>
+         <lastmod>2022-03-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://osso73.github.io/contabilidad/manual_usuario/informes/</loc>
+         <lastmod>2022-03-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

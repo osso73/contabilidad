@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="es_ES">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="author" content="osso73">
+        <link rel="canonical" href="https://osso73.github.io/contabilidad/manual_desarrollador/despliegue/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Despliegue - contabilidad</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/atelier-dune-light.min.css">
+
+        <script src="../../js/jquery-1.10.2.min.js" defer></script>
+        <script src="../../js/bootstrap.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+        <script>hljs.initHighlightingOnLoad();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">contabilidad</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href="../../inicio/" class="nav-link">Inicio rápido</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de usuario <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../../manual_usuario/funcionamiento/" class="dropdown-item">Funcionamiento</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_usuario/bienvenida/" class="dropdown-item">Bienvenida y login</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_usuario/cuentas/" class="dropdown-item">Cuentas</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_usuario/asientos/" class="dropdown-item">Asientos</a>
+</li>
+                                    
+<li>
+    <a href="../../manual_usuario/informes/" class="dropdown-item">Informes</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="dropdown active">
+                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Manual de desarrollador <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../estructura/" class="dropdown-item">Estructura repositorio</a>
+</li>
+                                    
+<li>
+    <a href="../tests/" class="dropdown-item">Tests</a>
+</li>
+                                    
+<li>
+    <a href="../documentacion/" class="dropdown-item">Documentación</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active">Despliegue</a>
+</li>
+                                </ul>
+                            </li>
+                            <li class="navitem">
+                                <a href="../../acerca_de/" class="nav-link">Acerca de</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Buscar
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../documentacion/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Anterior
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../../acerca_de/" class="nav-link">
+                                    Siguiente <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="https://github.com/osso73/contabilidad/blob/main/docs/manual_desarrollador/despliegue.md" class="nav-link"><i class="fa fa-github"></i> Editar en GitHub</a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Tabla de contenidos">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-level="1"><a href="#despliegue-en-produccion" class="nav-link">Despliegue en producción</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-level="2"><a href="#configuracion-inicial-de-paquetes" class="nav-link">Configuración inicial de paquetes</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#creacion-y-configuracion-de-usuario" class="nav-link">Creación y configuración de usuario</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#ficheros-django-y-configuracion" class="nav-link">Ficheros django y configuración</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#configuracion-de-gunicorn" class="nav-link">Configuración de gunicorn</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#configuracion-nginx" class="nav-link">Configuración nginx</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#uso-de-mariadb" class="nav-link">Uso de mariadb</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-level="2"><a href="#referencias" class="nav-link">Referencias</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="despliegue-en-produccion">Despliegue en producción</h1>
+<p>Tal como dice la <a href="https://docs.djangoproject.com/en/4.0/howto/deployment/">documentacion</a> de Dango, el servidor incluido como parte de Django nos sirve para ir haciendo las pruebas y ver cómo queda la aplicación según la vamos desarrollando, pero para utilizarlo en un entorno de producción, es decir para su uso habitual, es recomendable utilizar un servidor web como apache o nginx, que son mucho más robustos y seguros. Como explican en Django, existen varias opciones para hacer el despliegue. Aquí voy a explicar cómo lo he hecho, utilizando un servidor nginx como servidor web, y Gunicorn como servidor WSGI, instalado sobre un jail en FreeBSD. Para este proyecto utilizo la base de datos por defecto sqlite, pero también se puede utilizar una base de datos más robusta, mariadb por ejemplo. Voy a incluir un capítulo al final explicando cómo hacer el despliegue utilizando una base de datos mariadb.</p>
+<p>Veremos no sólo los paquetes de software que hay que desplegar y configurar en el servidor (en el jail), sino también las adaptaciones que tenemos que hacer en nuestra configuración. Estas modificaciones ya están hechas en la versión que hay en github, pero tendrás que adaptarlos en función del despliegue que vayas a hacer.</p>
+<h2 id="configuracion-inicial-de-paquetes">Configuración inicial de paquetes</h2>
+<p>Una vez creado el jail, actualizamos la configuración, y creamos un directorio donde vamos a desplegar nuestros(s) proyecto(s) de django:</p>
+<pre><code class="language-bash">pkg update
+mkdir -p /home/django/projects
+</code></pre>
+<p>Esta carpeta será donde copiaremos nuestro proyecto. Yo utilizo el mismo servidor para desplegar varias aplicaciones django, por eso tengo la carpeta "projects", dentro de la cual crearé mi carpeta de "contabilidad". Si solo lo utilizas para este proyecto, puedes poner la "contabilidad" directamente en la carpeta de django. Para copiar los ficheros a esta carpeta utiliza el método que consideres más adecuado. En mi caso, monto un sistema de ficheros en la carpeta "projects", y ese sistema lo puedo acceder desde mis máquinas linux o windows para copiar ficheros en él.</p>
+<p>Ahora instalamos los paquetes que necesitamos. Estos son python, junto con pip, nginx y sqlite para la base de datos. Django y Gunicorn son paquetes de python que instalaremos dentro del servidor virtual que crearemos para nuestro proyecto. De esta forma podemos tener varios proyectos django en el mismo servidor.</p>
+<pre><code class="language-bash">pkg install -y python nginx
+python -m ensurepip
+pip3 install --upgrade pip
+pkg install -y sqlite3 py38-sqlite3
+</code></pre>
+<p>Atención a que el paquete de sqlite corresponda a la versión de python instalada en el sistema; en nuestro caso, la 3.8.</p>
+<h2 id="creacion-y-configuracion-de-usuario">Creación y configuración de usuario</h2>
+<p>Vamos a crear un usuario django que será el que ejecute el servidor. De esta forma no tenemos que utilizar el usuario root, y es más seguro.</p>
+<p>Creamos el grupo y el usuario, y le asignamos la carpeta que hemos creado antes:</p>
+<pre><code class="language-bash">pw groupadd django -g 1000
+pw useradd django -u 1000 -g django -s /bin/sh -c &quot;django project&quot; -d /home/django
+chown -R django:django /home/django
+</code></pre>
+<h2 id="ficheros-django-y-configuracion">Ficheros django y configuración</h2>
+<p>Ahora copiamos los ficheros de nuestro proyecto a la carpeta que hemos creado antes, con el método que decidas. Solo hay que copiar la carpeta <code>conta</code> dentro de nuestro proyecto, que es la que contiene el proyecto django. Además el fichero <code>requirements.txtx</code> para poder crear el entorno virtual. Puedes copiarlo en la carpeta de <code>conta</code>.</p>
+<p>A continuación hay que hacer algunos ajustes.</p>
+<h3 id="creacion-del-entorno-virtual">Creación del entorno virtual</h3>
+<p>Primero creamos el entorno virtual:</p>
+<pre><code>cd /home/django/projects/conta
+python -m venv .venv
+</code></pre>
+<p>Ahora activamos en entorno, e instalamos los paquetes, tanto los necesarios para el proyecto, como el gunicorn:</p>
+<pre><code class="language-bash">source .venv/bin/activate.csh
+pip install -r requirements.txt
+pip install gunicorn
+</code></pre>
+<h3 id="ficheros-estaticos">Ficheros estáticos</h3>
+<p>Los ficheros estáticos serán servidos directamente por nuestro servidor nginx, ya que gunicorn solo va a servir las páginas dinámicas. Por esta razón tenemos que hacer ajustar la configuración de django, añadiendo esta línea:</p>
+<pre><code class="language-python">STATIC_ROOT = BASE_DIR / 'static'
+STATIC_URL = '/static/'
+</code></pre>
+<p>Esta configuración ya está en el repositorio de django, por lo que no hace falta añadirlo. Después hay ejecutar este comando desde la carpeta de nuestro proyecto:</p>
+<pre><code class="language-bash">python manage.py collectstatic
+</code></pre>
+<p>Este comando recoge todos los ficheros estáticos de nuestro proyecto, y los agrupa en una carpeta <code>static</code> dentro de nuestro proyecto. De esta forma podremos configurar nginx para servir estos ficheros.</p>
+<p>Atención: si más adelante haces cambios en tu proyecto tendrás que correr este comando otra vez, para actualizar los ficheros estáticos.</p>
+<h3 id="settings-de-produccion">Settings de producción</h3>
+<p>En un entorno de producción hay que cambiar alguna configuración para que el entorno sea más seguro, según las <a href="https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/">recomendaciones</a> de django. Para no tener que estar cambiando estas configuraciones cada vez que copio los ficheros al entorno productivo, lo que hago es crear un fichero de settings de producción, que llamo <code>settings_production.py</code>, y cambio la configuración de <code>wsgi.py</code> para apuntar a este fichero en lugar de apuntar al estándar <code>settings.py</code>. Este nuevo fichero importará todos los settings que tenemos en <code>settings.py</code>, y luego cambiará los que necesitamos cambiar. De esta forma, cuando estoy desarrollando seguiré utilizando el fichero estándar, y en producción tendré la configuración más segura. Este fichero ya está creado en el repositorio de github, pero hay que configurarlo con los valores adecuados. Está en el mismo directorio que <code>settings.py</code>, y tiene este contenido:</p>
+<pre><code class="language-python">from .settings import *
+
+DEBUG = False
+ALLOWED_HOSTS = ['IP DEL SERVIDOR', 'DOMINIO']
+CSRF_TRUSTED_ORIGINS = ['https://DOMINIO']
+
+with open('/usr/local/etc/conta/secret_key') as f:
+    SECRET_KEY = f.read().strip()
+</code></pre>
+<p>Debes utilizar la IP de tu servidor, y el DOMINIO donde estará corriendo el servidor. Además la clave secreta es conveniente tenerla en otra carpeta que no esté dentro del proyecto, para evitar que se pueda acceder desde la web. Por esta razón la guardamos en un fichero que leemos desde django.</p>
+<p>Ahora tenemos que crear este fichero. Vamos a crear primero la carpeta donde guardamos varias configuraciones para nuestro proyecto:</p>
+<pre><code class="language-bash">mkdir -p /usr/local/etc/conta
+vi /usr/local/etc/conta/secret_key
+</code></pre>
+<p>La clave secreta (<a href="https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-SECRET_KEY">SECRET_KEY</a>) es una secuencia única de carácteres, y suficientemente larga. Una clave única se puede obtener por ejemplo de: <a href="http://uuid.online">http://uuid.online</a> (o por cualquier otro método). Guarda la clave en ese fichero, para ser leída por django.</p>
+<h2 id="configuracion-de-gunicorn">Configuración de gunicorn</h2>
+<p>Comprobar primero que gunicorn funciona. Ejecutar el comando:</p>
+<pre><code class="language-bash">gunicorn conta.wsgi -b IP:8000
+</code></pre>
+<p>Utilizando la IP del servidor. Comprobar que el servidor en: http://IP:8000 funciona correctamente (atención, las imágenes no se verán, ni los archivos CSS, por ser archivos estáticos: el servidor gunicorn no sirve archivos estáticos).</p>
+<p>Una vez comprobado que funciona, vamos a crear la configuración para lanzar gunicorn como demonio al arrancar la máquina.</p>
+<p>Primero tenemos que crear el fichero de configuración de gunicorn. Utilizaremos la carpeta que ya hemos creado, vamos a llamar ese fichero <code>/usr/local/etc/locallibrary/gunicorn_conf.py</code>. El contenido de este fichero debe ser el siguiente:</p>
+<pre><code class="language-python">command = '/home/django/projects/conta/.venv/bin/gunicorn'
+pythonpath = '/home/django/projects/conta'
+bind = 'IP:8000'
+workers = 3
+user = 'django'
+group = 'django'
+daemon = True
+wsgi_app = 'conta.wsgi'
+pidfile = '/var/run/gunicorn.conta.pid'
+</code></pre>
+<p>Sustituye la IP por la ip del servidor. Aquí estamos indicando los parámetros para la ejecución de gunicorn. Ahora tenemos que crear un servicio de arranque, y lo haremos en la carpeta <code>/usr/local/etc/rc.d</code>. Esta carpeta ya ha sido creada al instalar nginx, ya que contiene el fichero de arranque de nginx. Vamos a crear el fichero <code>/usr/local/etc/rc.d/conta</code>, con el siguiente contenido:</p>
+<pre><code class="language-bash">#!/bin/sh
+
+# PROVIDE: locallibrary
+# REQUIRE: netif
+
+. /etc/rc.subr
+
+name=&quot;conta&quot;
+rcvar=&quot;${name}_enable&quot;
+
+pidfile=&quot;/var/run/gunicorn.conta.pid&quot;
+extra_commands=&quot;status&quot;
+start_cmd=&quot;/home/django/projects/conta/.venv/bin/gunicorn -c /usr/local/etc/conta/gunicorn_conf.py ; echo $name is now running on PID $(cat $pidfile)&quot;
+stop_cmd=&quot;kill $(cat $pidfile) ; echo $name is not running. ; rm $pidfile&quot;
+status_cmd=&quot;if [ -e $pidfile ]; then echo $name is running on PID $(cat $pidfile). ; return 1; fi; echo $name is not running. ; return 0&quot;
+
+load_rc_config $name
+run_rc_command &quot;$1&quot;
+</code></pre>
+<p>Para más información sobre estos comandos, consultar la documentación <a href="https://docs.freebsd.org/en/articles/rc-scripting/">Practical rc.d scripting in BSD</a>.</p>
+<p>Ahora tenemos que hacer este fichero ejecutable, y configurar el servicio para que arranque automáticamente:</p>
+<pre><code class="language-bash">chmod +x /usr/local/etc/rc.d/conta
+sysrc conta=YES
+</code></pre>
+<p>Ahora podemos arrancar el servicio con el comando:</p>
+<pre><code class="language-bash">service conta start
+</code></pre>
+<p>Otros comandos disponibles son:</p>
+<pre><code class="language-bash">service conta stop    # para el servicio
+service conta status  # para saber el estado, si está arrancado o no
+</code></pre>
+<h2 id="configuracion-nginx">Configuración nginx</h2>
+<p>Ahora tenemos que configurar nginx para servir las páginas. Aquí describo una configuración sin certificados, ya que en mi caso utilizo un <em>reverse proxy</em> que es donde tengo configurado el certificado y protocolo https. Si no utilizas un <em>reverse proxy</em>, es conveniente que incluyas la configuración con certificados en este servidor.</p>
+<p>En primer lugar, edita el fichero <code>/usr/local/etc/nginx/nginx.con</code>, reemplaza su contenido por el siguiente:</p>
+<pre><code>worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+
+    # Import server blocks for all subdomains
+    include &quot;vdomains/*.conf&quot;;
+}
+</code></pre>
+<p>Ahora hay que crear una carpeta <code>/usr/local/etc/nginx/vdomains</code>, que contendrá los servidores para cada uno de los proyectos que tengamos.</p>
+<p>El primero que crearemos será el servidor por defecto. Crea el fichero <code>/usr/local/etc/nginx/vdomains/default.conf</code>, con la siguiente configuración:</p>
+<pre><code>server {
+    # if no Host match, close the connection to prevent host spoofing
+    listen 80 default_server;
+    return 444;
+}
+</code></pre>
+<p>Esta configuración hace que si llega una petición que no encaja con ninguno de los servidores configurados, cierra la conexión.</p>
+<p>Y ahora creamos el servidor para nuestro proyecto. Crea el fichero <code>/usr/local/etc/nginx/vdomains/conta.conf</code>, con la siguiente configuración:</p>
+<pre><code>server {
+    listen       80;
+    server_name  DOMAIN;
+
+    access_log /var/log/nginx/conta.access.log;
+    error_log /var/log/nginx/conta.error.log;
+
+    location / {
+        proxy_pass http://IP:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        alias   /home/django/projects/conta/static/;
+    }
+}
+</code></pre>
+<p>Reemplaza IP por la ip de tu servidor, y DOMAIN por el dominio que utilices para alojar el servidor.</p>
+<p>Fíjate en la configuración para los ficheros estáticos: las peticiones que empiezan con el <em>path</em> <code>/static/</code> son servidas directamente por nginx, utilizando como directorio raíz el directorio donde hemos puesto los ficheros estáticos antes. Las demás peticiones son redirigidas a nuestro servidor gunicorn.</p>
+<p>Ahora configuramos el servicio nginx para arrancar automáticamente, y lo arrancamos:</p>
+<pre><code class="language-bash">sysrc nginx_enable=yes
+service nginx start
+</code></pre>
+<p>Si más adelante haces cambios en la configuración de nginx, puedes forzar la relectura de la configuración con el siguiente comando:</p>
+<pre><code class="language-bash">service nginx reload
+</code></pre>
+<p>Con esto estaría todo configurado para su correcto funcionamiento. No olvides utilizar un <em>reverse proxy</em> para asegurar una conexión segura https, o bien cambiar la configuración de nginx para utilizar certificados y forzar el acceso a través de https.</p>
+<h2 id="uso-de-mariadb">Uso de mariadb</h2>
+<p>Para una aplicación con pocos accesos, la base de datos sqlite es más que suficiente. Pero si esperas tener muchos accesos, o simplemente quieres hacerla más robusta, puedes utilizar mariadb como base de datos. Aquí explico los cambios necesarios para realizarlo.</p>
+<h3 id="instalacion-de-mariadb">Instalación de mariadb</h3>
+<p>Primero hay que instalar mariadb:</p>
+<pre><code class="language-bash">pkg install -y mariadb105-server  # utiliza la última versión disponible
+pip install mysqlclient
+</code></pre>
+<p>Editar el fichero <code>/usr/local/etc/mysql/my.cnf</code>, y sustituir la siguiente línea:</p>
+<pre><code># línea a reemplazar:
+socket  = /var/run/mysql/mysql.sock
+
+# nueva línea:
+socket  = /tmp/mysql.sock
+</code></pre>
+<p>Ahora configuramos el servicio para empezar automáticamente, y lo arrancamos:</p>
+<pre><code class="language-bash">sysrc mysql_enable=yes
+service mysql-server start
+</code></pre>
+<h3 id="securizacion-de-mariadb-y-creacion-de-la-base-de-datos">Securización de mariadb, y creación de la base de datos</h3>
+<p>Lanzamos el siguiente script para securizar la configuración de mariadb, según recomendación del fabricante:</p>
+<pre><code class="language-bash">mysql_secure_installation --socket=/tmp/mysql.sock
+</code></pre>
+<p>Acepta todos los valores por defecto, y crea un password de root para acceder a mariadb. Este password tendrás que utilizarlo en el siguiente paso. Este escript implementa las mejores prácticas para securizar la base de datos. Ahora vamos a deshabilitar también el acceso remoto a la base de datos:</p>
+<pre><code class="language-bash">sysrc mysql_args=&quot;--bind-address=127.0.0.1&quot;
+service mysql-server restart
+</code></pre>
+<p>A continuación creamos la base de datos:</p>
+<pre><code class="language-bash">mysql -u root -p
+</code></pre>
+<p>Entra el password de root que acabas de crear, y ahora entra los siguientes comandos para crear la base de datos:</p>
+<pre><code>CREATE DATABASE conta CHARACTER SET UTF8;
+CREATE USER 'accountant'@'localhost' IDENTIFIED BY 'accountant-password';
+GRANT ALL ON conta.* TO 'accountant'@'localhost';
+FLUSH PRIVILEGES;
+exit
+</code></pre>
+<p>Utiliza el nombre de base de datos, usuario y password de tu gusto. Estos los necesitaremos luego para la configuración de django.</p>
+<h3 id="configuracion-de-django-base-de-datos">Configuración de Django - base de datos</h3>
+<p>Ahora tenemos que actualizar los ajustes de nuestro proyecto. Abre el fichero <code>settings.py</code> de nuestro proyecto, y reemplaza la antigua configuración por la nueva:</p>
+<pre><code class="language-python">#### antigua configuración (la que viene por defecto) #####
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+
+##### nueva configuración #####
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'conta',
+        'USER': 'accountant',
+        'PASSWORD': 'accountant-password',
+        'HOST': 'localhost',
+        'PORT': '',
+    }
+}
+</code></pre>
+<p>Aquí es donde ponemos los valores que hemos utilizado antes. Para mayor seguridad, podemos poner el usuario y password de la base de datos en otro directorio, igual que hemos hecho con la clave secreta. En ese caso cambiamos la configuración de la siguiente forma, crando también un fichero nuevo:</p>
+<pre><code class="language-python"># settings.py
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS': {
+            'read_default_file': '/usr/local/etc/conta/mariadb.cnf',
+        },
+    }
+}
+
+# /usr/local/etc/conta/mariadb.cnf
+[client]
+database = conta
+user = accountant
+password = accountant-password
+default-character-set = utf8
+</code></pre>
+<p>Una vez realizados estos cambios en la configuración, hay que correr las migraciones:</p>
+<pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate
+</code></pre>
+<p>Y finalmente volver a crear un superusuario:</p>
+<pre><code>python manage.py createsuperuser
+</code></pre>
+<h2 id="referencias">Referencias</h2>
+<p>Para crear esta guía, he consultado los siguientes artículos y documentación:</p>
+<ul>
+<li><a href="https://docs.djangoproject.com">Django project documentation</a></li>
+<li><a href="https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/">Django deployment checklist</a></li>
+<li><a href="https://docs.gunicorn.org/en/latest/deploy.html">Gunicorn configuration</a></li>
+<li><a href="https://docs.freebsd.org/en/articles/rc-scripting/">Practical rc.d scripting in BSD</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-use-mysql-or-mariadb-with-your-django-application-on-ubuntu-14-04">How To Use MySQL or MariaDB with your Django Application on Ubuntu 14.04</a></li>
+</ul></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentación construida con <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js" defer></script>
+        <script src="../../search/main.js" defer></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Buscar</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+                <p>Desde aquí puede buscar estos documentos. Ingrese sus términos de búsqueda a continuación.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Buscando..." id="mkdocs-search-query" title="Escriba el término de búsqueda aquí">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No se encontraron resultados"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Atajos de teclado</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Teclas</th>
+                    <th>Acción</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Abrir esta ayuda</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Página siguiente</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Página anterior</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Buscar</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
