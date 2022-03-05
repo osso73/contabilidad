@@ -1,13 +1,22 @@
 site_name: contabilidad
 repo_url: https://github.com/osso73/contabilidad/
 site_url: https://osso73.github.io/contabilidad/
+edit_uri: blob/main/docs
 site_author: osso73
 theme:
-  name: readthedocs
+  name: sandstone  # others: readthedocs, mkdocs, flatly, journal, cerulean, cosmo, litera, minty, sandstone
   locale: es_ES
 nav:
-  - Inicio: index.md
-  - Empezando: empezando.md
-  - Manual de usuario: manual_usuario.md
-  - Manual de desarrollador: manual_desarrollo.md
+  - Inicio rápido: inicio.md
+  - Manual de usuario:
+    - Funcionamiento: manual_usuario/funcionamiento.md
+    - Bienvenida y login: manual_usuario/bienvenida.md
+    - Cuentas: manual_usuario/cuentas.md
+    - Asientos: manual_usuario/asientos.md
+    - Informes: manual_usuario/informes.md
+  - Manual de desarrollador:
+    - Estructura repositorio: manual_desarrollador/estructura.md
+    - Tests: manual_desarrollador/tests.md
+    - Documentación: manual_desarrollador/documentacion.md
+    - Despliegue: manual_desarrollador/despliegue.md
   - Acerca de: acerca_de.md

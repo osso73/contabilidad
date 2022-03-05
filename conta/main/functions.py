@@ -1,6 +1,9 @@
 from typing import Sequence, List, Tuple
 from django.core.files import File
 
+import matplotlib
+matplotlib.use('Agg')
+
 import datetime
 import pandas as pd
 import numpy as np
@@ -55,7 +58,7 @@ def crear_cuentas(excel_data: pd.DataFrame, sobreescribir: bool) -> List[List[Cu
     cuentas_error = []
     for n in excel_data.index:
         result = valida_cuenta(excel_data.loc[n])
-        if result is not 'ok':
+        if result != 'ok':
             excel_data.loc[n, 'error'] = result
             cuentas_error.append(excel_data.loc[n])
             continue
