@@ -181,10 +181,17 @@
       {% for cuenta in lista_cuentas %}
         <tr>
           <td><input type="checkbox" id="check_{{ forloop.counter }}" name="check_{{ forloop.counter }}" value="{{ cuenta.num }}" class="check"></td>
-          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.num }}</a></td>
-          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.nombre }}</a></td>
-          <td class="has-text-left"> <a href="{% url 'main:modificar_cuenta' cuenta.num %}">{{ cuenta.etiqueta.all|join:", " }}</a></td>
-          <td><a href="{% url 'main:borrar_cuenta' cuenta.num %}"><span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span></a></td>
+          <td class="has-text-left"> {{ cuenta.num }} </td>
+          <td class="has-text-left"> {{ cuenta.nombre }} </td>
+          <td class="has-text-left"> {{ cuenta.etiqueta.all|join:", " }} </td>
+          <td>
+            <a href="{% url 'main:modificar_cuenta' cuenta.num %}">
+              <span class="icon iconify has-text-link is-small" data-icon="mdi-edit"></span>
+            </a>
+            <a href="{% url 'main:borrar_cuenta' cuenta.num %}">
+              <span class="icon iconify has-text-danger is-small" data-icon="mdi-trash-can"></span>
+            </a>
+          </td>
         </tr>
       {% endfor %}
       </form>

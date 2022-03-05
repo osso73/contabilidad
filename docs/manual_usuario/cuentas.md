@@ -39,7 +39,7 @@ Pinchando el título de la columna permite cambiar el orden de la tabla. El camp
 
 La papelera roja a la derecha de cada cuenta permite borrar la cuenta. También se pueden borrar múltiples cuentas seleccionándolas, y pulsando la papelera que hay arriba. El _checkbox_ que hay al lado de esa papelera sirve para seleccionar / deseleccionar todas las cuentas de la página.
 
-Pinchando en cualquier campo de la tabla (número, cuenta, etiqueta), se puede modificar la cuenta. Esto abre una nueva pantalla con un formulario que permite modificar los campos de la cuenta. El único campo que no se puede modificar es el número. Se pueden añadir / borrar etiquetas, y modificar el nombre de la cuenta.
+Pinchando en el lápiz azul se puede modificar la cuenta. Esto abre una nueva pantalla con un formulario que permite modificar los campos de la cuenta. El único campo que no se puede modificar es el número. Se pueden añadir / borrar etiquetas, y modificar el nombre de la cuenta.
 
 ![Pantalla de modificar cuenta](../img/modificar_cuenta.png)
 

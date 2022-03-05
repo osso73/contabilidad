@@ -38,7 +38,7 @@ Pinchando el título de la columna permite cambiar el orden de la tabla. El camp
 
 La papelera roja a la derecha de cada movimiento permite borrar el movimiento. También se pueden borrar múltiples movimientos seleccionándolos, y pulsando la papelera que hay arriba. El _checkbox_ que hay al lado de esa papelera sirve para seleccionar / deseleccionar todos los movimientos de la página.
 
-Pinchando en cualquier campo de la tabla, se puede modificar el asiento. Esto abre una nueva pantalla con un formulario que permite modificar los campos de todos los movimientos asociados al mismo número de asiento.
+Pinchando en el lápiz azul se puede modificar el asiento. Esto abre una nueva pantalla con un formulario que permite modificar los campos de todos los movimientos asociados al mismo número de asiento.
 
 ![Pantalla de modificar asiento](../img/modificar_asiento.png)
 

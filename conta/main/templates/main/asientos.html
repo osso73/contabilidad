@@ -187,19 +187,15 @@
       {% for movimiento in lista_movimientos %}
         <tr>
           <td><input type="checkbox" id="check_{{ forloop.counter }}" name="check_{{ forloop.counter }}" value="{{ movimiento.id }}" class="check"></td>
-          <td class="has-text-right"><a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.num }}</a></td>
-          <td> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.fecha }}</a></td>
-          <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.descripcion }}</a></td>
+          <td class="has-text-right"> {{ movimiento.num }} </td>
+          <td> {{ movimiento.fecha }} </td>
+          <td class="has-text-left"> {{ movimiento.descripcion }} </td>
           <td class="has-text-right">
-            <a href="{% url 'main:modificar_asiento' movimiento.num %}">
               {% if movimiento.debe == 0 %} - {% else %} {{ movimiento.debe|floatformat:"2g" }} {% endif %}
-            </a>
           </td>
           <td class="has-text-right">
-            <a href="{% url 'main:modificar_asiento' movimiento.num %}">
               {% if movimiento.haber == 0 %} - {% else %} {{ movimiento.haber|floatformat:"2g" }} {% endif %}
-            </a>
-          <td class="has-text-left"> <a href="{% url 'main:modificar_asiento' movimiento.num %}">{{ movimiento.cuenta }}</a></td>
+          <td class="has-text-left"> {{ movimiento.cuenta }} </td>
           <td>
             <a href="{% url 'main:modificar_asiento' movimiento.num %}">
               <span class="icon iconify has-text-link is-small" data-icon="mdi-edit"></span>

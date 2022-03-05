@@ -5,7 +5,15 @@ Los cambios realizados en este proyecto se documentarán en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). Para los números de versión, utilizo únicamente 2 dígitos para los cambios mayores y menores.
 
 
-## v1.0 -  2022-02-09
+## v1.1 - no publicada todavia
+
+Refinar alguna funcionalidad, completar informes, y refactoring interno.
+
+### Añadido
+- Creado manual de usuario (iss #27), y dado acceso desde el portal junto con la pantalla de "About" (iss. #25).
+
+
+## v1.0 - 2022-02-09
 
 Primera versión funcional. Incluye funcionalidad básica para crear, borrar y filtrar movimientos y cuentas, así como re-ordenar y visualizar algún informe básico (informe de gastos, informe de ingresos, etc.).
 
@@ -30,7 +38,7 @@ También realiza la gestión de usuarios y logins.
 - Formato plantilla para cargar cuentas: datos en las 3 primeras columnas del excel (núm, cuenta, etiqueta(s)).
 
 
-## v0.5 -  2021-12-29
+## v0.5 - 2021-12-29
 Funcionalidad básica establecida:
 
 - añadir y borrar cuentas y asientos (movimientos),
@@ -51,7 +59,7 @@ Incluye los tests para comprobar estas funciones.
 
 ----
 
-## v0.1 -  2021-12-08
+## v0.1 - 2021-12-08
 
 Versión inicial. Funcionalidad básica: crear y borrar cuentas y asientos de forma manual, y modificación de los datos ya existentes.
 
