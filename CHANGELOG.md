@@ -13,6 +13,11 @@ Refinar alguna funcionalidad, completar informes, y refactoring interno.
 - Creado manual de usuario (iss #27), y dado acceso desde el portal junto con la pantalla de "About" (iss. #25).
 
 
+### Arreglado
+- Ya no es obligatorio entrar una etiqueta al crear una nueva cuenta (iss. #23).
+
+
+
 ## v1.0 - 2022-02-09
 
 Primera versión funcional. Incluye funcionalidad básica para crear, borrar y filtrar movimientos y cuentas, así como re-ordenar y visualizar algún informe básico (informe de gastos, informe de ingresos, etc.).
